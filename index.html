@@ -12,76 +12,84 @@
             --text: #e1e1e6; --muted: #a8a8b3; --border: #29292e; --success: #04d361;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-        body { background: var(--bg-body); color: var(--text); padding: 20px; max-width: 1200px; margin: 0 auto; }
+        body { background: var(--bg-body); color: var(--text); padding: 25px 20px; max-width: 1240px; margin: 0 auto; }
         
-        #header-main { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent); padding-bottom: 15px; margin-bottom: 20px; }
+        #header-main { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent); padding-bottom: 15px; margin-bottom: 25px; }
         #header-main h1 { font-size: 1.6rem; } #header-main h1 span { color: var(--accent); }
         
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
         .tab-btn { background: var(--bg-card); color: var(--muted); border: 1px solid var(--border); padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: all 0.2s; }
         .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
         
         .tab-content { display: none; }
-        .tab-content.active { display: grid; grid-template-columns: 380px 1fr; gap: 20px; animation: fadeIn 0.25s ease-out; }
-        .tab-content.full-width.active { grid-template-columns: 1fr; }
+        .tab-content.active { display: grid; grid-template-columns: 420px 1fr; gap: 25px; animation: fadeIn 0.25s ease-out; }
+        .tab-content.full-width.active { display: grid; grid-template-columns: 1fr; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .card { background: var(--bg-card); border: 1px solid var(--border); padding: 20px; border-radius: 8px; position: relative; }
-        .card h2 { font-size: 1.1rem; color: var(--accent); margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-        .field { margin-bottom: 12px; position: relative; }
-        .field label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 4px; }
-        .field input, .field select { width: 100%; padding: 8px 10px; background: var(--bg-body); border: 1px solid var(--border); color: var(--text); border-radius: 4px; }
+        .card { background: var(--bg-card); border: 1px solid var(--border); padding: 25px; border-radius: 8px; position: relative; margin-bottom: 15px; }
+        .card h2 { font-size: 1.1rem; color: var(--accent); margin-bottom: 18px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        .field { margin-bottom: 16px; position: relative; }
+        .field label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 6px; }
+        .field input, .field select { width: 100%; padding: 10px 12px; background: var(--bg-body); border: 1px solid var(--border); color: var(--text); border-radius: 4px; }
         
-        /* ESTILO PARA EL AUTOCOMPLETADO PERSONALIZADO */
+        /* AUTOCOMPLETADO PERSONALIZADO */
         .autocomplete-suggestions { position: absolute; border: 1px solid var(--border); border-top: none; z-index: 99; top: 100%; left: 0; right: 0; background: #16161a; max-height: 150px; overflow-y: auto; border-radius: 0 0 4px 4px; }
         .autocomplete-suggestion { padding: 8px 10px; cursor: pointer; font-size: 0.85rem; color: var(--text); }
         .autocomplete-suggestion:hover { background: var(--accent); color: #fff; }
-
-        .btn { width: 100%; padding: 10px; background: var(--accent); color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        
+        .btn { width: 100%; padding: 11px; background: var(--accent); color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .btn-secondary { background: #323238; color: var(--text); margin-top: 5px; }
         .btn-success { background: var(--success); color: #000; }
         .btn-download { background: #007acc; color: #fff; font-weight: bold; }
         
         table { width: 100%; border-collapse: collapse; }
-        th, td { text-align: left; padding: 10px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
         th { color: var(--accent); background: #16161a; }
         
-        .ticket { background: #fff; color: #121212; padding: 15px; border-radius: 6px; font-family: monospace; width: 100%; max-width: 400px; margin: 0 auto; }
-        .ticket h3 { text-align: center; border-bottom: 1px dashed #121212; padding-bottom: 8px; margin-bottom: 10px; color: #121212; }
-        .ticket-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
-        .ticket-total { border-top: 2px solid #121212; padding-top: 8px; font-weight: bold; font-size: 1.1rem; }
+        .ticket { background: #fff; color: #121212; padding: 20px; border-radius: 6px; font-family: monospace; width: 100%; max-width: 440px; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .ticket h3 { text-align: center; border-bottom: 1px dashed #121212; padding-bottom: 8px; margin-bottom: 12px; color: #121212; }
+        .ticket-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .ticket-total { border-top: 2px solid #121212; padding-top: 10px; margin-top: 5px; font-weight: bold; font-size: 1.1rem; }
         
-        .checklist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
-        .checklist-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--text); }
+        .checklist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+        .checklist-item { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--text); background: #16161a; padding: 6px 10px; border-radius: 4px; border: 1px solid var(--border); }
         .checklist-item input { width: auto; }
-        .foto-preview-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+        .foto-preview-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
         .foto-thumb { width: 65px; height: 65px; border-radius: 4px; object-fit: cover; border: 1px solid var(--accent); }
         
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; padding: 20px; }
         .modal-overlay.active { display: flex; }
-        .modal-card { background: var(--bg-card); border: 1px solid var(--accent); padding: 20px; border-radius: 8px; max-width: 550px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .modal-card { background: var(--bg-card); border: 1px solid var(--accent); padding: 25px; border-radius: 8px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         
-        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .metric-card { background: var(--bg-card); border: 1px solid var(--border); padding: 20px; border-radius: 8px; text-align: center; }
-        .metric-card h3 { font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 20px; }
+        .metric-card { background: var(--bg-card); border: 1px solid var(--border); padding: 25px; border-radius: 8px; text-align: center; }
+        .metric-card h3 { font-size: 0.85rem; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; }
         .metric-card p { font-size: 1.6rem; color: var(--success); font-weight: bold; }
         
-        .qr-box { display: flex; justify-content: center; align-items: center; margin: 15px auto; background: #ffffff; padding: 10px; border-radius: 4px; width: fit-content; }
+        .qr-box { display: flex; justify-content: center; align-items: center; margin: 18px auto; background: #ffffff; padding: 12px; border-radius: 4px; width: fit-content; }
         .qr-box img { display: block; margin: 0 auto; }
+        
+        /* ESTILOS DE LA FICHA TÉCNICA FORMATO AGENCIA */
+        .sheet-agencia { background: #ffffff; color: #111111; padding: 20px; border-radius: 6px; font-family: Arial, sans-serif; font-size: 0.8rem; text-align: left; }
+        .sheet-agencia h3 { text-align: center; color: #ff4500; border-bottom: 2px solid #ff4500; padding-bottom: 6px; margin-bottom: 10px; }
+        .sheet-sec-header { background: #f0f0f0; padding: 4px 8px; font-weight: bold; font-size: 0.75rem; border-left: 3px solid #ff4500; margin: 10px 0 6px 0; text-transform: uppercase; }
+        .sheet-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .sheet-check-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; margin-top: 5px; }
+        .sheet-check-table td { padding: 3px 5px; border-bottom: 1px solid #eee; }
 
         /* PANTALLAS EXCLUSIVAS (QR y PORTAL CLIENTE) */
         #vista-cliente-qr, #portal-cliente { display: none; justify-content: center; align-items: center; padding: 20px; flex-direction: column; min-height: 80vh; }
         #vista-cliente-qr.active, #portal-cliente.active { display: flex; }
-        .client-box { max-width: 450px; width: 100%; background: #1e1e24; border: 1px solid var(--accent); padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .client-box { max-width: 480px; width: 100%; background: #1e1e24; border: 1px solid var(--accent); padding: 25px; border-radius: 8px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
     <!-- VISTA AISLADA: CUANDO EL CLIENTE ESCANEA EL QR DESDE SU CASA -->
     <div id="vista-cliente-qr">
         <div class="client-box">
-            <h2 style="color: var(--accent); margin-bottom: 5px;">🚗 Comprobante Digital</h2>
-            <p style="color: var(--muted); font-size: 0.8rem; margin-bottom: 15px;">Taller Mecánico Motor Zero (KZ)</p>
-            <div id="contenedor-comprobante-movil" style="margin-bottom: 15px; width: 100%;"></div>
+            <h2 style="color: var(--accent); margin-bottom: 8px;">🚗 Comprobante Digital</h2>
+            <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 20px;">Taller Mecánico Motor Zero (KZ)</p>
+            <div id="contenedor-comprobante-movil" style="margin-bottom: 20px; width: 100%;"></div>
             <button class="btn btn-download" onclick="descargarImagen('contenedor-comprobante-movil', 'Comprobante_MotorZero.png')">📥 Descargar Imagen</button>
             <button class="btn btn-secondary" style="margin-top: 10px;" onclick="irAPortalDesdeQR()">🔍 Buscar ticket completo (Portal)</button>
         </div>
@@ -90,7 +98,7 @@
     <!-- VISTA PORTAL CLIENTES: PARA BUSCAR TICKETS -->
     <div id="portal-cliente">
         <div class="client-box">
-            <h2 style="color: var(--accent); margin-bottom: 5px;">🔍 Portal de Clientes</h2>
+            <h2 style="color: var(--accent); margin-bottom: 8px;">🔍 Portal de Clientes</h2>
             <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 20px;">Búsqueda de Expedientes</p>
             
             <div class="field" style="text-align: left;">
@@ -101,7 +109,7 @@
             <button class="btn btn-secondary" id="btn-regresar-taller" onclick="cerrarPortalCliente()" style="margin-top:10px;">Regresar al Taller</button>
             
             <div id="kiosko-resultado" style="margin-top: 20px; display: none;">
-                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                <div style="display: flex; gap: 8px; margin-bottom: 15px;">
                     <button class="btn btn-secondary" style="flex:1; margin:0;" onclick="cambiarVistaKiosko('ticket')">🎫 Ticket</button>
                     <button class="btn btn-secondary" style="flex:1; margin:0;" onclick="cambiarVistaKiosko('ficha')">📋 Ficha</button>
                 </div>
@@ -118,7 +126,7 @@
                 <h1>MOTOR <span>ZERO (KZ)</span></h1>
                 <small style="color: var(--muted);">sistema de gestión de taller mecánico</small>
             </div>
-            <button onclick="abrirPortalCliente()" class="btn btn-secondary" style="width: auto; padding: 8px 15px; margin: 0; font-size: 0.85rem;">🔍 Portal Clientes</button>
+            <button onclick="abrirPortalCliente()" class="btn btn-secondary" style="width: auto; padding: 9px 16px; margin: 0; font-size: 0.85rem;">🔍 Portal Clientes</button>
         </header>
 
         <div class="tabs" id="tabs-main">
@@ -136,7 +144,6 @@
                     <div class="field"><label>ID Orden</label><input type="text" id="ord-id" required readonly style="background:#16161a; color:var(--success); font-weight:bold;"></div>
                     <div class="field"><label>Cliente</label><input type="text" id="ord-cliente" required placeholder="Ej. Juan Pérez"></div>
                     
-                    <!-- AUTOCOMPLETADO LIMPIO SIN MENÚ FLOTANTE ESTORBOSO -->
                     <div class="field">
                         <label>Marca</label>
                         <input type="text" id="ord-marca" autocomplete="off" placeholder="Escribe y presiona Enter..." oninput="manejarInputAutocomplete('marca')" onkeydown="manejarKeydownAutocomplete(event, 'marca')">
@@ -152,25 +159,43 @@
                     <div class="field"><label>Mano de Obra ($ MXN)</label><input type="number" step="0.01" id="ord-mano" min="0" required placeholder="0.00"></div>
                     
                     <div class="field">
-                        <label style="color:var(--accent); font-weight:bold;">📋 Checklist</label>
+                        <label style="color:var(--accent); font-weight:bold;">⛽ Nivel de Gasolina</label>
+                        <select id="ord-gas">
+                            <option value="1/4">1/4 Tanque</option>
+                            <option value="1/2" selected>1/2 Tanque</option>
+                            <option value="3/4">3/4 Tanque</option>
+                            <option value="Lleno">Tanque Lleno</option>
+                            <option value="Reserva">Reserva</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label style="color:var(--accent); font-weight:bold;">📋 Checklist de Inventario de Recepción</label>
                         <div class="checklist-grid">
-                            <label class="checklist-item"><input type="checkbox" id="chk-llaves"> Llaves</label>
-                            <label class="checklist-item"><input type="checkbox" id="chk-gato"> Gato/Llave L</label>
+                            <label class="checklist-item"><input type="checkbox" id="chk-llaves" checked> Llaves</label>
+                            <label class="checklist-item"><input type="checkbox" id="chk-gato"> Gato / Llave L</label>
                             <label class="checklist-item"><input type="checkbox" id="chk-refaccion"> Refacción</label>
-                            <label class="checklist-item"><input type="checkbox" id="chk-estereo"> Estéreo</label>
+                            <label class="checklist-item"><input type="checkbox" id="chk-estereo" checked> Estéreo</label>
+                            <label class="checklist-item"><input type="checkbox" id="chk-espejos" checked> Espejos</label>
+                            <label class="checklist-item"><input type="checkbox" id="chk-vidrios" checked> Vidrios Íntegros</label>
+                            <label class="checklist-item"><input type="checkbox" id="chk-tapetes"> Tapetes</label>
+                            <label class="checklist-item"><input type="checkbox" id="chk-extintor"> Extintor</label>
+                            <label class="checklist-item"><input type="checkbox" id="chk-tapa" checked> Tapa Gasolina</label>
                         </div>
                     </div>
+
                     <div class="field">
                         <label style="color:var(--accent); font-weight:bold;">📸 Fotos (Se guardan en el sistema)</label>
                         <input type="file" id="ord-fotos" accept="image/*" capture="environment" multiple onchange="procesarFotos(event)">
                         <div id="preview-fotos" class="foto-preview-grid"></div>
                     </div>
-                    <hr style="border-color: var(--border); margin: 15px 0;">
+
+                    <hr style="border-color: var(--border); margin: 20px 0;">
                     <div class="field"><label>Refacción</label><select id="ord-ref-select"></select></div>
                     <div class="field"><label>Cantidad</label><input type="number" id="ord-cant" value="1" min="1"></div>
                     <button type="button" class="btn btn-secondary" onclick="agregarPiezaTemp()">+ Añadir Pieza</button>
                     <div class="item-list" id="lista-piezas-temp" style="margin-top: 10px;"><p style="font-size:0.8rem; color:var(--muted);">Sin piezas.</p></div>
-                    <button type="submit" class="btn" style="margin-top: 15px;">Registrar Orden</button>
+                    <button type="submit" class="btn" style="margin-top: 20px;">Registrar Orden</button>
                 </form>
             </div>
             <div class="card">
@@ -243,14 +268,14 @@
     <!-- MODAL COMPROBANTE ADMIN -->
     <div id="modal-pago" class="modal-overlay">
         <div class="modal-card">
-            <h2 id="modal-titulo" style="color: var(--success); text-align: center; margin-bottom: 10px;">Consulta de Expediente</h2>
-            <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <h2 id="modal-titulo" style="color: var(--success); text-align: center; margin-bottom: 12px;">Consulta de Expediente</h2>
+            <div style="display: flex; gap: 8px; margin-bottom: 15px;">
                 <button class="btn btn-secondary" style="flex:1; margin:0;" onclick="cambiarVistaModal('ticket')">🎫 Ticket Cliente</button>
                 <button class="btn btn-secondary" style="flex:1; margin:0;" onclick="cambiarVistaModal('ficha')">📋 Ficha Técnica</button>
             </div>
             <div id="modal-ticket-body" style="margin-bottom: 15px;"></div>
             <button class="btn btn-download" onclick="descargarImagen('modal-ticket-body', 'Archivo_MotorZero.png')">💾 Guardar Comprobante en Dispositivo</button>
-            <button class="btn btn-success" style="margin-top:8px;" onclick="cerrarModal()">Cerrar / Regresar</button>
+            <button class="btn btn-success" style="margin-top:10px;" onclick="cerrarModal()">Cerrar / Regresar</button>
         </div>
     </div>
 
@@ -265,7 +290,6 @@
             'Hyundai': ['Grand i10', 'Accent', 'Elantra', 'Creta', 'Tucson'],
             'Kia': ['Rio', 'Forte', 'Sportage', 'Seltos', 'Soul']
         };
-
         var inventario = JSON.parse(localStorage.getItem('mz_inv')) || [
             { id: 'REF-001', nombre: 'Carburador Holley', precio: 1200.00, stock: 5 },
             { id: 'REF-002', nombre: 'Bomba de Agua', precio: 650.00, stock: 8 }
@@ -277,7 +301,6 @@
         var ticketActualModal = null;
         var ticketActualKiosko = null;
 
-        // SISTEMA DE AUTOCOMPLETADO PERSONALIZADO LIMPIO
         function manejarInputAutocomplete(tipo) {
             var input = document.getElementById(tipo === 'marca' ? 'ord-marca' : 'ord-modelo');
             var sugBox = document.getElementById(tipo === 'marca' ? 'sugerencias-marca' : 'sugerencias-modelo');
@@ -285,7 +308,6 @@
             
             sugBox.innerHTML = '';
             if (!val) return;
-
             var lista = [];
             if (tipo === 'marca') {
                 lista = Object.keys(marcasCat);
@@ -293,7 +315,6 @@
                 var marcaVal = document.getElementById('ord-marca').value.trim();
                 lista = marcasCat[marcaVal] || Object.values(marcasCat).flat();
             }
-
             var filtradas = lista.filter(function(item) { return item.toLowerCase().includes(val); });
             
             filtradas.forEach(function(item) {
@@ -308,11 +329,9 @@
                 sugBox.appendChild(div);
             });
         }
-
         function manejarKeydownAutocomplete(e, tipo) {
             var sugBox = document.getElementById(tipo === 'marca' ? 'sugerencias-marca' : 'sugerencias-modelo');
             var input = e.target;
-
             if (e.key === 'Enter') {
                 e.preventDefault();
                 var firstChild = sugBox.querySelector('.autocomplete-suggestion');
@@ -323,7 +342,6 @@
                 if (tipo === 'marca') document.getElementById('ord-modelo').focus();
             }
         }
-
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.field')) {
                 var sm = document.getElementById('sugerencias-marca');
@@ -332,16 +350,13 @@
                 if(smo) smo.innerHTML = '';
             }
         });
-
         function guardarDatos() {
             localStorage.setItem('mz_inv', JSON.stringify(inventario));
             localStorage.setItem('mz_ord', JSON.stringify(ordenes));
             localStorage.setItem('mz_tickets', JSON.stringify(tickets));
         }
-
         function generarNuevoIdOrden() { return 'ORD-' + (ordenes.length + tickets.length + 101); }
         function generarNuevoIdRefaccion() { return 'REF-' + (inventario.length + 1).toString().padStart(3, '0'); }
-
         function switchTab(btn, tabId) {
             document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
             document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
@@ -349,7 +364,6 @@
             document.getElementById('tab-' + tabId).classList.add('active');
             render();
         }
-
         function procesarFotos(e) {
             var files = Array.from(e.target.files);
             files.forEach(function(file) {
@@ -362,7 +376,6 @@
                 reader.readAsDataURL(file);
             });
         }
-
         function agregarPiezaTemp() {
             var refId = document.getElementById('ord-ref-select').value;
             var cant = parseInt(document.getElementById('ord-cant').value);
@@ -375,7 +388,6 @@
             if (piezasOrdenTemp.length === 1) cont.innerHTML = '';
             cont.innerHTML += '<div style="font-size:0.85rem; border-bottom:1px solid #333; padding:4px 0;">' + ref.nombre + ' (x' + cant + ')</div>';
         }
-
         function guardarRefaccion(e) {
             e.preventDefault();
             var precio = parseFloat(document.getElementById('inv-precio').value);
@@ -384,7 +396,6 @@
             inventario.push({ id: document.getElementById('inv-id').value, nombre: document.getElementById('inv-nombre').value, precio: precio, stock: stock });
             guardarDatos(); e.target.reset(); render();
         }
-
         function guardarOrden(e) {
             e.preventDefault();
             var mano = parseFloat(document.getElementById('ord-mano').value);
@@ -392,13 +403,26 @@
             var marca = document.getElementById('ord-marca').value.trim();
             var modelo = document.getElementById('ord-modelo').value.trim();
             var anio = document.getElementById('ord-anio').value;
-            var chk = { llaves: document.getElementById('chk-llaves').checked, gato: document.getElementById('chk-gato').checked, refaccion: document.getElementById('chk-refaccion').checked, estereo: document.getElementById('chk-estereo').checked };
+            var gas = document.getElementById('ord-gas') ? document.getElementById('ord-gas').value : '1/2';
+            
+            var chk = { 
+                llaves: document.getElementById('chk-llaves').checked, 
+                gato: document.getElementById('chk-gato').checked, 
+                refaccion: document.getElementById('chk-refaccion').checked, 
+                estereo: document.getElementById('chk-estereo').checked,
+                espejos: document.getElementById('chk-espejos') ? document.getElementById('chk-espejos').checked : false,
+                vidrios: document.getElementById('chk-vidrios') ? document.getElementById('chk-vidrios').checked : false,
+                tapetes: document.getElementById('chk-tapetes') ? document.getElementById('chk-tapetes').checked : false,
+                extintor: document.getElementById('chk-extintor') ? document.getElementById('chk-extintor').checked : false,
+                tapa: document.getElementById('chk-tapa') ? document.getElementById('chk-tapa').checked : false
+            };
             
             ordenes.push({
                 id: document.getElementById('ord-id').value,
                 cliente: document.getElementById('ord-cliente').value,
                 auto: marca + ' ' + modelo + ' ' + anio,
                 mano: mano,
+                gasolina: gas,
                 checklist: chk,
                 fotos: fotosOrdenTemp.slice(),
                 piezas: piezasOrdenTemp.slice()
@@ -408,14 +432,14 @@
             document.getElementById('preview-fotos').innerHTML = '';
             e.target.reset(); render();
         }
-
         function generarUrlQrDigital(ord, folio, fechaStr, tipo) {
             var f = encodeURIComponent(folio || ord.id);
             var c = encodeURIComponent(ord.cliente);
             var v = encodeURIComponent(ord.auto);
             var m = (ord.mano || 0).toString();
             var d = encodeURIComponent(fechaStr || new Date().toLocaleString());
-            var k = (ord.checklist.llaves?'1':'0') + (ord.checklist.gato?'1':'0') + (ord.checklist.refaccion?'1':'0') + (ord.checklist.estereo?'1':'0');
+            var chk = ord.checklist || {};
+            var k = (chk.llaves?'1':'0') + (chk.gato?'1':'0') + (chk.refaccion?'1':'0') + (chk.estereo?'1':'0');
             
             var pArr = [];
             (ord.piezas || []).forEach(function(p) {
@@ -426,7 +450,6 @@
             
             return 'https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?t=' + tipo + '&f=' + f + '&c=' + c + '&v=' + v + '&m=' + m + '&k=' + k + '&d=' + d + (pArr.length ? '&p=' + pArr.join('|') : '');
         }
-
         function actualizarTicket() {
             var ordId = document.getElementById('pos-select').value;
             var view = document.getElementById('ticket-view');
@@ -435,7 +458,6 @@
             view.innerHTML = generarHTMLTicket(ord, null, null);
             generarCodigoQR('qr-preview-box', generarUrlQrDigital(ord, null, null, 'ticket'));
         }
-
         function generarHTMLTicket(ord, folio, fechaStr) {
             var subtotalRef = 0;
             var qrId = folio ? 'qr-modal-box-' + Math.random().toString(36).substr(2, 5) : 'qr-preview-box';
@@ -465,13 +487,13 @@
             '</div>';
         }
 
-        // FICHA TÉCNICA CON EVIDENCIA FOTOGRÁFICA RECUPERADA LOCALMENTE
+        // FICHA TÉCNICA CON DIAGRAMA DE AGENCIA, MEDIDOR DE GASOLINA E INVENTARIO COMPLETO
         function generarHTMLFichaTecnica(ord, folio, fechaStr) {
             var chk = ord.checklist || {};
             var qrId = folio ? 'qr-modal-box-' + Math.random().toString(36).substr(2, 5) : 'qr-preview-box';
             var fotosHTML = '';
+            var gasNivel = ord.gasolina || '1/2';
             
-            // Buscamos si el ticket tiene fotos guardadas en el historial local para mostrarlas en la ficha
             var fotosList = ord.fotos || [];
             if (fotosList.length === 0 && folio) {
                 var tFound = tickets.find(function(t) { return t.folio === folio; });
@@ -479,27 +501,89 @@
                     fotosList = tFound.ordOriginal.fotos;
                 }
             }
-
             if (fotosList && fotosList.length > 0) {
-                fotosHTML = '<div style="margin-top:12px; border-top:1px dashed #121212; padding-top:8px;">' +
+                fotosHTML = '<div style="margin-top:12px; border-top:1px dashed #ccc; padding-top:8px;">' +
                             '<strong>📸 Evidencia Fotográfica:</strong>' +
                             '<div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">';
                 fotosList.forEach(function(f) {
-                    fotosHTML += '<img src="' + f + '" style="width:80px; height:80px; object-fit:cover; border-radius:4px; border:1px solid #ccc;">';
+                    fotosHTML += '<img src="' + f + '" style="width:75px; height:75px; object-fit:cover; border-radius:4px; border:1px solid #ccc;">';
                 });
                 fotosHTML += '</div></div>';
             } else {
-                fotosHTML = '<div style="margin-top:12px; border-top:1px dashed #121212; padding-top:8px; font-size:0.8rem;"><strong>📸 Evidencia Fotográfica:</strong> Sin fotografías adjuntas.</div>';
+                fotosHTML = '<div style="margin-top:12px; border-top:1px dashed #ccc; padding-top:8px; font-size:0.75rem; color:#666;"><strong>📸 Evidencia Fotográfica:</strong> Sin fotografías adjuntas.</div>';
             }
 
-            return '<div class="ticket" style="font-family:sans-serif;">' +
-                '<h3 style="color:#ff4500; border-bottom:2px solid #ff4500;">FICHA TÉCNICA - MOTOR ZERO (KZ)</h3>' +
-                '<div class="ticket-row"><span>Orden:</span><span>' + ord.id + '</span></div>' +
-                '<div class="ticket-row"><span>Cliente:</span><span>' + ord.cliente + '</span></div>' +
-                '<div class="ticket-row"><span>Vehículo:</span><span>' + ord.auto + '</span></div>' +
-                '<hr style="margin:8px 0; border:none; border-top:1px dashed #121212;">' +
-                '<p style="font-size:0.8rem; margin-bottom:5px;"><strong>Checklist:</strong> Llaves(' + (chk.llaves?'Sí':'No') + ') Gato(' + (chk.gato?'Sí':'No') + ') Refacción(' + (chk.refaccion?'Sí':'No') + ') Estéreo(' + (chk.estereo?'Sí':'No') + ')</p>' +
+            return '<div class="sheet-agencia">' +
+                '<h3>FICHA TÉCNICA Y HOJA DE RECEPCIÓN</h3>' +
+                '<div style="text-align:center; font-size:0.7rem; color:#666; margin-bottom:10px;">CONCESIONARIA MOTOR ZERO (KZ)</div>' +
+                
+                '<div class="sheet-sec-header">1. Datos del Expediente y Vehículo</div>' +
+                '<div class="ticket-row"><span><strong>Orden:</strong> ' + ord.id + '</span><span><strong>Folio:</strong> ' + (folio || 'PENDIENTE') + '</span></div>' +
+                '<div class="ticket-row"><span><strong>Cliente:</strong> ' + ord.cliente + '</span><span><strong>Fecha:</strong> ' + (fechaStr || new Date().toLocaleDateString()) + '</span></div>' +
+                '<div class="ticket-row"><span><strong>Vehículo:</strong> ' + ord.auto + '</span><span><strong>Gasolina:</strong> ⛽ ' + gasNivel + '</span></div>' +
+
+                '<div class="sheet-sec-header">2. Inspección Visual de Carrocería</div>' +
+                '<div style="text-align:center; padding:8px; background:#f9f9f9; border:1px solid #e0e0e0; border-radius:4px;">' +
+                    '<svg width="280" height="130" viewBox="0 0 280 130" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;">' +
+                        '<g stroke="#333" stroke-width="1.5" fill="#e0e0e0" font-size="7" text-anchor="middle">' +
+                            '<!-- Vista Techo -->' +
+                            '<rect x="100" y="5" width="80" height="65" rx="10"/>' +
+                            '<line x1="100" y1="20" x2="180" y2="20" stroke="#999"/>' +
+                            '<line x1="100" y1="50" x2="180" y2="50" stroke="#999"/>' +
+                            '<text x="140" y="38" fill="#555">TECHO</text>' +
+
+                            '<!-- Frente -->' +
+                            '<rect x="15" y="5" width="70" height="30" rx="4"/>' +
+                            '<circle cx="28" cy="12" r="3" fill="#ffeb3b"/>' +
+                            '<circle cx="72" cy="12" r="3" fill="#ffeb3b"/>' +
+                            '<text x="50" y="22" fill="#555">FRENTE</text>' +
+
+                            '<!-- Trasera -->' +
+                            '<rect x="15" y="42" width="70" height="30" rx="4"/>' +
+                            '<circle cx="28" cy="64" r="3" fill="#f44336"/>' +
+                            '<circle cx="72" cy="64" r="3" fill="#f44336"/>' +
+                            '<text x="50" y="59" fill="#555">TRASERA</text>' +
+
+                            '<!-- Lateral Izquierdo -->' +
+                            '<rect x="15" y="80" width="115" height="28" rx="6"/>' +
+                            '<circle cx="35" cy="108" r="6" fill="#444"/>' +
+                            '<circle cx="110" cy="108" r="6" fill="#444"/>' +
+                            '<text x="72" y="96" fill="#555">LAT. IZQUIERDO</text>' +
+
+                            '<!-- Lateral Derecho -->' +
+                            '<rect x="150" y="80" width="115" height="28" rx="6"/>' +
+                            '<circle cx="170" cy="108" r="6" fill="#444"/>' +
+                            '<circle cx="245" cy="108" r="6" fill="#444"/>' +
+                            '<text x="207" y="96" fill="#555">LAT. DERECHO</text>' +
+                        '</g>' +
+                    '</svg>' +
+                '</div>' +
+
+                '<div class="sheet-sec-header">3. Inventario de Recepción</div>' +
+                '<table class="sheet-check-table">' +
+                    '<tr>' +
+                        '<td>🔑 Llaves: <strong>' + (chk.llaves?'Sí':'No') + '</strong></td>' +
+                        '<td>🛞 Refacción: <strong>' + (chk.refaccion?'Sí':'No') + '</strong></td>' +
+                        '<td>🪞 Espejos: <strong>' + (chk.espejos?'Sí':'No') + '</strong></td>' +
+                    '</tr>' +
+                    '<tr>' +
+                        '<td>📻 Estéreo: <strong>' + (chk.estereo?'Sí':'No') + '</strong></td>' +
+                        '<td>🏗️ Gato / Herram.: <strong>' + (chk.gato?'Sí':'No') + '</strong></td>' +
+                        '<td>🪟 Vidrios: <strong>' + (chk.vidrios?'Sí':'No') + '</strong></td>' +
+                    '</tr>' +
+                    '<tr>' +
+                        '<td>🧼 Tapetes: <strong>' + (chk.tapetes?'Sí':'No') + '</strong></td>' +
+                        '<td>🧯 Extintor: <strong>' + (chk.extintor?'Sí':'No') + '</strong></td>' +
+                        '<td>⛽ Tapa Gas: <strong>' + (chk.tapa?'Sí':'No') + '</strong></td>' +
+                    '</tr>' +
+                '</table>' +
+
                 fotosHTML + 
+
+                '<div style="margin-top:15px; border-top:1px solid #ddd; padding-top:10px; text-align:center; font-size:0.7rem; color:#555;">' +
+                    '<em>El cliente autoriza las pruebas necesarias en vehículo para el diagnóstico técnico.</em>' +
+                '</div>' +
+
                 '<div class="qr-box" id="' + qrId + '" data-url="' + generarUrlQrDigital(ord, folio, fechaStr, 'ficha') + '"></div>' +
             '</div>';
         }
@@ -511,7 +595,7 @@
                     var url = el.getAttribute('data-url') || textoFallback;
                     el.innerHTML = '';
                     try {
-                        new QRCode(el, { text: url, width: 160, height: 160, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.L });
+                        new QRCode(el, { text: url, width: 150, height: 150, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.L });
                     } catch(e) { console.log(e); }
                 }
             }, 150);
@@ -578,7 +662,6 @@
 
         function cerrarModal() { document.getElementById('modal-pago').classList.remove('active'); }
 
-        // MÉTODOS DEL PORTAL CLIENTE (KIOSKO)
         function abrirPortalCliente() {
             var adminUI = document.getElementById('admin-ui');
             if(adminUI) adminUI.style.display = 'none';
@@ -636,7 +719,7 @@
             
             var inputInvId = document.getElementById('inv-id');
             if (inputInvId) inputInvId.value = generarNuevoIdRefaccion();
-
+            
             document.getElementById('tabla-inventario').innerHTML = inventario.map(function(i) {
                 return '<tr><td><strong>' + i.id + '</strong></td><td>' + i.nombre + '</td><td>$' + i.precio.toFixed(2) + '</td><td style="color:' + (i.stock < 3 ? '#ff4500' : '#04d361') + '; font-weight:bold;">' + i.stock + '</td></tr>';
             }).join('');
@@ -657,7 +740,7 @@
             document.getElementById('tabla-tickets-guardados').innerHTML = tickets.map(function(t) {
                 return '<tr><td><strong>' + t.folio + '</strong></td><td>' + t.fecha + '</td><td>' + t.cliente + '</td><td>' + t.auto + '</td><td>' + t.refaccionesTexto + '</td><td style="color:var(--success); font-weight:bold;">$' + t.total.toFixed(2) + '</td><td><button class="btn btn-secondary" style="padding:4px 8px; font-size:0.8rem;" onclick="verDetalleTicket(\'' + t.folio + '\')">Ver</button></td></tr>';
             }).join('');
-
+            
             document.getElementById('corte-cant-servicios').innerText = tickets.length;
             var ingRef = tickets.reduce(function(acc, t) { return acc + (t.subtotalRef || 0); }, 0);
             var ingMano = tickets.reduce(function(acc, t) { return acc + (t.mano || 0); }, 0);
@@ -668,15 +751,12 @@
 
         window.addEventListener('DOMContentLoaded', function() {
             render();
-
             var params = new URLSearchParams(window.location.search);
             var tipoParam = params.get('t'); 
-
             if (tipoParam) {
                 var adminUI = document.getElementById('admin-ui');
                 if (adminUI) adminUI.remove(); 
                 document.body.style.background = '#121214';
-
                 var fParam = params.get('f') || '';
                 var k = params.get('k') || '0000';
                 var pStr = params.get('p') || '';
@@ -698,7 +778,6 @@
                     checklist: { llaves: k[0]==='1', gato: k[1]==='1', refaccion: k[2]==='1', estereo: k[3]==='1' },
                     fotos: []
                 };
-
                 var contenedorMovil = document.getElementById('contenedor-comprobante-movil');
                 var fechaD = decodeURIComponent(params.get('d') || '');
                 
@@ -710,7 +789,6 @@
                 
                 var qrEnMovil = contenedorMovil.querySelector('.qr-box');
                 if (qrEnMovil) qrEnMovil.style.display = 'none';
-
                 document.getElementById('vista-cliente-qr').classList.add('active');
             }
         });

@@ -33,13 +33,13 @@
         .field label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 6px; }
         .field input, .field select, .field textarea { width: 100%; padding: 10px 12px; background: var(--bg-body); border: 1px solid var(--border); color: var(--text); border-radius: 4px; }
         
-        .autocomplete-suggestions { position: absolute; border: 1px solid var(--border); border-top: none; z-index: 99; top: 100%; left: 0; right: 0; background: #16161a; max-height: 150px; overflow-y: auto; border-radius: 0 0 4px 4px; }
-        .autocomplete-suggestion { padding: 8px 10px; cursor: pointer; font-size: 0.85rem; color: var(--text); }
+        .autocomplete-suggestions { position: absolute; border: 1px solid var(--accent); border-top: none; z-index: 99; top: 100%; left: 0; right: 0; background: #16161a; max-height: 180px; overflow-y: auto; border-radius: 0 0 6px 6px; box-shadow: 0 8px 20px rgba(0,0,0,0.6); }
+        .autocomplete-suggestion { padding: 10px 12px; cursor: pointer; font-size: 0.85rem; color: var(--text); border-bottom: 1px solid #222; }
         .autocomplete-suggestion:hover { background: var(--accent); color: #fff; }
         
-        .client-memory-card { background: rgba(4, 211, 97, 0.1); border: 1px solid var(--success); padding: 10px 12px; border-radius: 6px; margin-bottom: 15px; display: none; }
+        .client-memory-card { background: rgba(4, 211, 97, 0.1); border: 1px solid var(--success); padding: 12px; border-radius: 6px; margin-bottom: 15px; display: none; }
         .client-memory-card p { font-size: 0.82rem; color: var(--success); margin-bottom: 8px; }
-        .client-memory-btns { display: flex; gap: 8px; }
+        .client-memory-btns { display: flex; gap: 6px; flex-wrap: wrap; }
 
         .service-options-box { background: #16161a; border: 1px solid var(--border); padding: 14px; border-radius: 6px; margin-bottom: 16px; }
         .service-options-box h3 { font-size: 0.9rem; color: var(--accent); margin-bottom: 10px; }
@@ -159,7 +159,7 @@
                 <form onsubmit="guardarOrden(event)">
                     <div class="field"><label>ID Orden</label><input type="text" id="ord-id" required readonly style="background:#16161a; color:var(--success); font-weight:bold;"></div>
                     
-                    <!-- CLIENTE Y MEMORIA -->
+                    <!-- CLIENTE Y MEMORIA CON OPCIONES MULTIAUTO -->
                     <div class="field">
                         <label>Cliente</label>
                         <input type="text" id="ord-cliente" required placeholder="Escribe el nombre del cliente..." oninput="manejarAutocompleteCliente()">
@@ -170,7 +170,15 @@
                         <p id="memoria-cliente-texto"></p>
                         <div class="client-memory-btns">
                             <button type="button" class="btn-action btn-action-success" onclick="usarUltimoVehiculoCliente()">🚗 Usar este auto</button>
+                            <button type="button" class="btn-action btn-action-secondary" onclick="mostrarSelectorAutosCliente()">📋 Elegir de sus autos</button>
                             <button type="button" class="btn-action btn-action-secondary" onclick="agregarNuevoVehiculoCliente()">➕ Agregar otro auto</button>
+                        </div>
+                        <div id="sec-selector-autos-cliente" style="display:none; margin-top:10px; border-top:1px dashed var(--success); padding-top:8px;">
+                            <label style="font-size:0.8rem; color:var(--success); display:block; margin-bottom:4px;">Vehículos registrados de este cliente:</label>
+                            <div style="display:flex; gap:6px;">
+                                <select id="select-autos-cliente" style="flex:1; padding:6px; font-size:0.85rem; background:#111; color:#fff; border:1px solid var(--border); border-radius:4px;"></select>
+                                <button type="button" class="btn-action btn-action-success" onclick="confirmarSeleccionAutoLista()">Cargar</button>
+                            </div>
                         </div>
                     </div>
 
@@ -292,18 +300,19 @@
             </div>
         </div>
 
-        <!-- MÓDULO: HISTORIAL DE CLIENTES -->
+        <!-- MÓDULO: HISTORIAL DE CLIENTES CON AUTOCOMPLETADO PREDICTIVO -->
         <div id="tab-clientes" class="tab-content full-width">
             <div class="card">
                 <h2>👥 Directorio y Expediente de Clientes</h2>
                 <p style="font-size:0.85rem; color:var(--muted); margin-bottom:15px;">
-                    Busca a cualquier cliente por su <strong>ID de Cliente</strong> o <strong>Nombre</strong>. Presiona <strong>Enter</strong> para abrir el expediente de inmediato.
+                    Busca a cualquier cliente por su <strong>ID de Cliente</strong> o <strong>Nombre</strong>. Puedes seleccionar las sugerencias emergentes o presionar <strong>Enter</strong> para abrir su expediente.
                     <em>Nota: Se otorga 1 sello (⭐) por cada servicio con compra igual o mayor a $5,000.00 MXN.</em>
                 </p>
 
-                <div class="field" style="max-width: 420px; margin-bottom: 20px;">
-                    <label>🔍 Buscar por ID de Cliente o Nombre (Presiona Enter para abrir):</label>
-                    <input type="text" id="buscar-cliente-input" placeholder="Ej. CLI-1001 o Matrix..." oninput="filtrarTablaClientes()" onkeydown="manejarKeydownBuscadorCliente(event)">
+                <div class="field" style="max-width: 450px; margin-bottom: 20px;">
+                    <label>🔍 Buscar por ID de Cliente o Nombre:</label>
+                    <input type="text" id="buscar-cliente-input" placeholder="Ej. CLI-2177 o Matrix..." oninput="manejarAutocompleteDirectorioCliente()" onkeydown="manejarKeydownBuscadorCliente(event)" autocomplete="off">
+                    <div id="sugerencias-directorio-cliente" class="autocomplete-suggestions"></div>
                 </div>
 
                 <table>
@@ -449,7 +458,7 @@
             return '<svg width="290" height="130" viewBox="0 0 290 130" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;"><g stroke="#333" stroke-width="1.5" fill="#f4f4f6" font-size="7" font-weight="bold" text-anchor="middle"><rect x="105" y="5" width="80" height="65" rx="12" fill="#e8e8ed" stroke="#333"/><line x1="105" y1="20" x2="185" y2="20" stroke="#888"/><line x1="105" y1="52" x2="185" y2="52" stroke="#888"/><text x="145" y="38" fill="#ff4500">SEDÁN - TECHO</text><rect x="15" y="5" width="75" height="30" rx="4" fill="#e8e8ed" stroke="#333"/><circle cx="28" cy="12" r="3.5" fill="#ffeb3b"/><circle cx="77" cy="12" r="3.5" fill="#ffeb3b"/><rect x="38" y="18" width="29" height="10" rx="2" fill="#333"/><text x="52.5" y="22" fill="#555">SEDÁN FRENTE</text><rect x="15" y="42" width="75" height="30" rx="4" fill="#e8e8ed" stroke="#333"/><circle cx="28" cy="64" r="3.5" fill="#f44336"/><circle cx="77" cy="64" r="3.5" fill="#f44336"/><text x="52.5" y="58" fill="#555">TRASERA SEDÁN</text><rect x="15" y="80" width="120" height="28" rx="6" fill="#e8e8ed" stroke="#333"/><path d="M 35 80 L 55 68 L 95 68 L 115 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="38" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><circle cx="112" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><text x="75" y="96" fill="#333">LAT. IZQUIERDO</text><rect x="155" y="80" width="120" height="28" rx="6" fill="#e8e8ed" stroke="#333"/><path d="M 175 80 L 195 68 L 235 68 L 255 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="178" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><circle cx="252" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><text x="215" y="96" fill="#333">LAT. DERECHO</text></g></svg>';
         }
 
-        /* AUTOCOMPLETADO Y MEMORIA DE CLIENTE */
+        /* AUTOCOMPLETADO Y MEMORIA DE CLIENTE EN TOMA DE ORDEN */
         function manejarAutocompleteCliente() {
             var val = document.getElementById('ord-cliente').value.trim().toLowerCase();
             var sugBox = document.getElementById('sugerencias-cliente');
@@ -469,7 +478,7 @@
                 encontrados.forEach(function(c) {
                     var div = document.createElement('div');
                     div.className = 'autocomplete-suggestion';
-                    div.innerText = '👤 ' + c.nombre + ' (' + (c.vehiculos[c.vehiculos.length - 1] || 'Sin auto') + ')';
+                    div.innerText = '👤 [' + (c.id || 'CLI-0000') + '] ' + c.nombre + ' (' + (c.vehiculos[c.vehiculos.length - 1] || 'Sin auto') + ')';
                     div.onclick = function() {
                         document.getElementById('ord-cliente').value = c.nombre;
                         sugBox.innerHTML = '';
@@ -480,14 +489,60 @@
             }
         }
 
+        /* AUTOCOMPLETADO PREDICTIVO EN EL DIRECTORIO DE CLIENTES */
+        function manejarAutocompleteDirectorioCliente() {
+            var input = document.getElementById('buscar-cliente-input');
+            if (!input) return;
+            var val = input.value.trim().toLowerCase();
+            var sugBox = document.getElementById('sugerencias-directorio-cliente');
+            if (!sugBox) return;
+            sugBox.innerHTML = '';
+
+            // Filtrar tabla en tiempo real mientras escribe
+            render();
+
+            if (!val) return;
+
+            var encontrados = clientes.filter(function(c) {
+                var idMatch = (c.id || '').toLowerCase().includes(val);
+                var nomMatch = (c.nombre || '').toLowerCase().includes(val);
+                return idMatch || nomMatch;
+            });
+
+            if (encontrados.length > 0) {
+                encontrados.forEach(function(c) {
+                    var div = document.createElement('div');
+                    div.className = 'autocomplete-suggestion';
+                    div.innerText = '👤 [' + (c.id || 'CLI-0000') + '] ' + c.nombre + ' — ' + (c.vehiculos[c.vehiculos.length - 1] || 'Sin auto');
+                    div.onclick = function() {
+                        input.value = c.nombre;
+                        sugBox.innerHTML = '';
+                        render();
+                        verExpedienteCliente(c.id);
+                    };
+                    sugBox.appendChild(div);
+                });
+            }
+        }
+
         function mostrarMemoriaCliente(cli) {
             clienteEncontradoMemoria = cli;
-            var ultimoAuto = cli.vehiculos && cli.vehiculos.length > 0 ? cli.vehiculos[cli.vehiculos.length - 1] : null;
+            var vehiculosList = cli.vehiculos || [];
+            var ultimoAuto = vehiculosList.length > 0 ? vehiculosList[vehiculosList.length - 1] : null;
             var card = document.getElementById('card-memoria-cliente');
             var txt = document.getElementById('memoria-cliente-texto');
+            var secSel = document.getElementById('sec-selector-autos-cliente');
+            var selAutos = document.getElementById('select-autos-cliente');
 
             if (ultimoAuto) {
-                txt.innerHTML = '✨ <strong>Cliente Frecuente Detectado (' + cli.id + '):</strong> Último auto registrado: <strong>' + ultimoAuto + '</strong>';
+                txt.innerHTML = '✨ <strong>Cliente Frecuente Detectado (' + cli.id + '):</strong> Último auto: <strong>' + ultimoAuto + '</strong>';
+                
+                var unicos = Array.from(new Set(vehiculosList));
+                selAutos.innerHTML = unicos.map(function(v) {
+                    return '<option value="' + v + '">' + v + '</option>';
+                }).join('');
+
+                secSel.style.display = 'none';
                 card.style.display = 'block';
             } else {
                 card.style.display = 'none';
@@ -497,9 +552,28 @@
         function usarUltimoVehiculoCliente() {
             if (!clienteEncontradoMemoria || !clienteEncontradoMemoria.vehiculos) return;
             var ultimoAuto = clienteEncontradoMemoria.vehiculos[clienteEncontradoMemoria.vehiculos.length - 1];
-            if (!ultimoAuto) return;
+            if (ultimoAuto) {
+                cargarCamposVehiculoStr(ultimoAuto);
+            }
+            document.getElementById('card-memoria-cliente').style.display = 'none';
+        }
 
-            var partes = ultimoAuto.split(' ');
+        function mostrarSelectorAutosCliente() {
+            var secSel = document.getElementById('sec-selector-autos-cliente');
+            if (secSel) {
+                secSel.style.display = (secSel.style.display === 'none') ? 'block' : 'none';
+            }
+        }
+
+        function confirmarSeleccionAutoLista() {
+            var selAutos = document.getElementById('select-autos-cliente');
+            if (!selAutos || !selAutos.value) return;
+            cargarCamposVehiculoStr(selAutos.value);
+            document.getElementById('card-memoria-cliente').style.display = 'none';
+        }
+
+        function cargarCamposVehiculoStr(autoStr) {
+            var partes = autoStr.trim().split(' ');
             if (partes.length >= 3) {
                 var anio = partes.pop();
                 var marca = partes.shift();
@@ -507,10 +581,15 @@
                 document.getElementById('ord-marca').value = marca;
                 document.getElementById('ord-modelo').value = modelo;
                 document.getElementById('ord-anio').value = anio;
+            } else if (partes.length === 2) {
+                document.getElementById('ord-marca').value = partes[0];
+                document.getElementById('ord-modelo').value = partes[1];
+                document.getElementById('ord-anio').value = '';
             } else {
-                document.getElementById('ord-marca').value = ultimoAuto;
+                document.getElementById('ord-marca').value = autoStr;
+                document.getElementById('ord-modelo').value = '';
+                document.getElementById('ord-anio').value = '';
             }
-            document.getElementById('card-memoria-cliente').style.display = 'none';
         }
 
         function agregarNuevoVehiculoCliente() {
@@ -687,9 +766,11 @@
                 var sm = document.getElementById('sugerencias-marca');
                 var smo = document.getElementById('sugerencias-modelo');
                 var sc = document.getElementById('sugerencias-cliente');
+                var sdc = document.getElementById('sugerencias-directorio-cliente');
                 if(sm) sm.innerHTML = '';
                 if(smo) smo.innerHTML = '';
                 if(sc) sc.innerHTML = '';
+                if(sdc) sdc.innerHTML = '';
             }
         });
 
@@ -970,7 +1051,7 @@
                 '<div class="sheet-sec-header">3. Inventario de Recepción</div>' +
                 '<table class="sheet-check-table">' +
                     '<tr><td>🔑 Llaves: <strong>' + (chk.llaves?'Sí':'No') + '</strong></td><td>🛞 Refacción: <strong>' + (chk.refaccion?'Sí':'No') + '</strong></td><td>🪞 Espejos: <strong>' + (chk.espejos?'Sí':'No') + '</strong></td></tr>' +
-                    '<tr><td>📻 Estéreo: <strong>' + (chk.estereo?'Sí':'No') + '</strong></td><td>🏗️ Gato / Herram.: <strong>' + (chk.gato?'Sí':'No') + '</strong></td><td>🪟 Vidrios: <strong>' + (chk.vidrios?'Sí':'No') + '</strong></td></tr>' +
+                    '<tr><td>📻 Estéreo: <strong>' + (chk.estereo?'Sí':'No') + '</strong></td><td>🏗️️ Gato / Herram.: <strong>' + (chk.gato?'Sí':'No') + '</strong></td><td>🪟 Vidrios: <strong>' + (chk.vidrios?'Sí':'No') + '</strong></td></tr>' +
                     '<tr><td>🧼 Tapetes: <strong>' + (chk.tapetes?'Sí':'No') + '</strong></td><td>🧯 Extintor: <strong>' + (chk.extintor?'Sí':'No') + '</strong></td><td>⛽ Tapa Gas: <strong>' + (chk.tapa?'Sí':'No') + '</strong></td></tr>' +
                 '</table>' +
 
@@ -1176,8 +1257,6 @@
             document.getElementById('modal-expediente-cliente').classList.remove('active');
         }
 
-        function filtrarTablaClientes() { render(); }
-
         function manejarKeydownBuscadorCliente(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -1369,5 +1448,4 @@
         });
     </script>
 </body>
-</html>
 </html>

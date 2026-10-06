@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motor Zero (KZ) - Comprobante Digital</title>
+    <title>Motor Zero (KZ) - Comprobante Digital & CRM</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --bg-body: #121214; --bg-card: #1e1e24; --accent: #ff4500;
             --text: #e1e1e6; --muted: #a8a8b3; --border: #29292e; --success: #04d361;
+            --gold: #ffa500;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
         body { background: var(--bg-body); color: var(--text); padding: 25px 20px; max-width: 1240px; margin: 0 auto; }
@@ -22,7 +23,7 @@
         .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
         
         .tab-content { display: none; }
-        .tab-content.active { display: grid; grid-template-columns: 420px 1fr; gap: 25px; animation: fadeIn 0.25s ease-out; }
+        .tab-content.active { display: grid; grid-template-columns: 450px 1fr; gap: 25px; animation: fadeIn 0.25s ease-out; }
         .tab-content.full-width.active { display: grid; grid-template-columns: 1fr; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -30,17 +31,27 @@
         .card h2 { font-size: 1.1rem; color: var(--accent); margin-bottom: 18px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
         .field { margin-bottom: 16px; position: relative; }
         .field label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 6px; }
-        .field input, .field select { width: 100%; padding: 10px 12px; background: var(--bg-body); border: 1px solid var(--border); color: var(--text); border-radius: 4px; }
+        .field input, .field select, .field textarea { width: 100%; padding: 10px 12px; background: var(--bg-body); border: 1px solid var(--border); color: var(--text); border-radius: 4px; }
         
-        /* AUTOCOMPLETADO PERSONALIZADO */
         .autocomplete-suggestions { position: absolute; border: 1px solid var(--border); border-top: none; z-index: 99; top: 100%; left: 0; right: 0; background: #16161a; max-height: 150px; overflow-y: auto; border-radius: 0 0 4px 4px; }
         .autocomplete-suggestion { padding: 8px 10px; cursor: pointer; font-size: 0.85rem; color: var(--text); }
         .autocomplete-suggestion:hover { background: var(--accent); color: #fff; }
         
+        .client-memory-card { background: rgba(4, 211, 97, 0.1); border: 1px solid var(--success); padding: 10px 12px; border-radius: 6px; margin-bottom: 15px; display: none; }
+        .client-memory-card p { font-size: 0.82rem; color: var(--success); margin-bottom: 8px; }
+        .client-memory-btns { display: flex; gap: 8px; }
+
+        .service-options-box { background: #16161a; border: 1px solid var(--border); padding: 14px; border-radius: 6px; margin-bottom: 16px; }
+        .service-options-box h3 { font-size: 0.9rem; color: var(--accent); margin-bottom: 10px; }
+
         .btn { width: 100%; padding: 11px; background: var(--accent); color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .btn-secondary { background: #323238; color: var(--text); margin-top: 5px; }
         .btn-success { background: var(--success); color: #000; }
         .btn-download { background: #007acc; color: #fff; font-weight: bold; }
+
+        .btn-action { width: auto !important; padding: 6px 12px !important; font-size: 0.8rem !important; margin: 2px !important; display: inline-block !important; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; }
+        .btn-action-success { background: var(--success); color: #000; }
+        .btn-action-secondary { background: #323238; color: var(--text); }
         
         table { width: 100%; border-collapse: collapse; }
         th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
@@ -59,7 +70,7 @@
         
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; padding: 20px; }
         .modal-overlay.active { display: flex; }
-        .modal-card { background: var(--bg-card); border: 1px solid var(--accent); padding: 25px; border-radius: 8px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .modal-card { background: var(--bg-card); border: 1px solid var(--accent); padding: 25px; border-radius: 8px; max-width: 650px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         
         .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 20px; }
         .metric-card { background: var(--bg-card); border: 1px solid var(--border); padding: 25px; border-radius: 8px; text-align: center; }
@@ -69,22 +80,27 @@
         .qr-box { display: flex; justify-content: center; align-items: center; margin: 18px auto; background: #ffffff; padding: 12px; border-radius: 4px; width: fit-content; }
         .qr-box img { display: block; margin: 0 auto; }
         
-        /* ESTILOS DE LA FICHA TÉCNICA FORMATO AGENCIA */
         .sheet-agencia { background: #ffffff; color: #111111; padding: 20px; border-radius: 6px; font-family: Arial, sans-serif; font-size: 0.8rem; text-align: left; }
         .sheet-agencia h3 { text-align: center; color: #ff4500; border-bottom: 2px solid #ff4500; padding-bottom: 6px; margin-bottom: 10px; }
         .sheet-sec-header { background: #f0f0f0; padding: 4px 8px; font-weight: bold; font-size: 0.75rem; border-left: 3px solid #ff4500; margin: 10px 0 6px 0; text-transform: uppercase; }
-        .sheet-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .sheet-check-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; margin-top: 5px; }
         .sheet-check-table td { padding: 3px 5px; border-bottom: 1px solid #eee; }
 
-        /* PANTALLAS EXCLUSIVAS (QR y PORTAL CLIENTE) */
+        .badge-sello { background: #2b2b36; border: 1px solid var(--gold); padding: 4px 10px; border-radius: 20px; color: var(--gold); font-size: 0.85rem; font-weight: bold; display: inline-block; }
+        .reward-box { background: rgba(4, 211, 97, 0.15); border: 1px solid var(--success); color: var(--success); padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; display: inline-block; }
+        .client-id-badge { background: #16161a; border: 1px solid var(--border); color: var(--accent); padding: 3px 8px; border-radius: 4px; font-family: monospace; font-weight: bold; font-size: 0.85rem; }
+        
+        .visit-item-card { background: #16161a; border: 1px solid var(--border); padding: 12px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .visit-item-info { font-size: 0.85rem; }
+        .visit-item-info strong { color: var(--text); }
+        .visit-item-btns { display: flex; gap: 6px; }
+
         #vista-cliente-qr, #portal-cliente { display: none; justify-content: center; align-items: center; padding: 20px; flex-direction: column; min-height: 80vh; }
         #vista-cliente-qr.active, #portal-cliente.active { display: flex; }
-        .client-box { max-width: 480px; width: 100%; background: #1e1e24; border: 1px solid var(--accent); padding: 25px; border-radius: 8px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .client-box { max-width: 500px; width: 100%; background: #1e1e24; border: 1px solid var(--accent); padding: 25px; border-radius: 8px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
-    <!-- VISTA AISLADA: CUANDO EL CLIENTE ESCANEA EL QR DESDE SU CASA -->
     <div id="vista-cliente-qr">
         <div class="client-box">
             <h2 style="color: var(--accent); margin-bottom: 8px;">🚗 Comprobante Digital</h2>
@@ -95,7 +111,6 @@
         </div>
     </div>
 
-    <!-- VISTA PORTAL CLIENTES: PARA BUSCAR TICKETS -->
     <div id="portal-cliente">
         <div class="client-box">
             <h2 style="color: var(--accent); margin-bottom: 8px;">🔍 Portal de Clientes</h2>
@@ -133,32 +148,69 @@
             <button class="tab-btn active" onclick="switchTab(this, 'recepcion')">🚗 Toma de Orden</button>
             <button class="tab-btn" onclick="switchTab(this, 'inventario')">📦 Inventario de Piezas</button>
             <button class="tab-btn" onclick="switchTab(this, 'pos')">💳 Sistema de Cobro</button>
-            <button class="tab-btn" onclick="switchTab(this, 'tickets')">📄 Historial de Ventas</button>
+            <button class="tab-btn" onclick="switchTab(this, 'clientes')">👥 Historial de Clientes</button>
             <button class="tab-btn" onclick="switchTab(this, 'corte')">📊 Corte de Caja</button>
         </div>
 
+        <!-- MÓDULO: TOMA DE ORDEN -->
         <div id="tab-recepcion" class="tab-content active">
             <div class="card">
                 <h2>Nueva Orden de Trabajo</h2>
                 <form onsubmit="guardarOrden(event)">
                     <div class="field"><label>ID Orden</label><input type="text" id="ord-id" required readonly style="background:#16161a; color:var(--success); font-weight:bold;"></div>
-                    <div class="field"><label>Cliente</label><input type="text" id="ord-cliente" required placeholder="Ej. Juan Pérez"></div>
                     
+                    <!-- CLIENTE Y MEMORIA -->
+                    <div class="field">
+                        <label>Cliente</label>
+                        <input type="text" id="ord-cliente" required placeholder="Escribe el nombre del cliente..." oninput="manejarAutocompleteCliente()">
+                        <div id="sugerencias-cliente" class="autocomplete-suggestions"></div>
+                    </div>
+
+                    <div id="card-memoria-cliente" class="client-memory-card">
+                        <p id="memoria-cliente-texto"></p>
+                        <div class="client-memory-btns">
+                            <button type="button" class="btn-action btn-action-success" onclick="usarUltimoVehiculoCliente()">🚗 Usar este auto</button>
+                            <button type="button" class="btn-action btn-action-secondary" onclick="agregarNuevoVehiculoCliente()">➕ Agregar otro auto</button>
+                        </div>
+                    </div>
+
+                    <!-- DATOS DEL VEHÍCULO -->
                     <div class="field">
                         <label>Marca</label>
-                        <input type="text" id="ord-marca" autocomplete="off" placeholder="Escribe y presiona Enter..." oninput="manejarInputAutocomplete('marca')" onkeydown="manejarKeydownAutocomplete(event, 'marca')">
+                        <input type="text" id="ord-marca" required autocomplete="off" placeholder="Escribe y presiona Enter..." oninput="manejarInputAutocomplete('marca')" onkeydown="manejarKeydownAutocomplete(event, 'marca')">
                         <div id="sugerencias-marca" class="autocomplete-suggestions"></div>
                     </div>
                     <div class="field">
                         <label>Modelo</label>
-                        <input type="text" id="ord-modelo" autocomplete="off" placeholder="Escribe y presiona Enter..." oninput="manejarInputAutocomplete('modelo')" onkeydown="manejarKeydownAutocomplete(event, 'modelo')">
+                        <input type="text" id="ord-modelo" required autocomplete="off" placeholder="Escribe y presiona Enter..." oninput="manejarInputAutocomplete('modelo')" onkeydown="manejarKeydownAutocomplete(event, 'modelo')">
                         <div id="sugerencias-modelo" class="autocomplete-suggestions"></div>
                     </div>
-                    
                     <div class="field"><label>Año</label><input type="number" id="ord-anio" min="1950" max="2028" required placeholder="Ej. 2001"></div>
-                    <div class="field"><label>Mano de Obra ($ MXN)</label><input type="number" step="0.01" id="ord-mano" min="0" required placeholder="0.00"></div>
-                    
+
+                    <!-- SELECCIÓN DE SERVICIO PRINCIPAL -->
+                    <div class="field" style="border-top:1px solid var(--border); padding-top:15px; margin-top:15px;">
+                        <label style="color:var(--accent); font-weight:bold; font-size:0.95rem;">🛠️ Servicio a Realizar</label>
+                        <select id="ord-tipo-servicio" onchange="cambiarOpcionesServicio()" required>
+                            <option value="General" selected>🔧 Servicio Mecánico General / Mantenimiento</option>
+                            <option value="Aceite">🛢️ Cambio de Aceite y Filtro</option>
+                            <option value="Balatas">🛑 Cambio de Balatas / Frenos</option>
+                            <option value="Diagnostico">🔍 Diagnóstico General / Falla</option>
+                            <option value="Llantas">🛞 Cambio de Llantas / Suspensión</option>
+                        </select>
+                    </div>
+
+                    <!-- OPCIONES DINÁMICAS DEL SERVICIO -->
+                    <div id="sec-opciones-servicio" class="service-options-box"></div>
+
+                    <!-- MANO DE OBRA CALCULADA -->
                     <div class="field">
+                        <label style="color:var(--success); font-weight:bold;">💰 Mano de Obra Estimada ($ MXN)</label>
+                        <input type="number" step="0.01" id="ord-mano" min="0" required placeholder="0.00">
+                        <small style="color:var(--muted); font-size:0.75rem;">Calculada automáticamente según el servicio. Puedes ajustarla manualmente.</small>
+                    </div>
+
+                    <!-- SECCIÓN FIJA: GASOLINA, CHECKLIST Y FOTOS -->
+                    <div class="field" style="border-top:1px solid var(--border); padding-top:15px; margin-top:15px;">
                         <label style="color:var(--accent); font-weight:bold;">⛽ Nivel de Gasolina</label>
                         <select id="ord-gas">
                             <option value="1/4">1/4 Tanque</option>
@@ -185,48 +237,46 @@
                     </div>
 
                     <div class="field">
-                        <label style="color:var(--accent); font-weight:bold;">📸 Fotos (Se guardan en el sistema)</label>
+                        <label style="color:var(--accent); font-weight:bold;">📸 Evidencia Fotográfica</label>
                         <input type="file" id="ord-fotos" accept="image/*" capture="environment" multiple onchange="procesarFotos(event)">
                         <div id="preview-fotos" class="foto-preview-grid"></div>
                     </div>
 
-                    <hr style="border-color: var(--border); margin: 20px 0;">
-                    <div class="field"><label>Refacción</label><select id="ord-ref-select"></select></div>
-                    <div class="field"><label>Cantidad</label><input type="number" id="ord-cant" value="1" min="1"></div>
-                    <button type="button" class="btn btn-secondary" onclick="agregarPiezaTemp()">+ Añadir Pieza</button>
-                    <div class="item-list" id="lista-piezas-temp" style="margin-top: 10px;"><p style="font-size:0.8rem; color:var(--muted);">Sin piezas.</p></div>
-                    <button type="submit" class="btn" style="margin-top: 20px;">Registrar Orden</button>
+                    <button type="submit" class="btn" style="margin-top: 20px;">Registrar Orden de Trabajo</button>
                 </form>
             </div>
+
             <div class="card">
                 <h2>Vehículos en Taller</h2>
                 <table>
-                    <thead><tr><th>ID</th><th>Cliente</th><th>Auto</th><th>Refacciones</th><th>Mano Obra</th></tr></thead>
+                    <thead><tr><th>ID</th><th>Cliente</th><th>Auto</th><th>Servicio y Detalles</th><th>Mano Obra</th></tr></thead>
                     <tbody id="tabla-ordenes"></tbody>
                 </table>
             </div>
         </div>
 
+        <!-- MÓDULO: INVENTARIO DE PIEZAS -->
         <div id="tab-inventario" class="tab-content">
             <div class="card">
-                <h2>Registrar Refacción</h2>
+                <h2>Registrar Nueva Refacción</h2>
                 <form onsubmit="guardarRefaccion(event)">
                     <div class="field"><label>Código ID (Automático)</label><input type="text" id="inv-id" required readonly style="background:#16161a; color:var(--success); font-weight:bold;"></div>
-                    <div class="field"><label>Nombre</label><input type="text" id="inv-nombre" required></div>
-                    <div class="field"><label>Precio ($ MXN)</label><input type="number" step="0.01" id="inv-precio" min="0" required></div>
-                    <div class="field"><label>Stock</label><input type="number" id="inv-stock" min="0" required></div>
-                    <button type="submit" class="btn">Guardar</button>
+                    <div class="field"><label>Nombre</label><input type="text" id="inv-nombre" required placeholder="Ej. Balatas Delanteras"></div>
+                    <div class="field"><label>Precio ($ MXN)</label><input type="number" step="0.01" id="inv-precio" min="0" required placeholder="0.00"></div>
+                    <div class="field"><label>Stock Inicial</label><input type="number" id="inv-stock" min="0" required placeholder="0"></div>
+                    <button type="submit" class="btn">Guardar Refacción</button>
                 </form>
             </div>
             <div class="card">
-                <h2>Catálogo</h2>
+                <h2>Catálogo de Piezas</h2>
                 <table>
-                    <thead><tr><th>ID</th><th>Descripción</th><th>Precio</th><th>Stock</th></tr></thead>
+                    <thead><tr><th>ID</th><th>Descripción</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr></thead>
                     <tbody id="tabla-inventario"></tbody>
                 </table>
             </div>
         </div>
 
+        <!-- MÓDULO: SISTEMA DE COBRO POS -->
         <div id="tab-pos" class="tab-content">
             <div class="card">
                 <h2>Cobro de Servicio</h2>
@@ -242,16 +292,39 @@
             </div>
         </div>
 
-        <div id="tab-tickets" class="tab-content full-width">
+        <!-- MÓDULO: HISTORIAL DE CLIENTES -->
+        <div id="tab-clientes" class="tab-content full-width">
             <div class="card">
-                <h2>Historial de Ventas</h2>
+                <h2>👥 Directorio y Expediente de Clientes</h2>
+                <p style="font-size:0.85rem; color:var(--muted); margin-bottom:15px;">
+                    Busca a cualquier cliente por su <strong>ID de Cliente</strong> o <strong>Nombre</strong>. Presiona <strong>Enter</strong> para abrir el expediente de inmediato.
+                    <em>Nota: Se otorga 1 sello (⭐) por cada servicio con compra igual o mayor a $5,000.00 MXN.</em>
+                </p>
+
+                <div class="field" style="max-width: 420px; margin-bottom: 20px;">
+                    <label>🔍 Buscar por ID de Cliente o Nombre (Presiona Enter para abrir):</label>
+                    <input type="text" id="buscar-cliente-input" placeholder="Ej. CLI-1001 o Matrix..." oninput="filtrarTablaClientes()" onkeydown="manejarKeydownBuscadorCliente(event)">
+                </div>
+
                 <table>
-                    <thead><tr><th>Folio</th><th>Fecha</th><th>Cliente</th><th>Auto</th><th>Refacciones</th><th>Total</th><th>Acciones</th></tr></thead>
-                    <tbody id="tabla-tickets-guardados"></tbody>
+                    <thead>
+                        <tr>
+                            <th>ID Cliente</th>
+                            <th>Cliente</th>
+                            <th>Vehículos</th>
+                            <th>Visitas Totales</th>
+                            <th>Última Visita</th>
+                            <th>Tarjeta de Sellos</th>
+                            <th>Estado Recompensa</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-clientes"></tbody>
                 </table>
             </div>
         </div>
 
+        <!-- MÓDULO: CORTE DE CAJA -->
         <div id="tab-corte" class="tab-content full-width">
             <div class="card">
                 <h2>Corte de Caja</h2>
@@ -265,6 +338,41 @@
         </div>
     </div>
 
+    <!-- MODAL RESURTIR / EDITAR STOCK -->
+    <div id="modal-stock" class="modal-overlay">
+        <div class="modal-card" style="max-width:420px;">
+            <h2 id="modal-stock-titulo" style="color:var(--accent); margin-bottom:15px;">📦 Gestionar Pieza</h2>
+            <input type="hidden" id="modal-stock-id">
+            
+            <div id="sec-resurtir">
+                <p id="modal-stock-info" style="font-size:0.85rem; color:var(--muted); margin-bottom:15px;"></p>
+                <div class="field">
+                    <label>Unidades a AGREGAR al almacén:</label>
+                    <input type="number" id="input-resurtir-cant" min="1" value="5">
+                </div>
+                <button class="btn btn-success" onclick="confirmarResurtir()">➕ Confirmar Resurtido</button>
+            </div>
+
+            <div id="sec-editar" style="display:none;">
+                <div class="field">
+                    <label>Nombre / Descripción:</label>
+                    <input type="text" id="input-edit-nombre">
+                </div>
+                <div class="field">
+                    <label>Precio ($ MXN):</label>
+                    <input type="number" step="0.01" id="input-edit-precio">
+                </div>
+                <div class="field">
+                    <label>Stock Total en Almacén:</label>
+                    <input type="number" id="input-edit-stock">
+                </div>
+                <button class="btn btn-success" onclick="confirmarEditarRefaccion()">💾 Guardar Cambios</button>
+            </div>
+
+            <button class="btn btn-secondary" onclick="cerrarModalStock()" style="margin-top:10px;">Cancelar</button>
+        </div>
+    </div>
+
     <!-- MODAL COMPROBANTE ADMIN -->
     <div id="modal-pago" class="modal-overlay">
         <div class="modal-card">
@@ -275,7 +383,28 @@
             </div>
             <div id="modal-ticket-body" style="margin-bottom: 15px;"></div>
             <button class="btn btn-download" onclick="descargarImagen('modal-ticket-body', 'Archivo_MotorZero.png')">💾 Guardar Comprobante en Dispositivo</button>
-            <button class="btn btn-success" style="margin-top:10px;" onclick="cerrarModal()">Cerrar / Regresar</button>
+            <button id="btn-modal-pago-cerrar" class="btn btn-success" style="margin-top:10px;" onclick="cerrarModal()">Cerrar / Regresar</button>
+        </div>
+    </div>
+
+    <!-- MODAL EXPEDIENTE CLIENTE -->
+    <div id="modal-expediente-cliente" class="modal-overlay">
+        <div class="modal-card">
+            <h2 id="exp-cli-nombre" style="color: var(--accent); border-bottom:1px solid var(--border); padding-bottom:8px; margin-bottom: 12px;">Expediente de Cliente</h2>
+            
+            <div style="background:#16161a; padding:12px; border-radius:6px; border:1px solid var(--border); margin-bottom:15px; font-size:0.85rem;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                    <span><strong>ID Cliente:</strong> <span id="exp-cli-id" class="client-id-badge">CLI-0000</span></span>
+                    <span><strong>Total Visitas:</strong> <span id="exp-cli-visitas" style="color:var(--success); font-weight:bold;">0</span></span>
+                </div>
+                <div style="margin-bottom:6px;"><strong>Vehículos Registrados:</strong> <span id="exp-cli-autos" style="color:var(--muted);">-</span></div>
+                <div><strong>Estado de Programa de Sellos:</strong> <span id="exp-cli-sellos-badge"></span></div>
+            </div>
+
+            <h3 style="font-size:0.95rem; color:var(--text); margin-bottom:10px;">📋 Historial Cronológico de Visitas:</h3>
+            <div id="exp-cli-lista-visitas" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;"></div>
+
+            <button class="btn btn-secondary" onclick="cerrarExpedienteModal()">Cerrar Expediente</button>
         </div>
     </div>
 
@@ -292,14 +421,223 @@
         };
         var inventario = JSON.parse(localStorage.getItem('mz_inv')) || [
             { id: 'REF-001', nombre: 'Carburador Holley', precio: 1200.00, stock: 5 },
-            { id: 'REF-002', nombre: 'Bomba de Agua', precio: 650.00, stock: 8 }
+            { id: 'REF-002', nombre: 'Bomba de Agua', precio: 650.00, stock: 8 },
+            { id: 'REF-003', nombre: 'Filtro de Aceite', precio: 150.00, stock: 12 },
+            { id: 'REF-004', nombre: 'Bujía Iridium', precio: 180.00, stock: 24 }
         ];
         var ordenes = JSON.parse(localStorage.getItem('mz_ord')) || [];
         var tickets = JSON.parse(localStorage.getItem('mz_tickets')) || [];
+        var clientes = JSON.parse(localStorage.getItem('mz_cli')) || [];
         var piezasOrdenTemp = [];
         var fotosOrdenTemp = [];
         var ticketActualModal = null;
         var ticketActualKiosko = null;
+        var clienteOrigenExpedienteId = null;
+        var clienteEncontradoMemoria = null;
+
+        function obtenerSVGDiagrama(autoStr) {
+            var str = (autoStr || '').toLowerCase();
+            if (str.includes('np300') || str.includes('hilux') || str.includes('ranger') || str.includes('f-150') || str.includes('tacoma') || str.includes('silverado') || str.includes('pickup') || str.includes('ram')) {
+                return '<svg width="290" height="130" viewBox="0 0 290 130" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;"><g stroke="#333" stroke-width="1.5" fill="#f4f4f6" font-size="7" font-weight="bold" text-anchor="middle"><rect x="95" y="5" width="50" height="65" rx="6" fill="#e8e8ed" stroke="#333"/><rect x="145" y="5" width="45" height="65" rx="2" fill="#dcdce3" stroke="#333" stroke-dasharray="3 3"/><text x="120" y="38" fill="#ff4500">CABINA</text><text x="167" y="38" fill="#555" font-size="6">CAJA</text><rect x="10" y="5" width="75" height="32" rx="4" fill="#e8e8ed" stroke="#333"/><circle cx="24" cy="13" r="4" fill="#ffeb3b"/><circle cx="71" cy="13" r="4" fill="#ffeb3b"/><rect x="32" y="16" width="31" height="14" fill="#333"/><text x="47.5" y="23" fill="#fff" font-size="6">PICKUP FRENTE</text><rect x="10" y="42" width="75" height="32" rx="2" fill="#dcdce3" stroke="#333"/><line x1="15" y1="58" x2="80" y2="58" stroke="#333" stroke-width="2"/><circle cx="20" cy="65" r="3" fill="#f44336"/><circle cx="75" cy="65" r="3" fill="#f44336"/><text x="47.5" y="52" fill="#555">PORTÓN CAJA</text><rect x="10" y="80" width="60" height="30" rx="6" fill="#e8e8ed" stroke="#333"/><rect x="70" y="84" width="60" height="26" fill="#dcdce3" stroke="#333"/><path d="M 25 80 L 40 66 L 68 66 L 70 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="32" cy="110" r="7" fill="#222" stroke="#fff" stroke-width="1.5"/><circle cx="110" cy="110" r="7" fill="#222" stroke="#fff" stroke-width="1.5"/><text x="45" y="96" fill="#333">CABINA</text><text x="100" y="96" fill="#555">CAJA</text><rect x="150" y="84" width="60" height="26" fill="#dcdce3" stroke="#333"/><rect x="210" y="80" width="60" height="30" rx="6" fill="#e8e8ed" stroke="#333"/><path d="M 210 80 L 212 66 L 240 66 L 255 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="170" cy="110" r="7" fill="#222" stroke="#fff" stroke-width="1.5"/><circle cx="248" cy="110" r="7" fill="#222" stroke="#fff" stroke-width="1.5"/><text x="180" y="96" fill="#555">CAJA</text><text x="235" y="96" fill="#333">CABINA</text></g></svg>';
+            }
+            if (str.includes('x-trail') || str.includes('cr-v') || str.includes('rav4') || str.includes('creta') || str.includes('sportage') || str.includes('taos') || str.includes('kicks') || str.includes('hr-v') || str.includes('blazer') || str.includes('suv') || str.includes('tiguan') || str.includes('escape') || str.includes('ecosport')) {
+                return '<svg width="290" height="130" viewBox="0 0 290 130" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;"><g stroke="#333" stroke-width="1.5" fill="#f4f4f6" font-size="7" font-weight="bold" text-anchor="middle"><rect x="100" y="5" width="90" height="65" rx="8" fill="#e8e8ed" stroke="#333"/><line x1="97" y1="10" x2="193" y2="10" stroke="#ff4500" stroke-width="2"/><line x1="97" y1="60" x2="193" y2="60" stroke="#ff4500" stroke-width="2"/><text x="145" y="38" fill="#ff4500">SUV - TECHO RIELES</text><rect x="10" y="5" width="80" height="32" rx="5" fill="#e8e8ed" stroke="#333"/><circle cx="24" cy="13" r="4" fill="#ffeb3b"/><circle cx="76" cy="13" r="4" fill="#ffeb3b"/><text x="50" y="23" fill="#555">SUV FRENTE</text><rect x="10" y="42" width="80" height="32" rx="4" fill="#e8e8ed" stroke="#333"/><rect x="20" y="62" fill="#f44336" width="12" height="6" rx="1"/><rect x="68" y="62" fill="#f44336" width="12" height="6" rx="1"/><text x="50" y="58" fill="#555">TRASERA SUV</text><rect x="10" y="80" width="125" height="32" rx="7" fill="#e8e8ed" stroke="#333"/><path d="M 30 80 L 50 64 L 115 64 L 128 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="35" cy="112" r="7.5" fill="#222" stroke="#fff" stroke-width="1.5"/><circle cx="110" cy="112" r="7.5" fill="#222" stroke="#fff" stroke-width="1.5"/><text x="72" y="98" fill="#333">LAT. IZQ. (SUV)</text><rect x="150" y="80" width="125" height="32" rx="7" fill="#e8e8ed" stroke="#333"/><path d="M 170 80 L 190 64 L 255 64 L 268 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="175" cy="112" r="7.5" fill="#222" stroke="#fff" stroke-width="1.5"/><circle cx="250" cy="112" r="7.5" fill="#222" stroke="#fff" stroke-width="1.5"/><text x="212" y="98" fill="#333">LAT. DER. (SUV)</text></g></svg>';
+            }
+            if (str.includes('march') || str.includes('spark') || str.includes('chevy') || str.includes('golf') || str.includes('polo') || str.includes('fit') || str.includes('grand i10') || str.includes('yaris') || str.includes('rio') || str.includes('hatchback')) {
+                return '<svg width="290" height="130" viewBox="0 0 290 130" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;"><g stroke="#333" stroke-width="1.5" fill="#f4f4f6" font-size="7" font-weight="bold" text-anchor="middle"><rect x="105" y="5" width="70" height="65" rx="10" fill="#e8e8ed" stroke="#333"/><text x="140" y="40" fill="#ff4500">HATCHBACK</text><rect x="15" y="5" width="75" height="30" rx="6" fill="#e8e8ed" stroke="#333"/><circle cx="28" cy="12" r="3.5" fill="#ffeb3b"/><circle cx="77" cy="12" r="3.5" fill="#ffeb3b"/><text x="52.5" y="22" fill="#555">COMPACTO FRENTE</text><rect x="15" y="42" width="75" height="30" rx="3" fill="#e8e8ed" stroke="#333"/><circle cx="25" cy="64" r="3.5" fill="#f44336"/><circle cx="80" cy="64" r="3.5" fill="#f44336"/><text x="52.5" y="58" fill="#555">PORTÓN TRASERO</text><rect x="15" y="80" width="110" height="28" rx="6" fill="#e8e8ed" stroke="#333"/><path d="M 35 80 L 52 68 L 105 68 L 118 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="38" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><circle cx="102" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><text x="70" y="96" fill="#333">LAT. IZQ. (HATCH)</text><rect x="155" y="80" width="110" height="28" rx="6" fill="#e8e8ed" stroke="#333"/><path d="M 175 80 L 192 68 L 245 68 L 258 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="178" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><circle cx="242" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><text x="210" y="96" fill="#333">LAT. DER. (HATCH)</text></g></svg>';
+            }
+            return '<svg width="290" height="130" viewBox="0 0 290 130" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;"><g stroke="#333" stroke-width="1.5" fill="#f4f4f6" font-size="7" font-weight="bold" text-anchor="middle"><rect x="105" y="5" width="80" height="65" rx="12" fill="#e8e8ed" stroke="#333"/><line x1="105" y1="20" x2="185" y2="20" stroke="#888"/><line x1="105" y1="52" x2="185" y2="52" stroke="#888"/><text x="145" y="38" fill="#ff4500">SEDÁN - TECHO</text><rect x="15" y="5" width="75" height="30" rx="4" fill="#e8e8ed" stroke="#333"/><circle cx="28" cy="12" r="3.5" fill="#ffeb3b"/><circle cx="77" cy="12" r="3.5" fill="#ffeb3b"/><rect x="38" y="18" width="29" height="10" rx="2" fill="#333"/><text x="52.5" y="22" fill="#555">SEDÁN FRENTE</text><rect x="15" y="42" width="75" height="30" rx="4" fill="#e8e8ed" stroke="#333"/><circle cx="28" cy="64" r="3.5" fill="#f44336"/><circle cx="77" cy="64" r="3.5" fill="#f44336"/><text x="52.5" y="58" fill="#555">TRASERA SEDÁN</text><rect x="15" y="80" width="120" height="28" rx="6" fill="#e8e8ed" stroke="#333"/><path d="M 35 80 L 55 68 L 95 68 L 115 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="38" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><circle cx="112" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><text x="75" y="96" fill="#333">LAT. IZQUIERDO</text><rect x="155" y="80" width="120" height="28" rx="6" fill="#e8e8ed" stroke="#333"/><path d="M 175 80 L 195 68 L 235 68 L 255 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="178" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><circle cx="252" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><text x="215" y="96" fill="#333">LAT. DERECHO</text></g></svg>';
+        }
+
+        /* AUTOCOMPLETADO Y MEMORIA DE CLIENTE */
+        function manejarAutocompleteCliente() {
+            var val = document.getElementById('ord-cliente').value.trim().toLowerCase();
+            var sugBox = document.getElementById('sugerencias-cliente');
+            var cardMemoria = document.getElementById('card-memoria-cliente');
+            sugBox.innerHTML = '';
+
+            if (!val) {
+                cardMemoria.style.display = 'none';
+                return;
+            }
+
+            var encontrados = clientes.filter(function(c) {
+                return c.nombre.toLowerCase().includes(val) || (c.id && c.id.toLowerCase().includes(val));
+            });
+
+            if (encontrados.length > 0) {
+                encontrados.forEach(function(c) {
+                    var div = document.createElement('div');
+                    div.className = 'autocomplete-suggestion';
+                    div.innerText = '👤 ' + c.nombre + ' (' + (c.vehiculos[c.vehiculos.length - 1] || 'Sin auto') + ')';
+                    div.onclick = function() {
+                        document.getElementById('ord-cliente').value = c.nombre;
+                        sugBox.innerHTML = '';
+                        mostrarMemoriaCliente(c);
+                    };
+                    sugBox.appendChild(div);
+                });
+            }
+        }
+
+        function mostrarMemoriaCliente(cli) {
+            clienteEncontradoMemoria = cli;
+            var ultimoAuto = cli.vehiculos && cli.vehiculos.length > 0 ? cli.vehiculos[cli.vehiculos.length - 1] : null;
+            var card = document.getElementById('card-memoria-cliente');
+            var txt = document.getElementById('memoria-cliente-texto');
+
+            if (ultimoAuto) {
+                txt.innerHTML = '✨ <strong>Cliente Frecuente Detectado (' + cli.id + '):</strong> Último auto registrado: <strong>' + ultimoAuto + '</strong>';
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        }
+
+        function usarUltimoVehiculoCliente() {
+            if (!clienteEncontradoMemoria || !clienteEncontradoMemoria.vehiculos) return;
+            var ultimoAuto = clienteEncontradoMemoria.vehiculos[clienteEncontradoMemoria.vehiculos.length - 1];
+            if (!ultimoAuto) return;
+
+            var partes = ultimoAuto.split(' ');
+            if (partes.length >= 3) {
+                var anio = partes.pop();
+                var marca = partes.shift();
+                var modelo = partes.join(' ');
+                document.getElementById('ord-marca').value = marca;
+                document.getElementById('ord-modelo').value = modelo;
+                document.getElementById('ord-anio').value = anio;
+            } else {
+                document.getElementById('ord-marca').value = ultimoAuto;
+            }
+            document.getElementById('card-memoria-cliente').style.display = 'none';
+        }
+
+        function agregarNuevoVehiculoCliente() {
+            document.getElementById('ord-marca').value = '';
+            document.getElementById('ord-modelo').value = '';
+            document.getElementById('ord-anio').value = '';
+            document.getElementById('card-memoria-cliente').style.display = 'none';
+            document.getElementById('ord-marca').focus();
+        }
+
+        /* OPCIONES DINÁMICAS POR SERVICIO Y DESPLIEGUE DE REFACCIONES EN MECÁNICA GENERAL */
+        function cambiarOpcionesServicio() {
+            var tipo = document.getElementById('ord-tipo-servicio').value;
+            var box = document.getElementById('sec-opciones-servicio');
+            box.innerHTML = '';
+            var manoSugerida = 400;
+
+            if (tipo === 'General') {
+                manoSugerida = 400;
+                box.innerHTML = '<h3>🔧 Servicio Mecánico Personalizado</h3>' +
+                    '<div class="field"><label>Descripción del Trabajo Requerido:</label>' +
+                    '<textarea id="opt-general-desc" rows="2" placeholder="Detalla el servicio a realizar..."></textarea></div>' +
+                    '<div class="field" style="margin-top:12px;">' +
+                        '<label style="display:flex; align-items:center; gap:8px; cursor:pointer; color:var(--text); font-weight:bold;">' +
+                            '<input type="checkbox" id="chk-necesita-pieza" onchange="togglePiezasGeneral()" style="width:auto;">' +
+                            '<span>¿Se necesita alguna pieza / refacción?</span>' +
+                        '</label>' +
+                    '</div>' +
+                    '<div id="sec-piezas-general" style="display:none; background:#111115; border:1px solid var(--border); padding:12px; border-radius:6px; margin-top:10px;">' +
+                        '<p style="font-size:0.8rem; color:var(--muted); margin-bottom:10px;">Añade refacciones del catálogo para el servicio:</p>' +
+                        '<div class="field"><label>Refacción del Catálogo:</label><select id="ord-ref-select"></select></div>' +
+                        '<div class="field"><label>Cantidad:</label><input type="number" id="ord-cant" value="1" min="1"></div>' +
+                        '<button type="button" class="btn btn-secondary" onclick="agregarPiezaTemp()">+ Agregar Refacción al Servicio</button>' +
+                        '<div class="item-list" id="lista-piezas-temp" style="margin-top:10px;"><p style="font-size:0.8rem; color:var(--muted);">Sin refacciones adicionales.</p></div>' +
+                    '</div>';
+
+                setTimeout(actualizarSelectRefacciones, 50);
+
+            } else if (tipo === 'Aceite') {
+                manoSugerida = 250;
+                box.innerHTML = '<h3>🛢️ Especificaciones de Cambio de Aceite</h3>' +
+                    '<div class="field"><label>Selecciona el tipo de Aceite:</label>' +
+                    '<select id="opt-aceite-tipo">' +
+                        '<option value="Sintético 5W-30 ($480)">Sintético Premium 5W-30 ($480 MXN)</option>' +
+                        '<option value="Semi-Sintético 10W-30 ($380)">Semi-Sintético 10W-30 ($380 MXN)</option>' +
+                        '<option value="Multigrado 20W-50 ($290)">Multigrado Alto Kilometraje 20W-50 ($290 MXN)</option>' +
+                    '</select></div>' +
+                    '<div class="field"><label>Filtro de Aceite:</label>' +
+                    '<select id="opt-filtro-aceite">' +
+                        '<option value="Filtro Estándar ($120)">Filtro de Aceite Estándar ($120 MXN)</option>' +
+                        '<option value="Filtro Alto Rendimiento ($180)">Filtro Alto Rendimiento ($180 MXN)</option>' +
+                    '</select></div>';
+
+            } else if (tipo === 'Balatas') {
+                manoSugerida = 350;
+                box.innerHTML = '<h3>🛑 Especificaciones de Frenos / Balatas</h3>' +
+                    '<div class="field"><label>Calidad / Tipo de Balata:</label>' +
+                    '<select id="opt-balata-calidad">' +
+                        '<option value="Cerámica Premium ($850)">Cerámica Premium - Cero Ruido ($850 MXN)</option>' +
+                        '<option value="Semimetálica Standard ($520)">Semimetálica Heavy Duty ($520 MXN)</option>' +
+                        '<option value="Económica Orgánica ($350)">Económica Orgánica ($350 MXN)</option>' +
+                    '</select></div>' +
+                    '<div class="field"><label>Eje a Trabajar:</label>' +
+                    '<select id="opt-balata-eje" onchange="calcularManoObraSugerida()">' +
+                        '<option value="Eje Delantero">Delantero Únicamente</option>' +
+                        '<option value="Eje Trasero">Trasero Únicamente</option>' +
+                        '<option value="Ambos Ejes (4 ruedas)">Ambos Ejes (Delantero y Trasero + $200 Mano Obra)</option>' +
+                    '</select></div>';
+
+            } else if (tipo === 'Diagnostico') {
+                manoSugerida = 250;
+                box.innerHTML = '<h3>🔍 Diagnóstico Técnico y Síntomas</h3>' +
+                    '<div class="field"><label>Síntomas reportados por el cliente o código scanner OBD-II:</label>' +
+                    '<textarea id="opt-diag-sintomas" rows="3" placeholder="Ej. Ruido al frenar, luz Check Engine encendida, fuga de líquido..."></textarea></div>';
+
+            } else if (tipo === 'Llantas') {
+                manoSugerida = 200;
+                box.innerHTML = '<h3>🛞 Servicio de Llantas y Suspensión</h3>' +
+                    '<div class="field"><label>Posición de Llanta / Rueda:</label>' +
+                    '<select id="opt-llanta-pos">' +
+                        '<option value="Delantera Izquierda">Delantera Izquierda</option>' +
+                        '<option value="Delantera Derecha">Delantera Derecha</option>' +
+                        '<option value="Trasera Izquierda">Trasera Izquierda</option>' +
+                        '<option value="Trasera Derecha">Trasera Derecha</option>' +
+                        '<option value="Juego Completo (4 Llantas)">Juego Completo (4 Ruedas)</option>' +
+                    '</select></div>';
+            }
+
+            document.getElementById('ord-mano').value = manoSugerida.toFixed(2);
+        }
+
+        function togglePiezasGeneral() {
+            var chk = document.getElementById('chk-necesita-pieza');
+            var sec = document.getElementById('sec-piezas-general');
+            if (!sec) return;
+            if (chk && chk.checked) {
+                sec.style.display = 'block';
+                actualizarSelectRefacciones();
+            } else {
+                sec.style.display = 'none';
+                piezasOrdenTemp = [];
+                var cont = document.getElementById('lista-piezas-temp');
+                if (cont) cont.innerHTML = '<p style="font-size:0.8rem; color:var(--muted);">Sin refacciones adicionales.</p>';
+            }
+        }
+
+        function calcularManoObraSugerida() {
+            var tipo = document.getElementById('ord-tipo-servicio').value;
+            var mano = 400;
+            if (tipo === 'Aceite') mano = 250;
+            else if (tipo === 'Balatas') {
+                var eje = document.getElementById('opt-balata-eje') ? document.getElementById('opt-balata-eje').value : '';
+                mano = (eje.includes('Ambos')) ? 550 : 350;
+            } else if (tipo === 'Diagnostico') mano = 250;
+            else if (tipo === 'Llantas') mano = 200;
+
+            document.getElementById('ord-mano').value = mano.toFixed(2);
+        }
+
+        function actualizarSelectRefacciones() {
+            var sel = document.getElementById('ord-ref-select');
+            if (sel) {
+                sel.innerHTML = inventario.map(function(i) {
+                    return '<option value="' + i.id + '">' + i.nombre + ' ($' + i.precio.toFixed(2) + ' - Stock: ' + i.stock + ')</option>';
+                }).join('');
+            }
+        }
 
         function manejarInputAutocomplete(tipo) {
             var input = document.getElementById(tipo === 'marca' ? 'ord-marca' : 'ord-modelo');
@@ -329,6 +667,7 @@
                 sugBox.appendChild(div);
             });
         }
+
         function manejarKeydownAutocomplete(e, tipo) {
             var sugBox = document.getElementById(tipo === 'marca' ? 'sugerencias-marca' : 'sugerencias-modelo');
             var input = e.target;
@@ -342,21 +681,29 @@
                 if (tipo === 'marca') document.getElementById('ord-modelo').focus();
             }
         }
+
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.field')) {
                 var sm = document.getElementById('sugerencias-marca');
                 var smo = document.getElementById('sugerencias-modelo');
+                var sc = document.getElementById('sugerencias-cliente');
                 if(sm) sm.innerHTML = '';
                 if(smo) smo.innerHTML = '';
+                if(sc) sc.innerHTML = '';
             }
         });
+
         function guardarDatos() {
             localStorage.setItem('mz_inv', JSON.stringify(inventario));
             localStorage.setItem('mz_ord', JSON.stringify(ordenes));
             localStorage.setItem('mz_tickets', JSON.stringify(tickets));
+            localStorage.setItem('mz_cli', JSON.stringify(clientes));
         }
+
         function generarNuevoIdOrden() { return 'ORD-' + (ordenes.length + tickets.length + 101); }
         function generarNuevoIdRefaccion() { return 'REF-' + (inventario.length + 1).toString().padStart(3, '0'); }
+        function generarNuevoIdCliente() { return 'CLI-' + Math.floor(1000 + Math.random() * 9000); }
+
         function switchTab(btn, tabId) {
             document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
             document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
@@ -364,6 +711,7 @@
             document.getElementById('tab-' + tabId).classList.add('active');
             render();
         }
+
         function procesarFotos(e) {
             var files = Array.from(e.target.files);
             files.forEach(function(file) {
@@ -376,26 +724,93 @@
                 reader.readAsDataURL(file);
             });
         }
+
         function agregarPiezaTemp() {
-            var refId = document.getElementById('ord-ref-select').value;
+            var refSelect = document.getElementById('ord-ref-select');
+            if (!refSelect) return;
+            var refId = refSelect.value;
             var cant = parseInt(document.getElementById('ord-cant').value);
             if (cant < 0) { alert('Error: No puedes poner valores negativos en la cantidad.'); return; }
             var ref = inventario.find(function(r) { return r.id === refId; });
             if (!refId || cant <= 0 || !ref) return;
-            if (ref.stock < cant) { alert('Stock insuficiente.'); return; }
+            if (ref.stock < cant) { alert('Stock insuficiente en almacén.'); return; }
             piezasOrdenTemp.push({ refId: refId, cant: cant, nombre: ref.nombre, precio: ref.precio });
             var cont = document.getElementById('lista-piezas-temp');
             if (piezasOrdenTemp.length === 1) cont.innerHTML = '';
             cont.innerHTML += '<div style="font-size:0.85rem; border-bottom:1px solid #333; padding:4px 0;">' + ref.nombre + ' (x' + cant + ')</div>';
         }
+
         function guardarRefaccion(e) {
             e.preventDefault();
+            var nombre = document.getElementById('inv-nombre').value.trim();
             var precio = parseFloat(document.getElementById('inv-precio').value);
             var stock = parseInt(document.getElementById('inv-stock').value);
             if (precio < 0 || stock < 0) { alert('Error: No puedes poner valores negativos en Precio o Stock.'); return; }
-            inventario.push({ id: document.getElementById('inv-id').value, nombre: document.getElementById('inv-nombre').value, precio: precio, stock: stock });
-            guardarDatos(); e.target.reset(); render();
+
+            var piezaExistente = inventario.find(function(r) { return r.nombre.toLowerCase() === nombre.toLowerCase(); });
+            if (piezaExistente) {
+                piezaExistente.stock += stock;
+                piezaExistente.precio = precio;
+            } else {
+                inventario.push({ id: document.getElementById('inv-id').value, nombre: nombre, precio: precio, stock: stock });
+            }
+
+            guardarDatos(); 
+            e.target.reset(); 
+            render();
         }
+
+        function abrirResurtirModal(idRef) {
+            var ref = inventario.find(function(r) { return r.id === idRef; });
+            if (!ref) return;
+            document.getElementById('modal-stock-titulo').innerText = '📦 Resurtir: ' + ref.nombre;
+            document.getElementById('modal-stock-id').value = ref.id;
+            document.getElementById('modal-stock-info').innerText = 'Stock actual en almacén: ' + ref.stock + ' unidades.';
+            document.getElementById('input-resurtir-cant').value = '5';
+            document.getElementById('sec-resurtir').style.display = 'block';
+            document.getElementById('sec-editar').style.display = 'none';
+            document.getElementById('modal-stock').classList.add('active');
+        }
+
+        function confirmarResurtir() {
+            var idRef = document.getElementById('modal-stock-id').value;
+            var ref = inventario.find(function(r) { return r.id === idRef; });
+            var cant = parseInt(document.getElementById('input-resurtir-cant').value);
+            if (!ref || isNaN(cant) || cant <= 0) { alert('Ingresa una cantidad válida.'); return; }
+            ref.stock += cant;
+            guardarDatos();
+            cerrarModalStock();
+            render();
+        }
+
+        function abrirEditarModal(idRef) {
+            var ref = inventario.find(function(r) { return r.id === idRef; });
+            if (!ref) return;
+            document.getElementById('modal-stock-titulo').innerText = '✏️ Editar: ' + ref.nombre;
+            document.getElementById('modal-stock-id').value = ref.id;
+            document.getElementById('input-edit-nombre').value = ref.nombre;
+            document.getElementById('input-edit-precio').value = ref.precio;
+            document.getElementById('input-edit-stock').value = ref.stock;
+            document.getElementById('sec-resurtir').style.display = 'none';
+            document.getElementById('sec-editar').style.display = 'block';
+            document.getElementById('modal-stock').classList.add('active');
+        }
+
+        function confirmarEditarRefaccion() {
+            var idRef = document.getElementById('modal-stock-id').value;
+            var ref = inventario.find(function(r) { return r.id === idRef; });
+            if (!ref) return;
+            var nom = document.getElementById('input-edit-nombre').value.trim();
+            var pre = parseFloat(document.getElementById('input-edit-precio').value);
+            var stk = parseInt(document.getElementById('input-edit-stock').value);
+
+            if (!nom || isNaN(pre) || pre < 0 || isNaN(stk) || stk < 0) { alert('Ingresa valores válidos.'); return; }
+            ref.nombre = nom; ref.precio = pre; ref.stock = stk;
+            guardarDatos(); cerrarModalStock(); render();
+        }
+
+        function cerrarModalStock() { document.getElementById('modal-stock').classList.remove('active'); }
+
         function guardarOrden(e) {
             e.preventDefault();
             var mano = parseFloat(document.getElementById('ord-mano').value);
@@ -404,7 +819,24 @@
             var modelo = document.getElementById('ord-modelo').value.trim();
             var anio = document.getElementById('ord-anio').value;
             var gas = document.getElementById('ord-gas') ? document.getElementById('ord-gas').value : '1/2';
+            var tipoServicio = document.getElementById('ord-tipo-servicio').value;
             
+            var detallesServicio = tipoServicio;
+            if (tipoServicio === 'General') {
+                var desc = document.getElementById('opt-general-desc') ? document.getElementById('opt-general-desc').value.trim() : '';
+                detallesServicio = 'Mecánica General: ' + (desc || 'Mantenimiento');
+            } else if (tipoServicio === 'Aceite') {
+                var ac = document.getElementById('opt-aceite-tipo') ? document.getElementById('opt-aceite-tipo').value : '';
+                detallesServicio = 'Cambio Aceite (' + ac + ')';
+            } else if (tipoServicio === 'Balatas') {
+                var bal = document.getElementById('opt-balata-calidad') ? document.getElementById('opt-balata-calidad').value : '';
+                var eje = document.getElementById('opt-balata-eje') ? document.getElementById('opt-balata-eje').value : '';
+                detallesServicio = 'Frenos: ' + bal + ' [' + eje + ']';
+            } else if (tipoServicio === 'Diagnostico') {
+                var diag = document.getElementById('opt-diag-sintomas') ? document.getElementById('opt-diag-sintomas').value : '';
+                detallesServicio = 'Diagnóstico: ' + (diag || 'Revisión General');
+            }
+
             var chk = { 
                 llaves: document.getElementById('chk-llaves').checked, 
                 gato: document.getElementById('chk-gato').checked, 
@@ -421,17 +853,21 @@
                 id: document.getElementById('ord-id').value,
                 cliente: document.getElementById('ord-cliente').value,
                 auto: marca + ' ' + modelo + ' ' + anio,
+                servicioDetalle: detallesServicio,
                 mano: mano,
                 gasolina: gas,
                 checklist: chk,
                 fotos: fotosOrdenTemp.slice(),
                 piezas: piezasOrdenTemp.slice()
             });
+
             guardarDatos(); piezasOrdenTemp = []; fotosOrdenTemp = [];
-            document.getElementById('lista-piezas-temp').innerHTML = '<p style="font-size:0.8rem; color:var(--muted);">Sin piezas.</p>';
+            document.getElementById('card-memoria-cliente').style.display = 'none';
             document.getElementById('preview-fotos').innerHTML = '';
             e.target.reset(); render();
+            cambiarOpcionesServicio();
         }
+
         function generarUrlQrDigital(ord, folio, fechaStr, tipo) {
             var f = encodeURIComponent(folio || ord.id);
             var c = encodeURIComponent(ord.cliente);
@@ -450,6 +886,7 @@
             
             return 'https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?t=' + tipo + '&f=' + f + '&c=' + c + '&v=' + v + '&m=' + m + '&k=' + k + '&d=' + d + (pArr.length ? '&p=' + pArr.join('|') : '');
         }
+
         function actualizarTicket() {
             var ordId = document.getElementById('pos-select').value;
             var view = document.getElementById('ticket-view');
@@ -458,6 +895,7 @@
             view.innerHTML = generarHTMLTicket(ord, null, null);
             generarCodigoQR('qr-preview-box', generarUrlQrDigital(ord, null, null, 'ticket'));
         }
+
         function generarHTMLTicket(ord, folio, fechaStr) {
             var subtotalRef = 0;
             var qrId = folio ? 'qr-modal-box-' + Math.random().toString(36).substr(2, 5) : 'qr-preview-box';
@@ -479,6 +917,7 @@
                 '<div class="ticket-row"><span>Orden ID:</span><span>' + ord.id + '</span></div>' +
                 '<div class="ticket-row"><span>Cliente:</span><span>' + ord.cliente + '</span></div>' +
                 '<div class="ticket-row"><span>Vehículo:</span><span>' + ord.auto + '</span></div>' +
+                '<div class="ticket-row"><span>Servicio:</span><span>' + (ord.servicioDetalle || 'Mantenimiento General') + '</span></div>' +
                 '<hr style="margin:8px 0; border:none; border-top:1px dashed #121212;">' +
                 '<div class="ticket-row"><span>Mano de Obra:</span><span>$' + manoVal.toFixed(2) + '</span></div>' +
                 desglosePiezas +
@@ -487,12 +926,12 @@
             '</div>';
         }
 
-        // FICHA TÉCNICA CON DIAGRAMA DE AGENCIA, MEDIDOR DE GASOLINA E INVENTARIO COMPLETO
         function generarHTMLFichaTecnica(ord, folio, fechaStr) {
             var chk = ord.checklist || {};
             var qrId = folio ? 'qr-modal-box-' + Math.random().toString(36).substr(2, 5) : 'qr-preview-box';
             var fotosHTML = '';
             var gasNivel = ord.gasolina || '1/2';
+            var diagramaSvg = obtenerSVGDiagrama(ord.auto);
             
             var fotosList = ord.fotos || [];
             if (fotosList.length === 0 && folio) {
@@ -521,61 +960,18 @@
                 '<div class="ticket-row"><span><strong>Orden:</strong> ' + ord.id + '</span><span><strong>Folio:</strong> ' + (folio || 'PENDIENTE') + '</span></div>' +
                 '<div class="ticket-row"><span><strong>Cliente:</strong> ' + ord.cliente + '</span><span><strong>Fecha:</strong> ' + (fechaStr || new Date().toLocaleDateString()) + '</span></div>' +
                 '<div class="ticket-row"><span><strong>Vehículo:</strong> ' + ord.auto + '</span><span><strong>Gasolina:</strong> ⛽ ' + gasNivel + '</span></div>' +
+                '<div class="ticket-row"><span><strong>Trabajo Solicitado:</strong> ' + (ord.servicioDetalle || 'Mantenimiento General') + '</span></div>' +
 
                 '<div class="sheet-sec-header">2. Inspección Visual de Carrocería</div>' +
                 '<div style="text-align:center; padding:8px; background:#f9f9f9; border:1px solid #e0e0e0; border-radius:4px;">' +
-                    '<svg width="280" height="130" viewBox="0 0 280 130" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;">' +
-                        '<g stroke="#333" stroke-width="1.5" fill="#e0e0e0" font-size="7" text-anchor="middle">' +
-                            '<!-- Vista Techo -->' +
-                            '<rect x="100" y="5" width="80" height="65" rx="10"/>' +
-                            '<line x1="100" y1="20" x2="180" y2="20" stroke="#999"/>' +
-                            '<line x1="100" y1="50" x2="180" y2="50" stroke="#999"/>' +
-                            '<text x="140" y="38" fill="#555">TECHO</text>' +
-
-                            '<!-- Frente -->' +
-                            '<rect x="15" y="5" width="70" height="30" rx="4"/>' +
-                            '<circle cx="28" cy="12" r="3" fill="#ffeb3b"/>' +
-                            '<circle cx="72" cy="12" r="3" fill="#ffeb3b"/>' +
-                            '<text x="50" y="22" fill="#555">FRENTE</text>' +
-
-                            '<!-- Trasera -->' +
-                            '<rect x="15" y="42" width="70" height="30" rx="4"/>' +
-                            '<circle cx="28" cy="64" r="3" fill="#f44336"/>' +
-                            '<circle cx="72" cy="64" r="3" fill="#f44336"/>' +
-                            '<text x="50" y="59" fill="#555">TRASERA</text>' +
-
-                            '<!-- Lateral Izquierdo -->' +
-                            '<rect x="15" y="80" width="115" height="28" rx="6"/>' +
-                            '<circle cx="35" cy="108" r="6" fill="#444"/>' +
-                            '<circle cx="110" cy="108" r="6" fill="#444"/>' +
-                            '<text x="72" y="96" fill="#555">LAT. IZQUIERDO</text>' +
-
-                            '<!-- Lateral Derecho -->' +
-                            '<rect x="150" y="80" width="115" height="28" rx="6"/>' +
-                            '<circle cx="170" cy="108" r="6" fill="#444"/>' +
-                            '<circle cx="245" cy="108" r="6" fill="#444"/>' +
-                            '<text x="207" y="96" fill="#555">LAT. DERECHO</text>' +
-                        '</g>' +
-                    '</svg>' +
+                    diagramaSvg +
                 '</div>' +
 
                 '<div class="sheet-sec-header">3. Inventario de Recepción</div>' +
                 '<table class="sheet-check-table">' +
-                    '<tr>' +
-                        '<td>🔑 Llaves: <strong>' + (chk.llaves?'Sí':'No') + '</strong></td>' +
-                        '<td>🛞 Refacción: <strong>' + (chk.refaccion?'Sí':'No') + '</strong></td>' +
-                        '<td>🪞 Espejos: <strong>' + (chk.espejos?'Sí':'No') + '</strong></td>' +
-                    '</tr>' +
-                    '<tr>' +
-                        '<td>📻 Estéreo: <strong>' + (chk.estereo?'Sí':'No') + '</strong></td>' +
-                        '<td>🏗️ Gato / Herram.: <strong>' + (chk.gato?'Sí':'No') + '</strong></td>' +
-                        '<td>🪟 Vidrios: <strong>' + (chk.vidrios?'Sí':'No') + '</strong></td>' +
-                    '</tr>' +
-                    '<tr>' +
-                        '<td>🧼 Tapetes: <strong>' + (chk.tapetes?'Sí':'No') + '</strong></td>' +
-                        '<td>🧯 Extintor: <strong>' + (chk.extintor?'Sí':'No') + '</strong></td>' +
-                        '<td>⛽ Tapa Gas: <strong>' + (chk.tapa?'Sí':'No') + '</strong></td>' +
-                    '</tr>' +
+                    '<tr><td>🔑 Llaves: <strong>' + (chk.llaves?'Sí':'No') + '</strong></td><td>🛞 Refacción: <strong>' + (chk.refaccion?'Sí':'No') + '</strong></td><td>🪞 Espejos: <strong>' + (chk.espejos?'Sí':'No') + '</strong></td></tr>' +
+                    '<tr><td>📻 Estéreo: <strong>' + (chk.estereo?'Sí':'No') + '</strong></td><td>🏗️ Gato / Herram.: <strong>' + (chk.gato?'Sí':'No') + '</strong></td><td>🪟 Vidrios: <strong>' + (chk.vidrios?'Sí':'No') + '</strong></td></tr>' +
+                    '<tr><td>🧼 Tapetes: <strong>' + (chk.tapetes?'Sí':'No') + '</strong></td><td>🧯 Extintor: <strong>' + (chk.extintor?'Sí':'No') + '</strong></td><td>⛽ Tapa Gas: <strong>' + (chk.tapa?'Sí':'No') + '</strong></td></tr>' +
                 '</table>' +
 
                 fotosHTML + 
@@ -626,24 +1022,63 @@
             if (!ordId) return;
             var idx = ordenes.findIndex(function(o) { return o.id === ordId; });
             var ord = ordenes[idx];
+            
             ord.piezas.forEach(function(p) {
                 var ref = inventario.find(function(r) { return r.id === p.refId; });
                 if (ref) ref.stock -= p.cant;
             });
+
             var folio = 'TKT-' + Math.floor(1000 + Math.random() * 9000);
             var fechaStr = new Date().toLocaleString();
-            
+            var totalMonto = ord.mano + ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); }, 0);
+
             var ticketGuardado = {
                 folio: folio, fecha: fechaStr, cliente: ord.cliente, auto: ord.auto,
                 refaccionesTexto: ord.piezas.map(function(p) { return p.nombre + ' (x' + p.cant + ')'; }).join(', ') || '-',
                 subtotalRef: ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); },0), 
                 mano: ord.mano, 
-                total: ord.mano + ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); },0), 
+                total: totalMonto, 
                 ordOriginal: ord
             };
+
+            var nombreClean = ord.cliente.trim();
+            var cli = clientes.find(function(c) { return c.nombre.toLowerCase() === nombreClean.toLowerCase(); });
+
+            if (!cli) {
+                cli = {
+                    id: generarNuevoIdCliente(),
+                    nombre: nombreClean,
+                    vehiculos: [ord.auto],
+                    ultimaVisita: fechaStr,
+                    totalServicios: 0,
+                    sellosValidos: 0,
+                    historialTickets: []
+                };
+                clientes.push(cli);
+            }
+
+            if (!cli.vehiculos.includes(ord.auto)) {
+                cli.vehiculos.push(ord.auto);
+            }
+            cli.ultimaVisita = fechaStr;
+            cli.totalServicios += 1;
+            cli.historialTickets.push(ticketGuardado);
+
+            if (totalMonto >= 5000) {
+                cli.sellosValidos += 1;
+            }
+
             tickets.push(ticketGuardado);
             ordenes.splice(idx, 1);
             guardarDatos();
+
+            clienteOrigenExpedienteId = null;
+            var btnCerrar = document.getElementById('btn-modal-pago-cerrar');
+            if (btnCerrar) {
+                btnCerrar.innerText = 'Cerrar / Regresar';
+                btnCerrar.onclick = cerrarModal;
+            }
+            
             ticketActualModal = { ord: ord, folio: folio, fecha: fechaStr };
             document.getElementById('modal-titulo').innerText = 'Consulta de Expediente: ' + folio;
             cambiarVistaModal('ticket');
@@ -651,29 +1086,124 @@
             render();
         }
 
-        function verDetalleTicket(folio) {
+        function verDetalleTicket(folio, idClienteOrigen) {
             var t = tickets.find(function(item) { return item.folio === folio; });
             if (!t) return;
+
+            if (idClienteOrigen) {
+                clienteOrigenExpedienteId = idClienteOrigen;
+                cerrarExpedienteModal();
+            } else {
+                clienteOrigenExpedienteId = null;
+            }
+
             ticketActualModal = { ord: t.ordOriginal, folio: t.folio, fecha: t.fecha };
             document.getElementById('modal-titulo').innerText = 'Consulta de Expediente: ' + folio;
             cambiarVistaModal('ticket');
+
+            var btnCerrar = document.getElementById('btn-modal-pago-cerrar');
+            if (btnCerrar) {
+                if (clienteOrigenExpedienteId) {
+                    btnCerrar.innerText = '🔙 Regresar al Expediente';
+                    btnCerrar.onclick = regresarAExpedienteDesdeTicket;
+                } else {
+                    btnCerrar.innerText = 'Cerrar / Regresar';
+                    btnCerrar.onclick = cerrarModal;
+                }
+            }
+
             document.getElementById('modal-pago').classList.add('active');
         }
 
-        function cerrarModal() { document.getElementById('modal-pago').classList.remove('active'); }
+        function regresarAExpedienteDesdeTicket() {
+            var idTemp = clienteOrigenExpedienteId;
+            cerrarModal();
+            if (idTemp) {
+                verExpedienteCliente(idTemp);
+            }
+        }
+
+        function cerrarModal() { 
+            document.getElementById('modal-pago').classList.remove('active'); 
+            clienteOrigenExpedienteId = null;
+        }
+
+        function verExpedienteCliente(idCli) {
+            var cli = clientes.find(function(c) { return c.id === idCli; });
+            if (!cli) return;
+
+            document.getElementById('exp-cli-nombre').innerText = '👤 Expediente: ' + cli.nombre;
+            document.getElementById('exp-cli-id').innerText = cli.id;
+            document.getElementById('exp-cli-visitas').innerText = cli.totalServicios + ' visitas registradas';
+            document.getElementById('exp-cli-autos').innerText = cli.vehiculos.join(', ') || 'Sin vehículos';
+
+            var numSellosActuales = cli.sellosValidos % 5;
+            var premiosGanados = Math.floor(cli.sellosValidos / 5);
+            var sellosVisual = '';
+            for (var i = 0; i < 5; i++) {
+                sellosVisual += (i < numSellosActuales) ? '⭐ ' : '☆ ';
+            }
+
+            var badgeSellosHTML = '<span class="badge-sello">' + sellosVisual + ' (' + numSellosActuales + '/5)</span>';
+            if (premiosGanados > 0) {
+                badgeSellosHTML += ' <span class="reward-box">🎁 ' + premiosGanados + ' Servicio(s) Gratis Disponible(s)</span>';
+            }
+            document.getElementById('exp-cli-sellos-badge').innerHTML = badgeSellosHTML;
+
+            var contenedorVisitas = document.getElementById('exp-cli-lista-visitas');
+            if (!cli.historialTickets || cli.historialTickets.length === 0) {
+                contenedorVisitas.innerHTML = '<p style="color:var(--muted); font-size:0.85rem;">No hay visitas registradas aún.</p>';
+            } else {
+                contenedorVisitas.innerHTML = cli.historialTickets.map(function(t) {
+                    var esSello = (t.total >= 5000) ? ' <span style="color:var(--gold); font-size:0.75rem;">⭐ Compra ≥ $5,000</span>' : '';
+                    return '<div class="visit-item-card">' +
+                        '<div class="visit-item-info">' +
+                            '<strong>Folio: ' + t.folio + '</strong>' + esSello + '<br>' +
+                            '<small style="color:var(--muted);">' + t.fecha + ' | Auto: ' + t.auto + '</small><br>' +
+                            '<strong style="color:var(--success);">Monto Total: $' + t.total.toFixed(2) + ' MXN</strong>' +
+                        '</div>' +
+                        '<div class="visit-item-btns">' +
+                            '<button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="verDetalleTicket(\'' + t.folio + '\', \'' + cli.id + '\')">🎫 Ver Ticket / Ficha</button>' +
+                        '</div>' +
+                    '</div>';
+                }).join('');
+            }
+
+            document.getElementById('modal-expediente-cliente').classList.add('active');
+        }
+
+        function cerrarExpedienteModal() {
+            document.getElementById('modal-expediente-cliente').classList.remove('active');
+        }
+
+        function filtrarTablaClientes() { render(); }
+
+        function manejarKeydownBuscadorCliente(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                var filtroVal = e.target.value.trim().toLowerCase();
+                if (!filtroVal) return;
+
+                var clientesFiltrados = clientes.filter(function(c) {
+                    var idMatch = (c.id || '').toLowerCase().includes(filtroVal);
+                    var nomMatch = (c.nombre || '').toLowerCase().includes(filtroVal);
+                    return idMatch || nomMatch;
+                });
+
+                if (clientesFiltrados.length > 0) {
+                    verExpedienteCliente(clientesFiltrados[0].id);
+                }
+            }
+        }
 
         function abrirPortalCliente() {
             var adminUI = document.getElementById('admin-ui');
             if(adminUI) adminUI.style.display = 'none';
-            
             document.getElementById('portal-cliente').classList.add('active');
             document.getElementById('kiosko-resultado').style.display = 'none';
             document.getElementById('kiosko-busqueda').value = '';
-            
             var params = new URLSearchParams(window.location.search);
-            if (params.get('t')) {
-                document.getElementById('btn-regresar-taller').style.display = 'none';
-            }
+            if (params.get('t')) { document.getElementById('btn-regresar-taller').style.display = 'none'; }
         }
 
         function irAPortalDesdeQR() {
@@ -691,14 +1221,12 @@
             var query = document.getElementById('kiosko-busqueda').value.trim().toUpperCase();
             if (!query) return;
             var t = tickets.find(function(item) { return item.folio.toUpperCase() === query || item.ordOriginal.id.toUpperCase() === query; });
-            
             var resultDiv = document.getElementById('kiosko-resultado');
             if (!t) {
                 resultDiv.style.display = 'block';
                 document.getElementById('kiosko-ticket-body').innerHTML = '<p style="color:var(--accent);">No se encontró el folio u orden solicitada en este dispositivo.</p>';
                 return;
             }
-            
             ticketActualKiosko = { ord: t.ordOriginal, folio: t.folio, fecha: t.fecha };
             resultDiv.style.display = 'block';
             cambiarVistaKiosko('ticket');
@@ -721,25 +1249,71 @@
             if (inputInvId) inputInvId.value = generarNuevoIdRefaccion();
             
             document.getElementById('tabla-inventario').innerHTML = inventario.map(function(i) {
-                return '<tr><td><strong>' + i.id + '</strong></td><td>' + i.nombre + '</td><td>$' + i.precio.toFixed(2) + '</td><td style="color:' + (i.stock < 3 ? '#ff4500' : '#04d361') + '; font-weight:bold;">' + i.stock + '</td></tr>';
-            }).join('');
-            
-            document.getElementById('ord-ref-select').innerHTML = inventario.map(function(i) {
-                return '<option value="' + i.id + '">' + i.nombre + ' ($' + i.precio + ')</option>';
+                return '<tr>' +
+                    '<td><strong>' + i.id + '</strong></td>' +
+                    '<td>' + i.nombre + '</td>' +
+                    '<td>$' + i.precio.toFixed(2) + '</td>' +
+                    '<td style="color:' + (i.stock < 3 ? '#ff4500' : '#04d361') + '; font-weight:bold;">' + i.stock + '</td>' +
+                    '<td>' +
+                        '<button class="btn-action btn-action-success" onclick="abrirResurtirModal(\'' + i.id + '\')">➕ Resurtir</button>' +
+                        '<button class="btn-action btn-action-secondary" onclick="abrirEditarModal(\'' + i.id + '\')">✏️ Editar</button>' +
+                    '</td>' +
+                '</tr>';
             }).join('');
             
             document.getElementById('tabla-ordenes').innerHTML = ordenes.map(function(o) {
-                var pText = o.piezas.map(function(p) { return p.nombre + ' (x' + p.cant + ')'; }).join('<br>') || 'Solo Mano de Obra';
-                return '<tr><td><strong>' + o.id + '</strong></td><td>' + o.cliente + '</td><td>' + o.auto + '</td><td>' + pText + '</td><td>$' + o.mano.toFixed(2) + '</td></tr>';
+                return '<tr>' +
+                    '<td><strong>' + o.id + '</strong></td>' +
+                    '<td>' + o.cliente + '</td>' +
+                    '<td>' + o.auto + '</td>' +
+                    '<td><strong style="color:var(--accent);">' + (o.servicioDetalle || 'Mantenimiento') + '</strong></td>' +
+                    '<td>$' + o.mano.toFixed(2) + '</td>' +
+                '</tr>';
             }).join('');
             
             document.getElementById('pos-select').innerHTML = '<option value="">-- Seleccionar Orden --</option>' + ordenes.map(function(o) {
-                return '<option value="' + o.id + '">' + o.id + ' - ' + o.cliente + '</option>';
+                return '<option value="' + o.id + '">' + o.id + ' - ' + o.cliente + ' (' + o.auto + ')</option>';
             }).join('');
-            
-            document.getElementById('tabla-tickets-guardados').innerHTML = tickets.map(function(t) {
-                return '<tr><td><strong>' + t.folio + '</strong></td><td>' + t.fecha + '</td><td>' + t.cliente + '</td><td>' + t.auto + '</td><td>' + t.refaccionesTexto + '</td><td style="color:var(--success); font-weight:bold;">$' + t.total.toFixed(2) + '</td><td><button class="btn btn-secondary" style="padding:4px 8px; font-size:0.8rem;" onclick="verDetalleTicket(\'' + t.folio + '\')">Ver</button></td></tr>';
-            }).join('');
+
+            var tablaCli = document.getElementById('tabla-clientes');
+            if (tablaCli) {
+                var filtroVal = document.getElementById('buscar-cliente-input') ? document.getElementById('buscar-cliente-input').value.trim().toLowerCase() : '';
+                
+                var clientesFiltrados = clientes.filter(function(c) {
+                    var idMatch = (c.id || '').toLowerCase().includes(filtroVal);
+                    var nomMatch = (c.nombre || '').toLowerCase().includes(filtroVal);
+                    return idMatch || nomMatch;
+                });
+
+                if (clientesFiltrados.length === 0) {
+                    tablaCli.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--muted);">Sin coincidencias de clientes registrados.</td></tr>';
+                } else {
+                    tablaCli.innerHTML = clientesFiltrados.map(function(c) {
+                        var numSellosActuales = c.sellosValidos % 5;
+                        var premiosGanados = Math.floor(c.sellosValidos / 5);
+                        
+                        var sellosVisual = '';
+                        for (var i = 0; i < 5; i++) {
+                            sellosVisual += (i < numSellosActuales) ? '⭐ ' : '☆ ';
+                        }
+
+                        var estadoRecompensa = (premiosGanados > 0) 
+                            ? '<span style="color:var(--success); font-weight:bold;">🎁 ' + premiosGanados + ' Gratis</span>'
+                            : '<span style="color:var(--muted); font-size:0.8rem;">' + (5 - numSellosActuales) + ' sello(s) rest.</span>';
+
+                        return '<tr>' +
+                            '<td><span class="client-id-badge">' + (c.id || 'CLI-0000') + '</span></td>' +
+                            '<td><strong>' + c.nombre + '</strong></td>' +
+                            '<td>' + (c.vehiculos.join(', ') || 'Sin auto') + '</td>' +
+                            '<td style="text-align:center; font-weight:bold; color:var(--accent);">' + c.totalServicios + ' visita(s)</td>' +
+                            '<td style="font-size:0.8rem;">' + c.ultimaVisita + '</td>' +
+                            '<td><div class="badge-sello">' + sellosVisual + '</div></td>' +
+                            '<td>' + estadoRecompensa + '</td>' +
+                            '<td><button class="btn btn-secondary" style="padding:4px 10px; font-size:0.8rem;" onclick="verExpedienteCliente(\'' + c.id + '\')">🔍 Ver Expediente</button></td>' +
+                        '</tr>';
+                    }).join('');
+                }
+            }
             
             document.getElementById('corte-cant-servicios').innerText = tickets.length;
             var ingRef = tickets.reduce(function(acc, t) { return acc + (t.subtotalRef || 0); }, 0);
@@ -750,6 +1324,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', function() {
+            cambiarOpcionesServicio();
             render();
             var params = new URLSearchParams(window.location.search);
             var tipoParam = params.get('t'); 
@@ -794,4 +1369,5 @@
         });
     </script>
 </body>
+</html>
 </html>

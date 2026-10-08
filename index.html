@@ -838,7 +838,7 @@
             var tipo = document.getElementById('ord-tipo-servicio').value;
             var box = document.getElementById('sec-opciones-servicio');
             box.innerHTML = '';
-            box.style.display = 'block'; // ¡Importante para que se muestre!
+            box.style.display = 'block';
             var manoSugerida = 400;
             
             if (tipo === 'General') {
@@ -1273,8 +1273,10 @@
                 pArr.push(encodeURIComponent(nombre) + '*' + p.cant + '*' + (p.precio || ref.precio));
             });
             
-            var logoParam = logoBase64Global ? '&lg=' + encodeURIComponent(logoBase64Global) : '';
-            return 'https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?t=' + tipo + '&f=' + f + '&c=' + c + '&v=' + v + '&m=' + m + '&k=' + k + '&d=' + d + (pArr.length ? '&p=' + pArr.join('|') : '') + logoParam;
+            var desc = ord.descuentoPredeterminado || { aplicado: false, monto: 0, tipo: '' };
+            var discParams = desc.aplicado ? '&da=1&dm=' + desc.monto + '&dt=' + encodeURIComponent(desc.tipo) : '';
+
+            return 'https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?t=' + tipo + '&f=' + f + '&c=' + c + '&v=' + v + '&m=' + m + '&k=' + k + '&d=' + d + (pArr.length ? '&p=' + pArr.join('|') : '') + discParams;
         }
 
         function actualizarTicket() {
@@ -1744,9 +1746,12 @@
                 var fParam = params.get('f') || '';
                 var k = params.get('k') || '0000';
                 var pStr = params.get('p') || '';
-                var lgParam = params.get('lg') ? decodeURIComponent(params.get('lg')) : '';
-                if (lgParam) logoBase64Global = lgParam;
                 
+                var discApp = params.get('da') === '1';
+                var discAmt = parseFloat(params.get('dm')) || 0;
+                var discType = decodeURIComponent(params.get('dt') || '');
+                var descInfo = { aplicado: discApp, monto: discAmt, tipo: discType };
+
                 var piezasDec = [];
                 if (pStr) {
                     pStr.split('|').forEach(function(item) {
@@ -1762,7 +1767,8 @@
                     mano: parseFloat(params.get('m')) || 0,
                     piezas: piezasDec,
                     checklist: { llaves: k[0]==='1', gato: k[1]==='1', refaccion: k[2]==='1', estereo: k[3]==='1' },
-                    fotos: []
+                    fotos: [],
+                    descuentoPredeterminado: descInfo
                 };
                 var contenedorMovil = document.getElementById('contenedor-comprobante-movil');
                 var fechaD = decodeURIComponent(params.get('d') || '');
@@ -1770,7 +1776,7 @@
                 if (tipoParam === 'ficha') {
                     contenedorMovil.innerHTML = generarHTMLFichaTecnica(ordCliente, fParam, fechaD, logoBase64Global);
                 } else {
-                    contenedorMovil.innerHTML = generarHTMLTicket(ordCliente, fParam, fechaD, null, logoBase64Global);
+                    contenedorMovil.innerHTML = generarHTMLTicket(ordCliente, fParam, fechaD, descInfo, logoBase64Global);
                 }
                 
                 var qrEnMovil = contenedorMovil.querySelector('.qr-box');

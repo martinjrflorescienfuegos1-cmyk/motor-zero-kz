@@ -99,7 +99,6 @@
         
         .qr-box-img { display: block; margin: 12px auto; border: 2px solid #000; padding: 4px; background: #fff; border-radius: 4px; width: 140px; height: 140px; }
 
-        .badge-sello { background: #2b2b36; border: 1px solid var(--gold); padding: 4px 10px; border-radius: 20px; color: var(--gold); font-size: 0.85rem; font-weight: bold; display: inline-block; }
         .client-id-badge { background: #16161a; border: 1px solid var(--border); color: var(--accent); padding: 3px 8px; border-radius: 4px; font-family: monospace; font-weight: bold; font-size: 0.85rem; }
         
         .visit-item-card { background: #16161a; border: 1px solid var(--border); padding: 12px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
@@ -129,12 +128,10 @@
     <div id="toast-container"></div>
 
     <div id="vista-cliente-qr">
-        <div class="client-box">
-            <h2 style="color: var(--accent); margin-bottom: 8px;">🚗 Comprobante Digital</h2>
-            <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 20px;">Taller Mecánico Motor Zero (KZ)</p>
+        <div class="client-box" style="max-width: 720px; background: transparent; border: none; box-shadow: none; padding: 0;">
             <div id="contenedor-comprobante-movil" style="margin-bottom: 20px; width: 100%;"></div>
-            <button class="btn btn-download" onclick="descargarImagen('contenedor-comprobante-movil', 'Comprobante_MotorZero.png')">📥 Descargar Imagen</button>
-            <button class="btn btn-secondary" style="margin-top: 10px;" onclick="irAPortalDesdeQR()">🔍 Buscar ticket completo (Portal)</button>
+            <button class="btn btn-download" onclick="descargarImagen('contenedor-comprobante-movil', 'FichaTecnica_MotorZero.png')">📥 Descargar Ficha Técnica con QR</button>
+            <button class="btn btn-secondary" style="margin-top: 10px;" onclick="irAPortalDesdeQR()">🔍 Buscar en el Portal</button>
         </div>
     </div>
     
@@ -148,7 +145,7 @@
                 <input type="text" id="kiosko-busqueda" placeholder="TKT-1234">
             </div>
             <button class="btn" onclick="buscarTicketKiosko()">Buscar Ticket</button>
-            <button class="btn btn-secondary" id="btn-regresar-taller" onclick="cerrarPortalCliente()" style="margin-top:10px;">Regresar al Taller</button>
+            <button class="btn btn-secondary" id="btn-regresar-taller" onclick="cerrarPortalCliente()" style="margin-top:10px;">Regresar</button>
             
             <div id="kiosko-resultado" style="margin-top: 20px; display: none;">
                 <div style="display: flex; gap: 8px; margin-bottom: 15px;">
@@ -226,17 +223,6 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <div id="aviso-beneficio-orden" style="display:none; background:rgba(255,165,0,0.15); border:1px solid var(--gold); padding:10px; border-radius:6px; margin-bottom:15px;">
-                        <p style="font-size:0.82rem; color:var(--gold); margin-bottom:6px;">⭐ <strong>¡Este cliente tiene 5 sellos listos!</strong></p>
-                        <button type="button" class="btn-action btn-action-success" onclick="abrirModalBeneficioDirectoDesdeBoton()">🎁 Canjear Beneficio de Cortesía</button>
-                    </div>
-
-                    <div id="panel-beneficio-activo" style="display:none; background:rgba(4,211,97,0.15); border:1px solid var(--success); padding:10px; border-radius:6px; margin-bottom:15px;">
-                        <p style="font-size:0.85rem; color:var(--success); font-weight:bold; margin-bottom:4px;">🎁 Cortesía de 5 Estrellas Aplicada:</p>
-                        <p id="texto-beneficio-activo" style="font-size:0.8rem; color:#fff;"></p>
-                        <button type="button" class="btn-action btn-action-secondary" style="margin-top:6px;" onclick="quitarBeneficioOrden()">Quitar Cortesía</button>
-                    </div>
 
                     <div class="field">
                         <label>Marca</label>
@@ -258,13 +244,6 @@
                             <option value="Técnico Auxiliar 1">Técnico Auxiliar 1</option>
                             <option value="Técnico Especialista">Técnico Especialista</option>
                         </select>
-                    </div>
-
-                    <div id="sec-toggle-servicio-adicional" style="display:none; border-top:1px solid var(--border); padding-top:15px; margin-top:15px;">
-                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; color:var(--gold); font-weight:bold; font-size:0.9rem;">
-                            <input type="checkbox" id="chk-agregar-servicio-extra" onchange="toggleServicioAdicionalForm()" style="width:auto;">
-                            <span>¿Deseas agregar un servicio adicional a esta orden?</span>
-                        </label>
                     </div>
 
                     <div id="sec-contenedor-servicio-real" style="display:block;">
@@ -364,7 +343,7 @@
                 </form>
             </div>
             <div class="card">
-                <h2>Catálogo de Piezas & Márgenes</h2>
+                <h2>Catálogo de Piezas en Almacén</h2>
                 <table>
                     <thead><tr><th>ID</th><th>Descripción</th><th>Compatibilidad</th><th>Costo / Venta</th><th>Stock</th><th>Acciones</th></tr></thead>
                     <tbody id="tabla-inventario"></tbody>
@@ -437,9 +416,6 @@
         <div id="tab-clientes" class="tab-content full-width">
             <div class="card">
                 <h2>👥 Directorio y Expediente de Clientes</h2>
-                <p style="font-size:0.85rem; color:var(--muted); margin-bottom:15px;">
-                    Busca a cualquier cliente por su <strong>ID</strong> o <strong>Nombre</strong>. (1 sello ⭐ por cada servicio ≥ $5,000 MXN).
-                </p>
                 <div class="field" style="max-width: 450px; margin-bottom: 20px;">
                     <label>🔍 Buscar Cliente:</label>
                     <input type="text" id="buscar-cliente-input" placeholder="Ej. CLI-2177 o Matrix..." oninput="manejarAutocompleteDirectorioCliente()" autocomplete="off">
@@ -453,8 +429,6 @@
                             <th>Vehículos</th>
                             <th>Visitas</th>
                             <th>Última Visita</th>
-                            <th>Sellos</th>
-                            <th>Recompensa</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -521,29 +495,6 @@
         </div>
     </div>
 
-    <!-- MODAL BENEFICIO 5 ESTRELLAS -->
-    <div id="modal-beneficio" class="modal-overlay" style="z-index: 1050;">
-        <div class="modal-card" style="max-width:450px;">
-            <h2 style="color: var(--gold); text-align: center; margin-bottom: 12px;">🎁 ¡Cliente con 5 Sellos (⭐)!</h2>
-            <p id="modal-beneficio-texto" style="text-align: center; font-size: 0.95rem; margin-bottom: 15px;">El cliente cuenta con 5 sellos acumulados. ¿Deseas usar este beneficio ahora?</p>
-            
-            <div class="field">
-                <label>Selecciona el beneficio a canjear:</label>
-                <select id="select-beneficio-opcion" onchange="actualizarOpcionesBeneficioModal()">
-                    <option value="Aceite">🛢️ Cambio de Aceite</option>
-                    <option value="Balatas">🛑 Cambio de Balatas</option>
-                    <option value="Llantas">🛞 Llantas (Máx. 2 unidades)</option>
-                    <option value="Pieza">📦 Pieza de Inventario</option>
-                </select>
-            </div>
-
-            <div id="sub-beneficio-opciones" style="background:#16161a; padding:10px; border-radius:6px; border:1px solid var(--border); margin-bottom:15px;"></div>
-
-            <button class="btn btn-success" onclick="aplicarBeneficioYContinuar()">Sí, Aplicar Cortesía</button>
-            <button class="btn btn-secondary" onclick="cerrarModalBeneficioOnly()">Cancelar</button>
-        </div>
-    </div>
-
     <!-- MODAL VISTA DE FICHA TÉCNICA Y TICKET -->
     <div id="modal-pago" class="modal-overlay">
         <div class="modal-card">
@@ -571,7 +522,6 @@
                     <span><strong>Total Visitas:</strong> <span id="exp-cli-visitas" style="color:var(--success); font-weight:bold;">0</span></span>
                 </div>
                 <div style="margin-bottom:6px;"><strong>Vehículos Registrados:</strong> <span id="exp-cli-autos" style="color:var(--muted);">-</span></div>
-                <div><strong>Estado de Programa de Sellos:</strong> <span id="exp-cli-sellos-badge"></span></div>
             </div>
             <h3 style="font-size:0.95rem; color:var(--text); margin-bottom:10px;">📋 Historial Cronológico de Visitas:</h3>
             <div id="exp-cli-lista-visitas" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;"></div>
@@ -591,14 +541,14 @@
 
         function cargarDatosPrueba() {
             var invPrueba = [
-                { id: 'REF-001', nombre: 'Carburador Holley', costo: 800.00, precio: 1200.00, stock: 5, compTipo: 'Universal', compMarca: '', compModelo: '' },
-                { id: 'REF-002', nombre: 'Bomba de Agua Sentra 2.0', costo: 420.00, precio: 650.00, stock: 8, compTipo: 'Especifico', compMarca: 'Nissan', compModelo: 'Sentra' },
-                { id: 'REF-003', nombre: 'Filtro de Aceite Universal Multi-Marca', costo: 90.00, precio: 150.00, stock: 12, compTipo: 'Universal', compMarca: '', compModelo: '' },
-                { id: 'REF-004', nombre: 'Balatas Cerámicas Nissan Sentra', costo: 500.00, precio: 850.00, stock: 4, compTipo: 'Especifico', compMarca: 'Nissan', compModelo: 'Sentra' }
+                { id: 'REF-001', nombre: 'Carburador Holley', costo: 1200.00, precio: 1800.00, stock: 5, compTipo: 'Universal', compMarca: '', compModelo: '' },
+                { id: 'REF-002', nombre: 'Bomba de Agua Sentra 2.0', costo: 650.00, precio: 980.00, stock: 8, compTipo: 'Especifico', compMarca: 'Nissan', compModelo: 'Sentra' },
+                { id: 'REF-003', nombre: 'Filtro de Aceite Universal Multi-Marca', costo: 150.00, precio: 280.00, stock: 12, compTipo: 'Universal', compMarca: '', compModelo: '' },
+                { id: 'REF-004', nombre: 'Balatas Cerámicas Nissan Sentra', costo: 850.00, precio: 1350.00, stock: 4, compTipo: 'Especifico', compMarca: 'Nissan', compModelo: 'Sentra' }
             ];
             var cliPrueba = [
-                { id: 'CLI-5521', nombre: 'Matrix', telefono: '3111234567', vehiculos: ['Nissan Sentra 2001', 'Chevrolet Blazer 1997'], totalServicios: 2, sellosValidos: 5, ultimaVisita: new Date().toLocaleString(), historialTickets: [] },
-                { id: 'CLI-9082', nombre: 'Esperanza Meza', telefono: '3119876543', vehiculos: ['Volkswagen Jetta 2018'], totalServicios: 5, sellosValidos: 5, ultimaVisita: new Date().toLocaleString(), historialTickets: [] }
+                { id: 'CLI-5521', nombre: 'Matrix', telefono: '3111234567', vehiculos: ['Nissan Sentra 2001', 'Chevrolet Blazer 1997'], totalServicios: 2, ultimaVisita: new Date().toLocaleString(), historialTickets: [] },
+                { id: 'CLI-9082', nombre: 'Esperanza Meza', telefono: '3119876543', vehiculos: ['Volkswagen Jetta 2018'], totalServicios: 5, ultimaVisita: new Date().toLocaleString(), historialTickets: [] }
             ];
             var citasPrueba = [
                 { id: 'CIT-01', cliente: 'Carlos Santana', tel: '3115551234', auto: 'Ford Ranger 2015', fecha: '2026-10-15T10:00', motivo: 'Cambio de balatas y afinación' }
@@ -698,8 +648,6 @@
         var ticketActualModal = null;
         var ticketActualKiosko = null;
         var clienteEncontradoMemoria = null;
-        var clienteSeleccionadoActual = null;
-        var beneficioSeleccionadoOrden = null;
 
         function reiniciarSistema() {
             if(confirm("⚠️ ¿Estás seguro de restablecer el sistema a sus valores iniciales?")) {
@@ -720,10 +668,7 @@
             var val = document.getElementById('ord-cliente').value.trim().toLowerCase();
             var sugBox = document.getElementById('sugerencias-cliente');
             var cardMemoria = document.getElementById('card-memoria-cliente');
-            var avisoBen = document.getElementById('aviso-beneficio-orden');
             sugBox.innerHTML = '';
-            clienteSeleccionadoActual = null;
-            if (avisoBen && !beneficioSeleccionadoOrden) avisoBen.style.display = 'none';
 
             if (!val) {
                 cardMemoria.style.display = 'none';
@@ -743,104 +688,10 @@
                             document.getElementById('ord-telefono').value = c.telefono;
                         }
                         sugBox.innerHTML = '';
-                        clienteSeleccionadoActual = c;
                         mostrarMemoriaCliente(c);
-                        
-                        if (c.sellosValidos >= 5 && (c.sellosValidos % 5 === 0) && !beneficioSeleccionadoOrden) {
-                            if (avisoBen) avisoBen.style.display = 'block';
-                        }
                     };
                     sugBox.appendChild(div);
                 });
-            }
-        }
-
-        function abrirModalBeneficioDirectoDesdeBoton() {
-            if (!clienteSeleccionadoActual) return;
-            document.getElementById('modal-beneficio-texto').innerHTML = 'Selecciona la cortesía para <strong>' + clienteSeleccionadoActual.nombre + '</strong>:';
-            document.getElementById('select-beneficio-opcion').value = 'Aceite';
-            actualizarOpcionesBeneficioModal();
-            document.getElementById('modal-beneficio').classList.add('active');
-        }
-
-        function actualizarOpcionesBeneficioModal() {
-            var opt = document.getElementById('select-beneficio-opcion').value;
-            var subBox = document.getElementById('sub-beneficio-opciones');
-            
-            if (opt === 'Aceite') {
-                subBox.innerHTML = '<label>Tipo / Marca de Aceite Gratis:</label>' +
-                    '<select id="sub-ben-val">' +
-                        '<option value="Mobil 1 Sintético 5W-30">Mobil 1 Advanced Full Synthetic 5W-30 (Cortesía)</option>' +
-                        '<option value="Castrol EDGE Sintético 5W-30">Castrol EDGE Full Synthetic 5W-30 (Cortesía)</option>' +
-                    '</select>';
-            } else if (opt === 'Balatas') {
-                subBox.innerHTML = '<label>Tipo de Balatas Gratis:</label>' +
-                    '<select id="sub-ben-val">' +
-                        '<option value="Cerámica Premium">Balatas Cerámica Premium (Cortesía)</option>' +
-                    '</select>';
-            } else if (opt === 'Llantas') {
-                subBox.innerHTML = '<label>Tipo de Llanta (Máx. 2 unidades):</label>' +
-                    '<select id="sub-ben-val" style="margin-bottom:8px;">' +
-                        '<option value="Llantas Nuevas">Llantas Nuevas (Hasta 2 - Cortesía)</option>' +
-                    '</select>' +
-                    '<label>Cantidad:</label>' +
-                    '<input type="number" id="sub-ben-cant" value="2" min="1" max="2">';
-            } else if (opt === 'Pieza') {
-                subBox.innerHTML = '<label>Selecciona Pieza:</label>' +
-                    '<select id="sub-ben-val">' +
-                        inventario.map(function(r) { return '<option value="' + r.nombre + '">' + r.nombre + ' (Cortesía)</option>'; }).join('') +
-                    '</select>';
-            }
-        }
-
-        function aplicarBeneficioYContinuar() {
-            var opcion = document.getElementById('select-beneficio-opcion').value;
-            var subValEl = document.getElementById('sub-ben-val');
-            var subVal = subValEl ? subValEl.value : '';
-            var descCortesía = opcion + ': ' + subVal;
-            if (opcion === 'Llantas') {
-                var cant = document.getElementById('sub-ben-cant').value || '2';
-                descCortesía = subVal + ' (x' + cant + ' unidades)';
-            }
-            
-            beneficioSeleccionadoOrden = descCortesía;
-            document.getElementById('modal-beneficio').classList.remove('active');
-            document.getElementById('aviso-beneficio-orden').style.display = 'none';
-            document.getElementById('panel-beneficio-activo').style.display = 'block';
-            document.getElementById('texto-beneficio-activo').innerText = '🎁 ' + descCortesía;
-            
-            document.getElementById('sec-toggle-servicio-adicional').style.display = 'block';
-            document.getElementById('chk-agregar-servicio-extra').checked = false;
-            document.getElementById('sec-contenedor-servicio-real').style.display = 'none';
-            document.getElementById('ord-mano').value = '0.00';
-            mostrarToast('Cortesía aplicada con éxito.', 'success');
-        }
-
-        function cerrarModalBeneficioOnly() {
-            document.getElementById('modal-beneficio').classList.remove('active');
-        }
-
-        function quitarBeneficioOrden() {
-            beneficioSeleccionadoOrden = null;
-            document.getElementById('panel-beneficio-activo').style.display = 'none';
-            document.getElementById('sec-toggle-servicio-adicional').style.display = 'none';
-            document.getElementById('sec-contenedor-servicio-real').style.display = 'block';
-            document.getElementById('chk-agregar-servicio-extra').checked = false;
-            if (clienteSeleccionadoActual && clienteSeleccionadoActual.sellosValidos >= 5) {
-                document.getElementById('aviso-beneficio-orden').style.display = 'block';
-            }
-            mostrarToast('Cortesía removida.', 'info');
-        }
-
-        function toggleServicioAdicionalForm() {
-            var chk = document.getElementById('chk-agregar-servicio-extra');
-            var contServ = document.getElementById('sec-contenedor-servicio-real');
-            if (chk.checked) {
-                contServ.style.display = 'block';
-                cambiarOpcionesServicio();
-            } else {
-                contServ.style.display = 'none';
-                document.getElementById('ord-mano').value = '0.00';
             }
         }
 
@@ -1176,28 +1027,19 @@
             var mano = parseFloat(document.getElementById('ord-mano').value) || 0;
             var mecanico = document.getElementById('ord-mecanico').value;
 
+            var tipoServicio = document.getElementById('ord-tipo-servicio').value;
             var textoFinalServicio = '';
-            var infoDescuentoPrevia = { aplicado: false, monto: 0, tipo: '' };
-
-            if (beneficioSeleccionadoOrden) {
-                textoFinalServicio = '🎁 CORTESÍA: ' + beneficioSeleccionadoOrden;
-                infoDescuentoPrevia = { aplicado: true, monto: 350, tipo: beneficioSeleccionadoOrden };
-                var cliObj = clientes.find(function(c) { return c.nombre.toLowerCase() === cliente.toLowerCase(); });
-                if (cliObj) cliObj.sellosValidos -= 5;
-            } else {
-                var tipoServicio = document.getElementById('ord-tipo-servicio').value;
-                if (tipoServicio === 'General') {
-                    var desc = document.getElementById('opt-general-desc') ? document.getElementById('opt-general-desc').value.trim() : '';
-                    textoFinalServicio = 'Mecánica General: ' + (desc || 'Mantenimiento');
-                } else if (tipoServicio === 'Aceite') {
-                    textoFinalServicio = 'Cambio Aceite (' + document.getElementById('opt-aceite-tipo').value + ')';
-                } else if (tipoServicio === 'Balatas') {
-                    textoFinalServicio = 'Frenos: ' + document.getElementById('opt-balata-calidad').value;
-                } else if (tipoServicio === 'Diagnostico') {
-                    textoFinalServicio = 'Diagnóstico General';
-                } else if (tipoServicio === 'Llantas') {
-                    textoFinalServicio = 'Servicio de Llantas';
-                }
+            if (tipoServicio === 'General') {
+                var desc = document.getElementById('opt-general-desc') ? document.getElementById('opt-general-desc').value.trim() : '';
+                textoFinalServicio = 'Mecánica General: ' + (desc || 'Mantenimiento');
+            } else if (tipoServicio === 'Aceite') {
+                textoFinalServicio = 'Cambio Aceite (' + document.getElementById('opt-aceite-tipo').value + ')';
+            } else if (tipoServicio === 'Balatas') {
+                textoFinalServicio = 'Frenos: ' + document.getElementById('opt-balata-calidad').value;
+            } else if (tipoServicio === 'Diagnostico') {
+                textoFinalServicio = 'Diagnóstico General';
+            } else if (tipoServicio === 'Llantas') {
+                textoFinalServicio = 'Servicio de Llantas';
             }
 
             var nuevaOrdenObj = {
@@ -1226,18 +1068,15 @@
                     antena: document.getElementById('chk-antena').checked
                 },
                 fotos: fotosOrdenTemp.slice(),
-                piezas: piezasOrdenTemp.slice(),
-                descuentoPredeterminado: infoDescuentoPrevia
+                piezas: piezasOrdenTemp.slice()
             };
 
             ordenes.push(nuevaOrdenObj);
             guardarDatos();
             piezasOrdenTemp = [];
             fotosOrdenTemp = [];
-            beneficioSeleccionadoOrden = null;
             document.getElementById('form-orden').reset();
             document.getElementById('card-memoria-cliente').style.display = 'none';
-            document.getElementById('panel-beneficio-activo').style.display = 'none';
             mostrarToast('Orden de trabajo registrada con éxito.', 'success');
             render();
             cambiarOpcionesServicio();
@@ -1302,9 +1141,7 @@
             if (!ordId) return;
             var ord = ordenes.find(function(o) { return o.id === ordId; });
             if (!ord) return;
-            var subtotalNeto = ord.mano + ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); }, 0);
-            var desc = ord.descuentoPredeterminado || { aplicado: false, monto: 0 };
-            var total = Math.max(0, subtotalNeto - desc.monto) * 1.16;
+            var total = (ord.mano + ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); }, 0)) * 1.16;
             var rec = parseFloat(document.getElementById('pos-monto-recibido').value) || 0;
             document.getElementById('pos-cambio-texto').innerText = '$' + Math.max(0, rec - total).toFixed(2) + ' MXN';
         }
@@ -1320,9 +1157,8 @@
             }
             var ord = ordenes.find(function(o) { return o.id === ordId; });
             if (!ord) return;
-            var descInfo = ord.descuentoPredeterminado || { aplicado: false, monto: 0, tipo: '' };
             var subtotalNeto = ord.mano + ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); }, 0);
-            var totalCalc = Math.max(0, subtotalNeto - descInfo.monto) * 1.16;
+            var totalCalc = subtotalNeto * 1.16;
 
             if (secDetalles) {
                 secDetalles.style.display = 'block';
@@ -1396,9 +1232,7 @@
             
             var manoVal = ord.mano || 0;
             var subtotalNeto = manoVal + subtotalRef;
-            var descInfo = ord.descuentoPredeterminado || { aplicado: false, monto: 0 };
-            var valorDescuento = descInfo.aplicado ? descInfo.monto : 0;
-            var totalVal = Math.max(0, subtotalNeto - valorDescuento) * 1.16;
+            var totalVal = subtotalNeto * 1.16;
 
             return '<div class="ticket">' +
                 (logoBase64Global ? '<img src="' + logoBase64Global + '" class="ticket-logo">' : '') +
@@ -1443,8 +1277,7 @@
             var folio = 'TKT-' + Math.floor(1000 + Math.random() * 9000);
             var fechaStr = new Date().toLocaleString();
             var subtotalNeto = ord.mano + ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); }, 0);
-            var desc = ord.descuentoPredeterminado || { aplicado: false, monto: 0 };
-            var totalMonto = Math.max(0, subtotalNeto - desc.monto) * 1.16;
+            var totalMonto = subtotalNeto * 1.16;
 
             var dataQr = 'https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?folio=' + folio + '&cliente=' + encodeURIComponent(ord.cliente) + '&auto=' + encodeURIComponent(ord.auto);
             var qrUrl = generarUrlQrImage(dataQr);
@@ -1453,25 +1286,24 @@
                 folio: folio, fecha: fechaStr, cliente: ord.cliente, auto: ord.auto,
                 subtotalRef: ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); },0),
                 costoRef: ord.piezas.reduce(function(a,p){ return a+((p.costo || 0)*p.cant); },0),
-                mano: ord.mano, total: totalMonto, descuento: desc, metodoPago: metodoPagoSeleccionadoGlobal, ordOriginal: ord, qrUrl: qrUrl
+                mano: ord.mano, total: totalMonto, metodoPago: metodoPagoSeleccionadoGlobal, ordOriginal: ord, qrUrl: qrUrl
             };
 
             var cli = clientes.find(function(c) { return c.nombre.toLowerCase() === ord.cliente.toLowerCase(); });
             if (!cli) {
-                cli = { id: generarNuevoIdCliente(), nombre: ord.cliente, telefono: ord.telefono || '', vehiculos: [ord.auto], totalServicios: 0, sellosValidos: 0, historialTickets: [] };
+                cli = { id: generarNuevoIdCliente(), nombre: ord.cliente, telefono: ord.telefono || '', vehiculos: [ord.auto], totalServicios: 0, historialTickets: [] };
                 clientes.push(cli);
             }
             if (!cli.vehiculos.includes(ord.auto)) cli.vehiculos.push(ord.auto);
             cli.totalServicios += 1;
             cli.ultimaVisita = fechaStr;
             cli.historialTickets.push(ticketGuardado);
-            if (subtotalNeto * 1.16 >= 5000 && !desc.aplicado) cli.sellosValidos += 1;
 
             tickets.push(ticketGuardado);
             ordenes.splice(idx, 1);
             guardarDatos();
 
-            ticketActualModal = { ord: ord, folio: folio, fecha: fechaStr, descuento: desc, metodoPago: metodoPagoSeleccionadoGlobal, qrUrl: qrUrl };
+            ticketActualModal = { ord: ord, folio: folio, fecha: fechaStr, metodoPago: metodoPagoSeleccionadoGlobal, qrUrl: qrUrl };
             document.getElementById('modal-titulo').innerText = 'Expediente Generado: ' + folio;
             cambiarVistaModal('ficha');
             document.getElementById('modal-pago').classList.add('active');
@@ -1482,7 +1314,7 @@
         function verDetalleTicket(folio) {
             var t = tickets.find(function(item) { return item.folio === folio; });
             if (!t) return;
-            ticketActualModal = { ord: t.ordOriginal, folio: t.folio, fecha: t.fecha, descuento: t.descuento, metodoPago: t.metodoPago, qrUrl: t.qrUrl };
+            ticketActualModal = { ord: t.ordOriginal, folio: t.folio, fecha: t.fecha, metodoPago: t.metodoPago, qrUrl: t.qrUrl };
             document.getElementById('modal-titulo').innerText = 'Expediente: ' + folio;
             cambiarVistaModal('ficha');
             document.getElementById('modal-pago').classList.add('active');
@@ -1507,10 +1339,6 @@
             document.getElementById('exp-cli-id').innerText = cli.id;
             document.getElementById('exp-cli-visitas').innerText = cli.totalServicios + ' visitas';
             document.getElementById('exp-cli-autos').innerText = cli.vehiculos.join(', ');
-            var numSellos = cli.sellosValidos % 5;
-            var sellosStr = '';
-            for(var i=0; i<5; i++) sellosStr += (i < numSellos ? '⭐ ' : '☆ ');
-            document.getElementById('exp-cli-sellos-badge').innerHTML = '<span class="badge-sello">' + sellosStr + '</span>';
             
             document.getElementById('exp-cli-lista-visitas').innerHTML = (cli.historialTickets || []).map(function(t) {
                 return '<div class="visit-item-card"><div class="visit-item-info"><strong>' + t.folio + '</strong> — ' + t.fecha + '<br><strong style="color:var(--success);">$' + t.total.toFixed(2) + ' MXN</strong></div>' +
@@ -1527,6 +1355,10 @@
         function cerrarPortalCliente() {
             document.getElementById('portal-cliente').classList.remove('active');
             document.getElementById('admin-ui').style.display = 'block';
+        }
+        function irAPortalDesdeQR() {
+            document.getElementById('vista-cliente-qr').classList.remove('active');
+            document.getElementById('portal-cliente').classList.add('active');
         }
         function buscarTicketKiosko() {
             var q = document.getElementById('kiosko-busqueda').value.trim().toUpperCase();
@@ -1552,12 +1384,11 @@
             document.getElementById('inv-id').value = generarNuevoIdRefaccion();
             
             document.getElementById('tabla-inventario').innerHTML = inventario.map(function(i) {
-                var margen = i.costo > 0 ? (((i.precio - i.costo) / i.costo) * 100).toFixed(0) : '0';
                 return '<tr>' +
                     '<td><strong>' + i.id + '</strong></td>' +
                     '<td>' + i.nombre + '</td>' +
                     '<td><span style="font-size:0.8rem; color:var(--muted);">' + (i.compTipo === 'Universal' ? '🌐 Universal' : '🚘 ' + i.compMarca + (i.compModelo ? ' ' + i.compModelo : '')) + '</span></td>' +
-                    '<td>Costo: $' + i.costo.toFixed(2) + '<br>Venta: <strong>$' + i.precio.toFixed(2) + '</strong> <span style="color:var(--success); font-size:0.75rem;">(+' + margen + '%)</span></td>' +
+                    '<td>Costo: $' + i.costo.toFixed(2) + '<br>Venta: <strong>$' + i.precio.toFixed(2) + '</strong></td>' +
                     '<td style="color:' + (i.stock < 3 ? '#ff4500' : '#04d361') + '; font-weight:bold;">' + i.stock + '</td>' +
                     '<td>' +
                         '<button class="btn-action btn-action-success" onclick="abrirResurtirModal(\'' + i.id + '\')">➕ Resurtir</button>' +
@@ -1575,16 +1406,12 @@
             }).join('');
 
             document.getElementById('tabla-clientes').innerHTML = clientes.map(function(c) {
-                var numSellos = c.sellosValidos % 5;
-                var sellosStr = ''; for(var i=0; i<5; i++) sellosStr += (i < numSellos ? '⭐ ' : '☆ ');
                 return '<tr>' +
                     '<td><span class="client-id-badge">' + c.id + '</span></td>' +
                     '<td><strong>' + c.nombre + '</strong></td>' +
                     '<td>' + c.vehiculos.join(', ') + '</td>' +
                     '<td>' + c.totalServicios + '</td>' +
                     '<td style="font-size:0.8rem;">' + c.ultimaVisita + '</td>' +
-                    '<td><div class="badge-sello">' + sellosStr + '</div></td>' +
-                    '<td>' + (c.sellosValidos >= 5 ? '<span style="color:var(--success); font-weight:bold;">🎁 ¡Listo!</span>' : (5 - numSellos) + ' rest.') + '</td>' +
                     '<td><button class="btn btn-secondary" style="padding:4px 8px; font-size:0.8rem;" onclick="verExpedienteCliente(\'' + c.id + '\')">🔍 Ver</button></td>' +
                 '</tr>';
             }).join('');
@@ -1615,16 +1442,36 @@
         }
 
         window.addEventListener('DOMContentLoaded', function() {
-            cambiarOpcionesServicio();
-            render();
             var params = new URLSearchParams(window.location.search);
-            if (params.get('folio') || params.get('ord')) {
-                document.getElementById('admin-ui').remove();
+            var folioParam = params.get('folio');
+            var ordParam = params.get('ord');
+
+            if (folioParam || ordParam) {
+                var adminUi = document.getElementById('admin-ui');
+                if (adminUi) adminUi.style.display = 'none';
                 document.body.style.background = '#121214';
-                var ordCli = { id: params.get('ord') || params.get('folio'), cliente: decodeURIComponent(params.get('cliente') || params.get('cli') || 'Cliente'), auto: decodeURIComponent(params.get('auto') || params.get('v') || 'Vehículo'), mano: 0, piezas: [], checklist: {} };
+
+                var targetTicket = tickets.find(function(t) { return t.folio === folioParam || (t.ordOriginal && t.ordOriginal.id === ordParam); });
+                var targetOrd = ordenes.find(function(o) { return o.id === ordParam; });
+
+                var ordData = targetTicket ? targetTicket.ordOriginal : (targetOrd || {
+                    id: ordParam || folioParam || 'ORD-101',
+                    cliente: decodeURIComponent(params.get('cliente') || params.get('cli') || 'Cliente General'),
+                    auto: decodeURIComponent(params.get('auto') || params.get('v') || 'Vehículo Taller'),
+                    mano: 0,
+                    piezas: [],
+                    checklist: { llaves: true, estereo: true, espejos: true, vidrios: true, tapetes: true, tapa: true, bateria: true, aceite: true },
+                    fecha: new Date().toLocaleString(),
+                    mecanico: 'Martín Flores',
+                    servicioDetalle: 'Revisión Técnica General'
+                });
+
                 var qrUrl = generarUrlQrImage(window.location.href);
-                document.getElementById('contenedor-comprobante-movil').innerHTML = generarHTMLFichaTecnicaPro(ordCli, params.get('folio') || params.get('ord'), qrUrl);
+                document.getElementById('contenedor-comprobante-movil').innerHTML = generarHTMLFichaTecnicaPro(ordData, folioParam || ordData.id, qrUrl);
                 document.getElementById('vista-cliente-qr').classList.add('active');
+            } else {
+                cambiarOpcionesServicio();
+                render();
             }
         });
     </script>

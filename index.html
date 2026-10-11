@@ -3,29 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motor Zero (KZ) - Comprobante Digital & CRM</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <title>Motor Zero (KZ) - Comprobante Digital & CRM Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --bg-body: #121214; --bg-card: #1e1e24; --accent: #ff4500;
             --text: #e1e1e6; --muted: #a8a8b3; --border: #29292e; --success: #04d361;
-            --gold: #ffa500; --danger: #f44336;
+            --gold: #ffa500; --danger: #f44336; --blue: #007acc;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-        body { background: var(--bg-body); color: var(--text); padding: 25px 20px; max-width: 1240px; margin: 0 auto; }
+        body { background: var(--bg-body); color: var(--text); padding: 25px 20px; max-width: 1280px; margin: 0 auto; }
         
         #header-main { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent); padding-bottom: 15px; margin-bottom: 25px; flex-wrap: wrap; gap: 10px; }
         .brand-box { display: flex; align-items: center; gap: 12px; }
         #logo-preview-header { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); display: none; }
         #header-main h1 { font-size: 1.6rem; } #header-main h1 span { color: var(--accent); }
         
-        .tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
-        .tab-btn { background: var(--bg-card); color: var(--muted); border: 1px solid var(--border); padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: all 0.2s; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 25px; flex-wrap: wrap; }
+        .tab-btn { background: var(--bg-card); color: var(--muted); border: 1px solid var(--border); padding: 10px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem; transition: all 0.2s; }
         .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
         
         .tab-content { display: none; }
-        .tab-content.active { display: grid; grid-template-columns: 450px 1fr; gap: 25px; animation: fadeIn 0.25s ease-out; }
+        .tab-content.active { display: grid; grid-template-columns: 460px 1fr; gap: 25px; animation: fadeIn 0.25s ease-out; }
         .tab-content.full-width.active { display: grid; grid-template-columns: 1fr; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -48,56 +47,68 @@
         .btn-secondary { background: #323238; color: var(--text); margin-top: 5px; }
         .btn-success { background: var(--success); color: #000; }
         .btn-danger { background: var(--danger); color: #fff; }
-        .btn-download { background: #007acc; color: #fff; font-weight: bold; }
+        .btn-download { background: var(--blue); color: #fff; font-weight: bold; }
         .btn-action { width: auto !important; padding: 6px 12px !important; font-size: 0.8rem !important; margin: 2px !important; display: inline-block !important; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; }
         .btn-action-success { background: var(--success); color: #000; }
         .btn-action-secondary { background: #323238; color: var(--text); }
+        
+        .payment-methods-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; margin-bottom: 15px; }
+        .pay-method-btn { background: #16161a; border: 1px solid var(--border); border-radius: 6px; padding: 10px; text-align: center; cursor: pointer; transition: all 0.2s; font-size: 0.85rem; color: var(--text); font-weight: bold; }
+        .pay-method-btn:hover { border-color: var(--accent); }
+        .pay-method-btn.selected { background: rgba(255, 69, 0, 0.15); border-color: var(--accent); color: var(--accent); }
+        .pay-method-btn span { display: block; font-size: 1.2rem; margin-bottom: 4px; }
         
         table { width: 100%; border-collapse: collapse; }
         th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
         th { color: var(--accent); background: #16161a; }
         
-        .ticket { background: #fff; color: #121212; padding: 20px; border-radius: 6px; font-family: monospace; width: 100%; max-width: 440px; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15); text-align: center; }
+        /* ESTILOS TICKET COMPROBANTE */
+        .ticket { background: #fff; color: #121212; padding: 22px; border-radius: 6px; font-family: monospace; width: 100%; max-width: 440px; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15); text-align: center; }
         .ticket-logo { width: 60px; height: 60px; object-fit: cover; border-radius: 50%; margin: 0 auto 8px auto; display: block; border: 2px solid #ff4500; }
         .ticket h3 { border-bottom: 1px dashed #121212; padding-bottom: 8px; margin-bottom: 12px; color: #121212; }
-        .ticket-row { display: flex; justify-content: space-between; margin-bottom: 8px; text-align: left; }
+        .ticket-row { display: flex; justify-content: space-between; margin-bottom: 8px; text-align: left; font-size: 0.85rem; }
         .ticket-total { border-top: 2px solid #121212; padding-top: 10px; margin-top: 5px; font-weight: bold; font-size: 1.1rem; }
         
-        .checklist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-        .checklist-item { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--text); background: #16161a; padding: 6px 10px; border-radius: 4px; border: 1px solid var(--border); }
+        /* ESTILOS FICHA TÉCNICA DE NIVEL CONCESIONARIO */
+        .ficha-pro-container { background: #ffffff; color: #111111; padding: 30px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 0.82rem; text-align: left; box-shadow: 0 5px 25px rgba(0,0,0,0.25); border: 2px solid #000; width: 100%; max-width: 680px; margin: 0 auto; }
+        .ficha-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #ff4500; padding-bottom: 12px; margin-bottom: 15px; }
+        .ficha-header-title h2 { font-size: 1.4rem; color: #111; font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; }
+        .ficha-header-title p { color: #ff4500; font-weight: bold; font-size: 0.82rem; }
+        .ficha-grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #f5f5f7; padding: 12px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 15px; }
+        .ficha-sec-title { background: #111; color: #fff; padding: 6px 10px; font-weight: bold; font-size: 0.78rem; text-transform: uppercase; margin: 15px 0 8px 0; border-left: 4px solid #ff4500; display: flex; justify-content: space-between; align-items: center; }
+        .ficha-checklist-table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 0.78rem; }
+        .ficha-checklist-table td { padding: 5px 8px; border: 1px solid #e0e0e0; }
+        .ficha-diagrama-box { text-align: center; padding: 12px; background: #fafafa; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 15px; }
+        .ficha-firmas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 25px; text-align: center; }
+        .ficha-firma-linea { border-top: 1.5px dashed #000; padding-top: 5px; font-weight: bold; font-size: 0.75rem; }
+
+        .checklist-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 8px; }
+        .checklist-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--text); background: #16161a; padding: 6px 8px; border-radius: 4px; border: 1px solid var(--border); }
         .checklist-item input { width: auto; }
         .foto-preview-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
         .foto-thumb { width: 65px; height: 65px; border-radius: 4px; object-fit: cover; border: 1px solid var(--accent); }
         
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; padding: 20px; }
         .modal-overlay.active { display: flex; }
-        .modal-card { background: var(--bg-card); border: 1px solid var(--accent); padding: 25px; border-radius: 8px; max-width: 650px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .modal-card { background: var(--bg-card); border: 1px solid var(--accent); padding: 25px; border-radius: 8px; max-width: 730px; width: 100%; max-height: 92vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         
         .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 20px; }
         .metric-card { background: var(--bg-card); border: 1px solid var(--border); padding: 25px; border-radius: 8px; text-align: center; }
         .metric-card h3 { font-size: 0.85rem; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; }
         .metric-card p { font-size: 1.6rem; color: var(--success); font-weight: bold; }
         
-        .qr-box { display: flex; justify-content: center; align-items: center; margin: 18px auto; background: #ffffff; padding: 12px; border-radius: 4px; width: fit-content; }
-        .qr-box img { display: block; margin: 0 auto; }
-        
-        .sheet-agencia { background: #ffffff; color: #111111; padding: 20px; border-radius: 6px; font-family: Arial, sans-serif; font-size: 0.8rem; text-align: left; }
-        .sheet-logo { width: 50px; height: 50px; object-fit: cover; border-radius: 50%; display: block; margin: 0 auto 5px auto; border: 2px solid #ff4500; }
-        .sheet-agencia h3 { text-align: center; color: #ff4500; border-bottom: 2px solid #ff4500; padding-bottom: 6px; margin-bottom: 10px; }
-        .sheet-sec-header { background: #f0f0f0; padding: 4px 8px; font-weight: bold; font-size: 0.75rem; border-left: 3px solid #ff4500; margin: 10px 0 6px 0; text-transform: uppercase; }
-        .sheet-check-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; margin-top: 5px; }
-        .sheet-check-table td { padding: 3px 5px; border-bottom: 1px solid #eee; }
+        .qr-box-img { display: block; margin: 12px auto; border: 2px solid #000; padding: 4px; background: #fff; border-radius: 4px; width: 140px; height: 140px; }
+
         .badge-sello { background: #2b2b36; border: 1px solid var(--gold); padding: 4px 10px; border-radius: 20px; color: var(--gold); font-size: 0.85rem; font-weight: bold; display: inline-block; }
-        .reward-box { background: rgba(4, 211, 97, 0.15); border: 1px solid var(--success); color: var(--success); padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; display: inline-block; }
         .client-id-badge { background: #16161a; border: 1px solid var(--border); color: var(--accent); padding: 3px 8px; border-radius: 4px; font-family: monospace; font-weight: bold; font-size: 0.85rem; }
         
         .visit-item-card { background: #16161a; border: 1px solid var(--border); padding: 12px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .visit-item-info { font-size: 0.85rem; }
         .visit-item-info strong { color: var(--text); }
-        .visit-item-btns { display: flex; gap: 6px; }
+        
         #vista-cliente-qr, #portal-cliente { display: none; justify-content: center; align-items: center; padding: 20px; flex-direction: column; min-height: 80vh; }
         #vista-cliente-qr.active, #portal-cliente.active { display: flex; }
-        .client-box { max-width: 500px; width: 100%; background: #1e1e24; border: 1px solid var(--accent); padding: 25px; border-radius: 8px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .client-box { max-width: 520px; width: 100%; background: #1e1e24; border: 1px solid var(--accent); padding: 25px; border-radius: 8px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 
         #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
         .toast { background: #16161a; color: var(--text); padding: 15px 20px; border-radius: 6px; border-left: 5px solid var(--accent); box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-size: 0.9rem; animation: slideIn 0.3s ease-out forwards, fadeOut 0.5s ease-in 3.5s forwards; min-width: 250px; }
@@ -126,6 +137,7 @@
             <button class="btn btn-secondary" style="margin-top: 10px;" onclick="irAPortalDesdeQR()">🔍 Buscar ticket completo (Portal)</button>
         </div>
     </div>
+    
     <div id="portal-cliente">
         <div class="client-box">
             <h2 style="color: var(--accent); margin-bottom: 8px;">🔍 Portal de Clientes</h2>
@@ -140,8 +152,8 @@
             
             <div id="kiosko-resultado" style="margin-top: 20px; display: none;">
                 <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                    <button class="btn btn-secondary" style="flex:1; margin:0;" onclick="cambiarVistaKiosko('ficha')">📋 Ficha Técnica Pro</button>
                     <button class="btn btn-secondary" style="flex:1; margin:0;" onclick="cambiarVistaKiosko('ticket')">🎫 Ticket</button>
-                    <button class="btn btn-secondary" style="flex:1; margin:0;" onclick="cambiarVistaKiosko('ficha')">📋 Ficha</button>
                 </div>
                 <div id="kiosko-ticket-body" style="margin-bottom: 15px;"></div>
                 <button class="btn btn-download" onclick="descargarImagen('kiosko-ticket-body', 'Documento_MotorZero.png')">💾 Guardar Imagen</button>
@@ -156,14 +168,14 @@
                 <img id="logo-preview-header" alt="Logo Taller">
                 <div>
                     <h1>MOTOR <span>ZERO (KZ)</span></h1>
-                    <small style="color: var(--muted);">sistema de gestión de taller mecánico</small>
+                    <small style="color: var(--muted);">sistema de gestión de taller mecánico pro</small>
                 </div>
             </div>
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                 <label class="btn btn-secondary" style="width: auto; padding: 9px 12px; margin: 0; font-size: 0.8rem; cursor: pointer; display: inline-block;">
                     🖼️ Subir Logo <input type="file" id="input-subir-logo" accept="image/*" style="display: none;" onchange="cambiarLogoTaller(event)">
                 </label>
-                <button onclick="exportarBaseDatos()" class="btn btn-secondary" style="width: auto; padding: 9px 12px; margin: 0; font-size: 0.8rem;">💾 Guardar Respaldo</button>
+                <button onclick="exportarBaseDatos()" class="btn btn-secondary" style="width: auto; padding: 9px 12px; margin: 0; font-size: 0.8rem;">💾 Respaldo</button>
                 <label class="btn btn-secondary" style="width: auto; padding: 9px 12px; margin: 0; font-size: 0.8rem; cursor: pointer; display: inline-block;">
                     📂 Restaurar <input type="file" accept=".json" style="display: none;" onchange="importarBaseDatos(event)">
                 </label>
@@ -173,11 +185,12 @@
         </header>
 
         <div class="tabs" id="tabs-main">
-            <button class="tab-btn active" onclick="switchTab(this, 'recepcion')">🚗 Toma de Orden</button>
-            <button class="tab-btn" onclick="switchTab(this, 'inventario')">📦 Inventario de Piezas</button>
+            <button class="tab-btn active" id="btn-tab-recepcion" onclick="switchTab(this, 'recepcion')">🚗 Toma de Orden</button>
+            <button class="tab-btn" onclick="switchTab(this, 'inventario')">📦 Inventario Pro</button>
             <button class="tab-btn" onclick="switchTab(this, 'pos')">💳 Sistema de Cobro</button>
-            <button class="tab-btn" onclick="switchTab(this, 'clientes')">👥 Historial de Clientes</button>
-            <button class="tab-btn" onclick="switchTab(this, 'corte')">📊 Corte de Caja</button>
+            <button class="tab-btn" onclick="switchTab(this, 'clientes')">👥 Historial Clientes</button>
+            <button class="tab-btn" onclick="switchTab(this, 'agenda')">📅 Agenda de Citas</button>
+            <button class="tab-btn" onclick="switchTab(this, 'corte')">📊 Corte & Utilidad</button>
         </div>
 
         <!-- MÓDULO: TOMA DE ORDEN -->
@@ -192,6 +205,12 @@
                         <input type="text" id="ord-cliente" required placeholder="Escribe el nombre del cliente..." oninput="manejarAutocompleteCliente()">
                         <div id="sugerencias-cliente" class="autocomplete-suggestions"></div>
                     </div>
+                    
+                    <div class="field">
+                        <label>Teléfono (Contacto)</label>
+                        <input type="text" id="ord-telefono" placeholder="Ej. 3111234567">
+                    </div>
+
                     <div id="card-memoria-cliente" class="client-memory-card">
                         <p id="memoria-cliente-texto"></p>
                         <div class="client-memory-btns">
@@ -200,7 +219,7 @@
                             <button type="button" class="btn-action btn-action-secondary" onclick="agregarNuevoVehiculoCliente()">➕ Agregar otro auto</button>
                         </div>
                         <div id="sec-selector-autos-cliente" style="display:none; margin-top:10px; border-top:1px dashed var(--success); padding-top:8px;">
-                            <label style="font-size:0.8rem; color:var(--success); display:block; margin-bottom:4px;">Vehículos registrados de este cliente:</label>
+                            <label style="font-size:0.8rem; color:var(--success); display:block; margin-bottom:4px;">Vehículos registrados:</label>
                             <div style="display:flex; gap:6px;">
                                 <select id="select-autos-cliente" style="flex:1; padding:6px; font-size:0.85rem; background:#111; color:#fff; border:1px solid var(--border); border-radius:4px;"></select>
                                 <button type="button" class="btn-action btn-action-success" onclick="confirmarSeleccionAutoLista()">Cargar</button>
@@ -208,13 +227,11 @@
                         </div>
                     </div>
                     
-                    <!-- Aviso y sección de beneficio activo en Toma de Orden -->
                     <div id="aviso-beneficio-orden" style="display:none; background:rgba(255,165,0,0.15); border:1px solid var(--gold); padding:10px; border-radius:6px; margin-bottom:15px;">
                         <p style="font-size:0.82rem; color:var(--gold); margin-bottom:6px;">⭐ <strong>¡Este cliente tiene 5 sellos listos!</strong></p>
                         <button type="button" class="btn-action btn-action-success" onclick="abrirModalBeneficioDirectoDesdeBoton()">🎁 Canjear Beneficio de Cortesía</button>
                     </div>
 
-                    <!-- Panel si el beneficio ya fue seleccionado para esta orden -->
                     <div id="panel-beneficio-activo" style="display:none; background:rgba(4,211,97,0.15); border:1px solid var(--success); padding:10px; border-radius:6px; margin-bottom:15px;">
                         <p style="font-size:0.85rem; color:var(--success); font-weight:bold; margin-bottom:4px;">🎁 Cortesía de 5 Estrellas Aplicada:</p>
                         <p id="texto-beneficio-activo" style="font-size:0.8rem; color:#fff;"></p>
@@ -223,27 +240,36 @@
 
                     <div class="field">
                         <label>Marca</label>
-                        <input type="text" id="ord-marca" required autocomplete="off" placeholder="Escribe y presiona Enter..." oninput="manejarInputAutocomplete('marca')" onkeydown="manejarKeydownAutocomplete(event, 'marca')">
+                        <input type="text" id="ord-marca" required autocomplete="off" placeholder="Escribe y presiona Enter..." oninput="manejarInputAutocomplete('marca'); actualizarSelectRefacciones();" onkeydown="manejarKeydownAutocomplete(event, 'marca')">
                         <div id="sugerencias-marca" class="autocomplete-suggestions"></div>
                     </div>
                     <div class="field">
                         <label>Modelo</label>
-                        <input type="text" id="ord-modelo" required autocomplete="off" placeholder="Escribe y presiona Enter..." oninput="manejarInputAutocomplete('modelo')" onkeydown="manejarKeydownAutocomplete(event, 'modelo')">
+                        <input type="text" id="ord-modelo" required autocomplete="off" placeholder="Escribe y presiona Enter..." oninput="manejarInputAutocomplete('modelo'); actualizarSelectRefacciones();" onkeydown="manejarKeydownAutocomplete(event, 'modelo')">
                         <div id="sugerencias-modelo" class="autocomplete-suggestions"></div>
                     </div>
-                    <div class="field"><label>Año</label><input type="number" id="ord-anio" min="1950" max="2028" required placeholder="Ej. 2001"></div>
+                    <div class="field"><label>Año</label><input type="number" id="ord-anio" min="1950" max="2028" required placeholder="Ej. 2001" oninput="actualizarSelectRefacciones();"></div>
+                    <div class="field"><label>Placas / VIN</label><input type="text" id="ord-placas" placeholder="Ej. RGY-88-21"></div>
                     
-                    <!-- Opción para decidir si se agrega servicio adicional o no -->
+                    <div class="field">
+                        <label style="color: var(--gold); font-weight: bold;">👨‍🔧 Mecánico / Técnico Asignado</label>
+                        <select id="ord-mecanico">
+                            <option value="Martín Flores (Principal)">Martín Flores (Principal)</option>
+                            <option value="Técnico Auxiliar 1">Técnico Auxiliar 1</option>
+                            <option value="Técnico Especialista">Técnico Especialista</option>
+                        </select>
+                    </div>
+
                     <div id="sec-toggle-servicio-adicional" style="display:none; border-top:1px solid var(--border); padding-top:15px; margin-top:15px;">
                         <label style="display:flex; align-items:center; gap:8px; cursor:pointer; color:var(--gold); font-weight:bold; font-size:0.9rem;">
                             <input type="checkbox" id="chk-agregar-servicio-extra" onchange="toggleServicioAdicionalForm()" style="width:auto;">
-                            <span>¿Deseas agregar un servicio adicional o trabajo mecánico a esta orden?</span>
+                            <span>¿Deseas agregar un servicio adicional a esta orden?</span>
                         </label>
                     </div>
 
                     <div id="sec-contenedor-servicio-real" style="display:block;">
                         <div class="field" style="border-top:1px solid var(--border); padding-top:15px; margin-top:15px;">
-                            <label style="color:var(--accent); font-weight:bold; font-size:0.95rem;">🛠️ Servicio a Realizar</label>
+                            <label style="color:var(--accent); font-weight:bold; font-size:0.95rem;">🛠️ Servicio a Realizar / Motivo de Ingreso</label>
                             <select id="ord-tipo-servicio" onchange="cambiarOpcionesServicio()">
                                 <option value="General" selected>🔧 Servicio Mecánico General / Mantenimiento</option>
                                 <option value="Aceite">🛢️ Cambio de Aceite y Filtro</option>
@@ -258,7 +284,6 @@
                         <div class="field">
                             <label style="color:var(--success); font-weight:bold;">💰 Mano de Obra Estimada ($ MXN)</label>
                             <input type="number" step="0.01" id="ord-mano" min="0" value="0.00" placeholder="0.00">
-                            <small style="color:var(--muted); font-size:0.75rem;">Calculada automáticamente según el servicio adicional.</small>
                         </div>
                     </div>
                     
@@ -273,17 +298,20 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label style="color:var(--accent); font-weight:bold;">📋 Checklist de Inventario de Recepción</label>
+                        <label style="color:var(--accent); font-weight:bold;">📋 Checklist Pro de Inventario de Recepción</label>
                         <div class="checklist-grid">
                             <label class="checklist-item"><input type="checkbox" id="chk-llaves" checked> Llaves</label>
-                            <label class="checklist-item"><input type="checkbox" id="chk-gato"> Gato / Llave L</label>
+                            <label class="checklist-item"><input type="checkbox" id="chk-gato"> Gato/Llave L</label>
                             <label class="checklist-item"><input type="checkbox" id="chk-refaccion"> Refacción</label>
                             <label class="checklist-item"><input type="checkbox" id="chk-estereo" checked> Estéreo</label>
                             <label class="checklist-item"><input type="checkbox" id="chk-espejos" checked> Espejos</label>
-                            <label class="checklist-item"><input type="checkbox" id="chk-vidrios" checked> Vidrios Íntegros</label>
-                            <label class="checklist-item"><input type="checkbox" id="chk-tapetes"> Tapetes</label>
+                            <label class="checklist-item"><input type="checkbox" id="chk-vidrios" checked> Vidrios</label>
+                            <label class="checklist-item"><input type="checkbox" id="chk-tapetes" checked> Tapetes</label>
                             <label class="checklist-item"><input type="checkbox" id="chk-extintor"> Extintor</label>
-                            <label class="checklist-item"><input type="checkbox" id="chk-tapa" checked> Tapa Gasolina</label>
+                            <label class="checklist-item"><input type="checkbox" id="chk-tapa" checked> Tapa Gas</label>
+                            <label class="checklist-item"><input type="checkbox" id="chk-bateria" checked> Batería</label>
+                            <label class="checklist-item"><input type="checkbox" id="chk-aceite" checked> Tapón Aceite</label>
+                            <label class="checklist-item"><input type="checkbox" id="chk-antena"> Antena</label>
                         </div>
                     </div>
                     <div class="field">
@@ -297,7 +325,7 @@
             <div class="card">
                 <h2>Vehículos en Taller</h2>
                 <table>
-                    <thead><tr><th>ID</th><th>Cliente</th><th>Auto</th><th>Servicio y Detalles</th><th>Mano Obra</th></tr></thead>
+                    <thead><tr><th>ID</th><th>Cliente</th><th>Auto</th><th>Técnico</th><th>Detalles</th></tr></thead>
                     <tbody id="tabla-ordenes"></tbody>
                 </table>
             </div>
@@ -306,19 +334,39 @@
         <!-- MÓDULO: INVENTARIO DE PIEZAS -->
         <div id="tab-inventario" class="tab-content">
             <div class="card">
-                <h2>Registrar Nueva Refacción</h2>
+                <h2>Registrar Nueva Refacción Pro</h2>
                 <form onsubmit="guardarRefaccion(event)">
                     <div class="field"><label>Código ID (Automático)</label><input type="text" id="inv-id" required readonly style="background:#16161a; color:var(--success); font-weight:bold;"></div>
-                    <div class="field"><label>Nombre</label><input type="text" id="inv-nombre" required placeholder="Ej. Balatas Delanteras"></div>
-                    <div class="field"><label>Precio ($ MXN)</label><input type="number" step="0.01" id="inv-precio" min="0" required placeholder="0.00"></div>
+                    <div class="field"><label>Nombre de la Pieza</label><input type="text" id="inv-nombre" required placeholder="Ej. Balatas, Filtro..."></div>
+                    
+                    <div class="field">
+                        <label style="color:var(--gold); font-weight:bold;">🚗 Compatibilidad Vehicular</label>
+                        <select id="inv-compatibilidad-tipo" onchange="toggleCompatibilidadCampos()">
+                            <option value="Universal" selected>🌐 Universal (Cualquier vehículo / Aceites)</option>
+                            <option value="Especifico">🚘 Específico para Marca / Modelo</option>
+                        </select>
+                    </div>
+                    <div id="sec-compatibilidad-especifica" style="display:none; background:#16161a; border:1px solid var(--border); padding:12px; border-radius:6px; margin-bottom:15px;">
+                        <div class="field">
+                            <label>Marca Compatible:</label>
+                            <input type="text" id="inv-marca-comp" placeholder="Ej. Nissan, Volkswagen...">
+                        </div>
+                        <div class="field">
+                            <label>Modelo Compatible (Opcional):</label>
+                            <input type="text" id="inv-modelo-comp" placeholder="Ej. Sentra, Jetta...">
+                        </div>
+                    </div>
+
+                    <div class="field"><label>Costo de Compra / Proveedor ($ MXN)</label><input type="number" step="0.01" id="inv-costo" min="0" required placeholder="0.00"></div>
+                    <div class="field"><label>Precio de Venta ($ MXN)</label><input type="number" step="0.01" id="inv-precio" min="0" required placeholder="0.00"></div>
                     <div class="field"><label>Stock Inicial</label><input type="number" id="inv-stock" min="0" required placeholder="0"></div>
                     <button type="submit" class="btn">Guardar Refacción</button>
                 </form>
             </div>
             <div class="card">
-                <h2>Catálogo de Piezas</h2>
+                <h2>Catálogo de Piezas & Márgenes</h2>
                 <table>
-                    <thead><tr><th>ID</th><th>Descripción</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr></thead>
+                    <thead><tr><th>ID</th><th>Descripción</th><th>Compatibilidad</th><th>Costo / Venta</th><th>Stock</th><th>Acciones</th></tr></thead>
                     <tbody id="tabla-inventario"></tbody>
                 </table>
             </div>
@@ -327,16 +375,61 @@
         <!-- MÓDULO: SISTEMA DE COBRO POS -->
         <div id="tab-pos" class="tab-content">
             <div class="card">
-                <h2>Cobro de Servicio</h2>
+                <h2>💳 Cobro de Servicio y Pago</h2>
                 <div class="field">
-                    <label>Seleccionar Orden</label>
+                    <label style="font-weight:bold; color:var(--accent);">1. Seleccionar Orden de Trabajo Activa:</label>
                     <select id="pos-select" onchange="actualizarTicket()"></select>
                 </div>
-                <button class="btn btn-success" onclick="completarPago()">Procesar Pago y Generar QR</button>
+
+                <div id="sec-detalles-cobro" style="display:none; border-top:1px solid var(--border); padding-top:15px; margin-top:15px;">
+                    <div style="background:#16161a; padding:12px; border-radius:6px; margin-bottom:15px; border:1px solid var(--border);">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                            <span style="color:var(--muted);">Cliente:</span>
+                            <strong id="pos-cli-nom" style="color:#fff;">-</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                            <span style="color:var(--muted);">Vehículo:</span>
+                            <strong id="pos-cli-auto" style="color:#fff;">-</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; font-size:1.1rem; border-top:1px dashed #333; padding-top:8px; margin-top:6px;">
+                            <span>Total a Cobrar:</span>
+                            <strong id="pos-cli-total" style="color:var(--success); font-size:1.2rem;">$0.00 MXN</strong>
+                        </div>
+                    </div>
+
+                    <label style="font-weight:bold; color:var(--accent);">2. Seleccionar Método de Pago:</label>
+                    <div class="payment-methods-grid">
+                        <div class="pay-method-btn selected" id="pay-btn-efectivo" onclick="seleccionarMetodoPago('Efectivo')">
+                            <span>💵</span>Efectivo
+                        </div>
+                        <div class="pay-method-btn" id="pay-btn-tarjeta" onclick="seleccionarMetodoPago('Tarjeta')">
+                            <span>💳</span>Tarjeta Débito/Crédito
+                        </div>
+                        <div class="pay-method-btn" id="pay-btn-transferencia" onclick="seleccionarMetodoPago('Transferencia SPEI')">
+                            <span>🏦</span>Transferencia SPEI
+                        </div>
+                        <div class="pay-method-btn" id="pay-btn-paypal" onclick="seleccionarMetodoPago('PayPal / Digital')">
+                            <span>🅿️</span>PayPal / M. Pago
+                        </div>
+                    </div>
+
+                    <div id="sec-pago-efectivo" style="background:#16161a; padding:12px; border-radius:6px; margin-bottom:15px; border:1px solid var(--border);">
+                        <div class="field" style="margin-bottom:8px;">
+                            <label>Monto recibido del cliente ($ MXN):</label>
+                            <input type="number" id="pos-monto-recibido" step="0.01" placeholder="0.00" oninput="calcularCambioEfectivo()">
+                        </div>
+                        <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:0.95rem;">
+                            <span>Cambio a entregar:</span>
+                            <span id="pos-cambio-texto" style="color:var(--gold);">$0.00 MXN</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success" style="font-size:1.05rem; padding:14px;" onclick="completarPago()">✅ Procesar Pago y Generar Ficha Técnica con QR</button>
+                </div>
             </div>
             <div class="card">
-                <h2>Vista Previa del Ticket</h2>
-                <div id="ticket-view" class="ticket"><p style="text-align: center;">Seleccione una orden.</p></div>
+                <h2>📄 Vista Previa del Documento</h2>
+                <div id="ticket-view" class="ticket"><p style="text-align: center; color:var(--muted);">Seleccione una orden para previsualizar.</p></div>
             </div>
         </div>
 
@@ -345,12 +438,11 @@
             <div class="card">
                 <h2>👥 Directorio y Expediente de Clientes</h2>
                 <p style="font-size:0.85rem; color:var(--muted); margin-bottom:15px;">
-                    Busca a cualquier cliente por su <strong>ID de Cliente</strong> o <strong>Nombre</strong>. 
-                    <em>Nota: Se otorga 1 sello (⭐) por cada servicio con compra igual o mayor a $5,000.00 MXN. Al juntar 5, se activa beneficio automático.</em>
+                    Busca a cualquier cliente por su <strong>ID</strong> o <strong>Nombre</strong>. (1 sello ⭐ por cada servicio ≥ $5,000 MXN).
                 </p>
                 <div class="field" style="max-width: 450px; margin-bottom: 20px;">
-                    <label>🔍 Buscar por ID de Cliente o Nombre:</label>
-                    <input type="text" id="buscar-cliente-input" placeholder="Ej. CLI-2177 o Matrix..." oninput="manejarAutocompleteDirectorioCliente()" onkeydown="manejarKeydownBuscadorCliente(event)" autocomplete="off">
+                    <label>🔍 Buscar Cliente:</label>
+                    <input type="text" id="buscar-cliente-input" placeholder="Ej. CLI-2177 o Matrix..." oninput="manejarAutocompleteDirectorioCliente()" autocomplete="off">
                     <div id="sugerencias-directorio-cliente" class="autocomplete-suggestions"></div>
                 </div>
                 <table>
@@ -359,10 +451,10 @@
                             <th>ID Cliente</th>
                             <th>Cliente</th>
                             <th>Vehículos</th>
-                            <th>Visitas Totales</th>
+                            <th>Visitas</th>
                             <th>Última Visita</th>
-                            <th>Tarjeta de Sellos</th>
-                            <th>Estado Recompensa</th>
+                            <th>Sellos</th>
+                            <th>Recompensa</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -371,15 +463,38 @@
             </div>
         </div>
 
-        <!-- MÓDULO: CORTE DE CAJA -->
+        <!-- MÓDULO: AGENDA DE CITAS -->
+        <div id="tab-agenda" class="tab-content">
+            <div class="card">
+                <h2>📅 Agendar Cita o Mantenimiento</h2>
+                <form onsubmit="guardarCita(event)">
+                    <div class="field"><label>Nombre del Cliente</label><input type="text" id="cita-cliente" required placeholder="Nombre completo..."></div>
+                    <div class="field"><label>Teléfono (Contacto)</label><input type="text" id="cita-tel" required placeholder="3111234567"></div>
+                    <div class="field"><label>Vehículo (Marca Modelo Año)</label><input type="text" id="cita-auto" required placeholder="Ej. Nissan Sentra 2001"></div>
+                    <div class="field"><label>Fecha y Hora Programada</label><input type="datetime-local" id="cita-fecha" required></div>
+                    <div class="field"><label>Motivo o Servicio Requerido</label><textarea id="cita-motivo" rows="2" placeholder="Ej. Cambio de aceite, revisión de frenos..."></textarea></div>
+                    <button type="submit" class="btn">Agendar Cita</button>
+                </form>
+            </div>
+            <div class="card">
+                <h2>Citas Registradas</h2>
+                <table>
+                    <thead><tr><th>Fecha / Hora</th><th>Cliente</th><th>Auto</th><th>Motivo</th><th>Acciones</th></tr></thead>
+                    <tbody id="tabla-citas"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MÓDULO: CORTE DE CAJA Y UTILIDAD -->
         <div id="tab-corte" class="tab-content full-width">
             <div class="card">
-                <h2>Corte de Caja</h2>
+                <h2>📊 Corte de Caja y Utilidad Neta</h2>
                 <div class="metrics-grid" style="margin-top: 15px;">
                     <div class="metric-card"><h3>Servicios Cobrados</h3><p id="corte-cant-servicios">0</p></div>
-                    <div class="metric-card"><h3>Refacciones Vendidas</h3><p id="corte-ingreso-refacciones">$0.00</p></div>
-                    <div class="metric-card"><h3>Total Mano de Obra</h3><p id="corte-ingreso-mano">$0.00</p></div>
-                    <div class="metric-card"><h3>Ingreso Total (Caja)</h3><p id="corte-total-general">$0.00 MXN</p></div>
+                    <div class="metric-card"><h3>Costo de Refacciones (Inv.)</h3><p id="corte-costo-refacciones">$0.00</p></div>
+                    <div class="metric-card"><h3>Mano de Obra Total</h3><p id="corte-ingreso-mano">$0.00</p></div>
+                    <div class="metric-card"><h3>Ingreso Total Caja</h3><p id="corte-total-general">$0.00 MXN</p></div>
+                    <div class="metric-card" style="border-color: var(--success);"><h3>Utilidad Neta Estimada</h3><p id="corte-utilidad-neta" style="color:var(--success);">$0.00 MXN</p></div>
                 </div>
             </div>
         </div>
@@ -397,7 +512,8 @@
             </div>
             <div id="sec-editar" style="display:none;">
                 <div class="field"><label>Nombre / Descripción:</label><input type="text" id="input-edit-nombre"></div>
-                <div class="field"><label>Precio ($ MXN):</label><input type="number" step="0.01" id="input-edit-precio"></div>
+                <div class="field"><label>Costo de Compra ($):</label><input type="number" step="0.01" id="input-edit-costo"></div>
+                <div class="field"><label>Precio de Venta ($):</label><input type="number" step="0.01" id="input-edit-precio"></div>
                 <div class="field"><label>Stock Total en Almacén:</label><input type="number" id="input-edit-stock"></div>
                 <button class="btn btn-success" onclick="confirmarEditarRefaccion()">💾 Guardar Cambios</button>
             </div>
@@ -405,7 +521,7 @@
         </div>
     </div>
 
-    <!-- MODAL BENEFICIO DE 5 ESTRELLAS -->
+    <!-- MODAL BENEFICIO 5 ESTRELLAS -->
     <div id="modal-beneficio" class="modal-overlay" style="z-index: 1050;">
         <div class="modal-card" style="max-width:450px;">
             <h2 style="color: var(--gold); text-align: center; margin-bottom: 12px;">🎁 ¡Cliente con 5 Sellos (⭐)!</h2>
@@ -428,20 +544,20 @@
         </div>
     </div>
 
-    <!-- MODAL COMPROBANTE ADMIN -->
+    <!-- MODAL VISTA DE FICHA TÉCNICA Y TICKET -->
     <div id="modal-pago" class="modal-overlay">
         <div class="modal-card">
             <h2 id="modal-titulo" style="color: var(--success); text-align: center; margin-bottom: 12px;">Consulta de Expediente</h2>
             <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                <button class="btn btn-secondary" style="flex:1; margin:0;" onclick="cambiarVistaModal('ficha')">📋 Ficha Técnica Pro</button>
                 <button class="btn btn-secondary" style="flex:1; margin:0;" onclick="cambiarVistaModal('ticket')">🎫 Ticket Cliente</button>
-                <button class="btn btn-secondary" style="flex:1; margin:0;" onclick="cambiarVistaModal('ficha')">📋 Ficha Técnica</button>
             </div>
             <div id="modal-ticket-body" style="margin-bottom: 15px;"></div>
-            <div style="display: flex; gap: 8px;">
-                <button class="btn btn-download" onclick="descargarImagen('modal-ticket-body', 'Archivo_MotorZero.png')">💾 Guardar PNG</button>
-                <button class="btn btn-secondary" onclick="window.print()">🖨️ Imprimir</button>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-download" style="flex:1;" onclick="descargarImagen('modal-ticket-body', 'Documento_MotorZero.png')">💾 Guardar PNG</button>
+                <button class="btn btn-secondary" style="flex:1;" onclick="window.print()">🖨️ Imprimir</button>
             </div>
-            <button id="btn-modal-pago-cerrar" class="btn btn-success" style="margin-top:10px;" onclick="cerrarModal()">Cerrar / Regresar</button>
+            <button class="btn btn-success" style="margin-top:10px;" onclick="cerrarModal()">Cerrar / Regresar</button>
         </div>
     </div>
 
@@ -470,30 +586,32 @@
             toast.className = 'toast ' + tipo;
             toast.innerText = mensaje;
             container.appendChild(toast);
-            setTimeout(function() {
-                if(container.contains(toast)) container.removeChild(toast);
-            }, 4000);
+            setTimeout(function() { if(container.contains(toast)) container.removeChild(toast); }, 4000);
         }
 
         function cargarDatosPrueba() {
             var invPrueba = [
-                { id: 'REF-001', nombre: 'Carburador Holley', precio: 1200.00, stock: 5 },
-                { id: 'REF-002', nombre: 'Bomba de Agua', precio: 650.00, stock: 8 },
-                { id: 'REF-003', nombre: 'Filtro de Aceite', precio: 150.00, stock: 12 },
-                { id: 'REF-004', nombre: 'Balatas Cerámicas', precio: 850.00, stock: 4 }
+                { id: 'REF-001', nombre: 'Carburador Holley', costo: 800.00, precio: 1200.00, stock: 5, compTipo: 'Universal', compMarca: '', compModelo: '' },
+                { id: 'REF-002', nombre: 'Bomba de Agua Sentra 2.0', costo: 420.00, precio: 650.00, stock: 8, compTipo: 'Especifico', compMarca: 'Nissan', compModelo: 'Sentra' },
+                { id: 'REF-003', nombre: 'Filtro de Aceite Universal Multi-Marca', costo: 90.00, precio: 150.00, stock: 12, compTipo: 'Universal', compMarca: '', compModelo: '' },
+                { id: 'REF-004', nombre: 'Balatas Cerámicas Nissan Sentra', costo: 500.00, precio: 850.00, stock: 4, compTipo: 'Especifico', compMarca: 'Nissan', compModelo: 'Sentra' }
             ];
             var cliPrueba = [
-                { id: 'CLI-5521', nombre: 'Matrix', vehiculos: ['Nissan Sentra 2001', 'Chevrolet Blazer 1997'], totalServicios: 2, sellosValidos: 5, ultimaVisita: new Date().toLocaleString(), historialTickets: [] },
-                { id: 'CLI-9082', nombre: 'Esperanza Meza', vehiculos: ['Volkswagen Jetta 2018'], totalServicios: 5, sellosValidos: 5, ultimaVisita: new Date().toLocaleString(), historialTickets: [] },
-                { id: 'CLI-1244', nombre: 'Martin Flores', vehiculos: ['Ford Ranger 2015'], totalServicios: 1, sellosValidos: 2, ultimaVisita: new Date().toLocaleString(), historialTickets: [] }
+                { id: 'CLI-5521', nombre: 'Matrix', telefono: '3111234567', vehiculos: ['Nissan Sentra 2001', 'Chevrolet Blazer 1997'], totalServicios: 2, sellosValidos: 5, ultimaVisita: new Date().toLocaleString(), historialTickets: [] },
+                { id: 'CLI-9082', nombre: 'Esperanza Meza', telefono: '3119876543', vehiculos: ['Volkswagen Jetta 2018'], totalServicios: 5, sellosValidos: 5, ultimaVisita: new Date().toLocaleString(), historialTickets: [] }
+            ];
+            var citasPrueba = [
+                { id: 'CIT-01', cliente: 'Carlos Santana', tel: '3115551234', auto: 'Ford Ranger 2015', fecha: '2026-10-15T10:00', motivo: 'Cambio de balatas y afinación' }
             ];
             if (!localStorage.getItem('mz_inv')) localStorage.setItem('mz_inv', JSON.stringify(invPrueba));
             if (!localStorage.getItem('mz_cli')) localStorage.setItem('mz_cli', JSON.stringify(cliPrueba));
+            if (!localStorage.getItem('mz_citas')) localStorage.setItem('mz_citas', JSON.stringify(citasPrueba));
         }
         
         cargarDatosPrueba();
 
         var logoBase64Global = localStorage.getItem('mz_logo') || '';
+        var metodoPagoSeleccionadoGlobal = 'Efectivo';
 
         function cambiarLogoTaller(e) {
             var file = e.target.files[0];
@@ -510,13 +628,11 @@
 
         function actualizarVisualesLogo() {
             var imgHeader = document.getElementById('logo-preview-header');
-            if (logoBase64Global) {
-                if (imgHeader) {
-                    imgHeader.src = logoBase64Global;
-                    imgHeader.style.display = 'block';
-                }
-            } else {
-                if (imgHeader) imgHeader.style.display = 'none';
+            if (logoBase64Global && imgHeader) {
+                imgHeader.src = logoBase64Global;
+                imgHeader.style.display = 'block';
+            } else if (imgHeader) {
+                imgHeader.style.display = 'none';
             }
         }
 
@@ -526,15 +642,16 @@
                 mz_ord: localStorage.getItem('mz_ord'),
                 mz_tickets: localStorage.getItem('mz_tickets'),
                 mz_cli: localStorage.getItem('mz_cli'),
+                mz_citas: localStorage.getItem('mz_citas'),
                 mz_logo: localStorage.getItem('mz_logo')
             };
             var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             var url = URL.createObjectURL(blob);
             var a = document.createElement('a');
             a.href = url;
-            a.download = 'MotorZero_Respaldo_' + new Date().toISOString().slice(0,10) + '.json';
+            a.download = 'MotorZero_RespaldoPro_' + new Date().toISOString().slice(0,10) + '.json';
             a.click();
-            mostrarToast('Archivo de respaldo descargado con éxito.', 'success');
+            mostrarToast('Respaldo descargado con éxito.', 'success');
         }
 
         function importarBaseDatos(e) {
@@ -548,6 +665,7 @@
                     if (data.mz_ord) localStorage.setItem('mz_ord', data.mz_ord);
                     if (data.mz_tickets) localStorage.setItem('mz_tickets', data.mz_tickets);
                     if (data.mz_cli) localStorage.setItem('mz_cli', data.mz_cli);
+                    if (data.mz_citas) localStorage.setItem('mz_citas', data.mz_citas);
                     if (data.mz_logo) {
                         localStorage.setItem('mz_logo', data.mz_logo);
                         logoBase64Global = data.mz_logo;
@@ -555,7 +673,7 @@
                     mostrarToast('Base de datos restaurada correctamente.', 'success');
                     setTimeout(function() { window.location.reload(); }, 1200);
                 } catch(err) {
-                    mostrarToast('Error: El archivo no es válido.', 'error');
+                    mostrarToast('Error: Archivo no válido.', 'error');
                 }
             };
             reader.readAsText(file);
@@ -567,42 +685,35 @@
             'Chevrolet': ['Aveo', 'Onix', 'Spark', 'Silverado', 'Blazer', 'Chevy', 'Camaro'],
             'Ford': ['Mustang', 'Focus', 'Fiesta', 'Ranger', 'F-150', 'EcoSport', 'Escape'],
             'Toyota': ['Corolla', 'Yaris', 'RAV4', 'Hilux', 'Tacoma', 'Camry'],
-            'Honda': ['Civic', 'CR-V', 'City', 'Fit', 'Accord', 'HR-V'],
-            'Hyundai': ['Grand i10', 'Accent', 'Elantra', 'Creta', 'Tucson'],
-            'Kia': ['Rio', 'Forte', 'Sportage', 'Seltos', 'Soul']
+            'Honda': ['Civic', 'CR-V', 'City', 'Fit', 'Accord', 'HR-V']
         };
+
         var inventario = JSON.parse(localStorage.getItem('mz_inv')) || [];
         var ordenes = JSON.parse(localStorage.getItem('mz_ord')) || [];
         var tickets = JSON.parse(localStorage.getItem('mz_tickets')) || [];
         var clientes = JSON.parse(localStorage.getItem('mz_cli')) || [];
+        var citas = JSON.parse(localStorage.getItem('mz_citas')) || [];
         var piezasOrdenTemp = [];
         var fotosOrdenTemp = [];
         var ticketActualModal = null;
         var ticketActualKiosko = null;
-        var clienteOrigenExpedienteId = null;
         var clienteEncontradoMemoria = null;
         var clienteSeleccionadoActual = null;
         var beneficioSeleccionadoOrden = null;
 
         function reiniciarSistema() {
-            if(confirm("⚠️ ¿Estás seguro que deseas borrar todos los datos? El sistema volverá a sus datos de prueba.")) {
+            if(confirm("⚠️ ¿Estás seguro de restablecer el sistema a sus valores iniciales?")) {
                 localStorage.clear();
                 window.location.reload();
             }
         }
 
         function obtenerSVGDiagrama(autoStr) {
-            var str = (autoStr || '').toLowerCase();
-            if (str.includes('np300') || str.includes('hilux') || str.includes('ranger') || str.includes('f-150') || str.includes('tacoma') || str.includes('silverado') || str.includes('pickup') || str.includes('ram')) {
-                return '<svg width="290" height="130" viewBox="0 0 290 130" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;"><g stroke="#333" stroke-width="1.5" fill="#f4f4f6" font-size="7" font-weight="bold" text-anchor="middle"><rect x="95" y="5" width="50" height="65" rx="6" fill="#e8e8ed" stroke="#333"/><rect x="145" y="5" width="45" height="65" rx="2" fill="#dcdce3" stroke="#333" stroke-dasharray="3 3"/><text x="120" y="38" fill="#ff4500">CABINA</text><text x="167" y="38" fill="#555" font-size="6">CAJA</text><rect x="10" y="5" width="75" height="32" rx="4" fill="#e8e8ed" stroke="#333"/><circle cx="24" cy="13" r="4" fill="#ffeb3b"/><circle cx="71" cy="13" r="4" fill="#ffeb3b"/><rect x="32" y="16" width="31" height="14" fill="#333"/><text x="47.5" y="23" fill="#fff" font-size="6">PICKUP FRENTE</text><rect x="10" y="42" width="75" height="32" rx="2" fill="#dcdce3" stroke="#333"/><line x1="15" y1="58" x2="80" y2="58" stroke="#333" stroke-width="2"/><circle cx="20" cy="65" r="3" fill="#f44336"/><circle cx="75" cy="65" r="3" fill="#f44336"/><text x="47.5" y="52" fill="#555">PORTÓN CAJA</text><rect x="10" y="80" width="60" height="30" rx="6" fill="#e8e8ed" stroke="#333"/><rect x="70" y="84" width="60" height="26" fill="#dcdce3" stroke="#333"/><path d="M 25 80 L 40 66 L 68 66 L 70 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="32" cy="110" r="7" fill="#222" stroke="#fff" stroke-width="1.5"/><circle cx="110" cy="110" r="7" fill="#222" stroke="#fff" stroke-width="1.5"/><text x="45" y="96" fill="#333">CABINA</text><text x="100" y="96" fill="#555">CAJA</text><rect x="150" y="84" width="60" height="26" fill="#dcdce3" stroke="#333"/><rect x="210" y="80" width="60" height="30" rx="6" fill="#e8e8ed" stroke="#333"/><path d="M 210 80 L 212 66 L 240 66 L 255 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="170" cy="110" r="7" fill="#222" stroke="#fff" stroke-width="1.5"/><circle cx="248" cy="110" r="7" fill="#222" stroke="#fff" stroke-width="1.5"/><text x="180" y="96" fill="#555">CAJA</text><text x="235" y="96" fill="#333">CABINA</text></g></svg>';
-            }
-            if (str.includes('x-trail') || str.includes('cr-v') || str.includes('rav4') || str.includes('creta') || str.includes('sportage') || str.includes('taos') || str.includes('kicks') || str.includes('hr-v') || str.includes('blazer') || str.includes('suv') || str.includes('tiguan') || str.includes('escape') || str.includes('ecosport')) {
-                return '<svg width="290" height="130" viewBox="0 0 290 130" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;"><g stroke="#333" stroke-width="1.5" fill="#f4f4f6" font-size="7" font-weight="bold" text-anchor="middle"><rect x="100" y="5" width="90" height="65" rx="8" fill="#e8e8ed" stroke="#333"/><line x1="97" y1="10" x2="193" y2="10" stroke="#ff4500" stroke-width="2"/><line x1="97" y1="60" x2="193" y2="60" stroke="#ff4500" stroke-width="2"/><text x="145" y="38" fill="#ff4500">SUV - TECHO RIELES</text><rect x="10" y="5" width="80" height="32" rx="5" fill="#e8e8ed" stroke="#333"/><circle cx="24" cy="13" r="4" fill="#ffeb3b"/><circle cx="76" cy="13" r="4" fill="#ffeb3b"/><text x="50" y="23" fill="#555">SUV FRENTE</text><rect x="10" y="42" width="80" height="32" rx="4" fill="#e8e8ed" stroke="#333"/><rect x="20" y="62" fill="#f44336" width="12" height="6" rx="1"/><rect x="68" y="62" fill="#f44336" width="12" height="6" rx="1"/><text x="50" y="58" fill="#555">TRASERA SUV</text><rect x="10" y="80" width="125" height="32" rx="7" fill="#e8e8ed" stroke="#333"/><path d="M 30 80 L 50 64 L 115 64 L 128 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="35" cy="112" r="7.5" fill="#222" stroke="#fff" stroke-width="1.5"/><circle cx="110" cy="112" r="7.5" fill="#222" stroke="#fff" stroke-width="1.5"/><text x="72" y="98" fill="#333">LAT. IZQ. (SUV)</text><rect x="150" y="80" width="125" height="32" rx="7" fill="#e8e8ed" stroke="#333"/><path d="M 170 80 L 190 64 L 255 64 L 268 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="175" cy="112" r="7.5" fill="#222" stroke="#fff" stroke-width="1.5"/><circle cx="250" cy="112" r="7.5" fill="#222" stroke="#fff" stroke-width="1.5"/><text x="212" y="98" fill="#333">LAT. DER. (SUV)</text></g></svg>';
-            }
-            if (str.includes('march') || str.includes('spark') || str.includes('chevy') || str.includes('golf') || str.includes('polo') || str.includes('fit') || str.includes('grand i10') || str.includes('yaris') || str.includes('rio') || str.includes('hatchback')) {
-                return '<svg width="290" height="130" viewBox="0 0 290 130" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;"><g stroke="#333" stroke-width="1.5" fill="#f4f4f6" font-size="7" font-weight="bold" text-anchor="middle"><rect x="105" y="5" width="70" height="65" rx="10" fill="#e8e8ed" stroke="#333"/><text x="140" y="40" fill="#ff4500">HATCHBACK</text><rect x="15" y="5" width="75" height="30" rx="6" fill="#e8e8ed" stroke="#333"/><circle cx="28" cy="12" r="3.5" fill="#ffeb3b"/><circle cx="77" cy="12" r="3.5" fill="#ffeb3b"/><text x="52.5" y="22" fill="#555">COMPACTO FRENTE</text><rect x="15" y="42" width="75" height="30" rx="3" fill="#e8e8ed" stroke="#333"/><circle cx="25" cy="64" r="3.5" fill="#f44336"/><circle cx="80" cy="64" r="3.5" fill="#f44336"/><text x="52.5" y="58" fill="#555">PORTÓN TRASERO</text><rect x="15" y="80" width="110" height="28" rx="6" fill="#e8e8ed" stroke="#333"/><path d="M 35 80 L 52 68 L 105 68 L 118 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="38" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><circle cx="102" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><text x="70" y="96" fill="#333">LAT. IZQ. (HATCH)</text><rect x="155" y="80" width="110" height="28" rx="6" fill="#e8e8ed" stroke="#333"/><path d="M 175 80 L 192 68 L 245 68 L 258 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="178" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><circle cx="242" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><text x="210" y="96" fill="#333">LAT. DER. (HATCH)</text></g></svg>';
-            }
-            return '<svg width="290" height="130" viewBox="0 0 290 130" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;"><g stroke="#333" stroke-width="1.5" fill="#f4f4f6" font-size="7" font-weight="bold" text-anchor="middle"><rect x="105" y="5" width="80" height="65" rx="12" fill="#e8e8ed" stroke="#333"/><line x1="105" y1="20" x2="185" y2="20" stroke="#888"/><line x1="105" y1="52" x2="185" y2="52" stroke="#888"/><text x="145" y="38" fill="#ff4500">SEDÁN - TECHO</text><rect x="15" y="5" width="75" height="30" rx="4" fill="#e8e8ed" stroke="#333"/><circle cx="28" cy="12" r="3.5" fill="#ffeb3b"/><circle cx="77" cy="12" r="3.5" fill="#ffeb3b"/><rect x="38" y="18" width="29" height="10" rx="2" fill="#333"/><text x="52.5" y="22" fill="#555">SEDÁN FRENTE</text><rect x="15" y="42" width="75" height="30" rx="4" fill="#e8e8ed" stroke="#333"/><circle cx="28" cy="64" r="3.5" fill="#f44336"/><circle cx="77" cy="64" r="3.5" fill="#f44336"/><text x="52.5" y="58" fill="#555">TRASERA SEDÁN</text><rect x="15" y="80" width="120" height="28" rx="6" fill="#e8e8ed" stroke="#333"/><path d="M 35 80 L 55 68 L 95 68 L 115 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="38" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><circle cx="112" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><text x="75" y="96" fill="#333">LAT. IZQUIERDO</text><rect x="155" y="80" width="120" height="28" rx="6" fill="#e8e8ed" stroke="#333"/><path d="M 175 80 L 195 68 L 235 68 L 255 80 Z" fill="#d0d0d8" stroke="#333"/><circle cx="178" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><circle cx="252" cy="108" r="6.5" fill="#222" stroke="#fff" stroke-width="1"/><text x="215" y="96" fill="#333">LAT. DERECHO</text></g></svg>';
+            return '<svg width="340" height="135" viewBox="0 0 340 135" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;"><g stroke="#111" stroke-width="1.5" fill="#f8f8fa" font-size="8" font-weight="bold" text-anchor="middle"><rect x="120" y="5" width="100" height="70" rx="8" fill="#e8e8ed"/><text x="170" y="42" fill="#ff4500">CABINA / TECHO</text><rect x="10" y="5" width="100" height="32" rx="5" fill="#e8e8ed"/><text x="60" y="22" fill="#333">FRENTE / MOTOR</text><rect x="230" y="5" width="100" height="32" rx="5" fill="#e8e8ed"/><text x="280" y="22" fill="#333">CAJUELA / TRASERA</text><rect x="10" y="85" width="150" height="32" rx="6" fill="#e8e8ed"/><circle cx="40" cy="117" r="7.5" fill="#222" stroke="#fff" stroke-width="1.5"/><circle cx="130" cy="117" r="7.5" fill="#222" stroke="#fff" stroke-width="1.5"/><text x="85" y="103" fill="#333">COSTADO IZQUIERDO</text><rect x="180" y="85" width="150" height="32" rx="6" fill="#e8e8ed"/><circle cx="210" cy="117" r="7.5" fill="#222" stroke="#fff" stroke-width="1.5"/><circle cx="300" cy="117" r="7.5" fill="#222" stroke="#fff" stroke-width="1.5"/><text x="255" y="103" fill="#333">COSTADO DERECHO</text></g></svg>';
+        }
+
+        function generarUrlQrImage(dataText) {
+            return 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(dataText);
         }
 
         function manejarAutocompleteCliente() {
@@ -628,6 +739,9 @@
                     div.innerText = '👤 [' + (c.id || 'CLI-0000') + '] ' + c.nombre + ' (' + (c.vehiculos[c.vehiculos.length - 1] || 'Sin auto') + ')';
                     div.onclick = function() {
                         document.getElementById('ord-cliente').value = c.nombre;
+                        if(document.getElementById('ord-telefono') && c.telefono) {
+                            document.getElementById('ord-telefono').value = c.telefono;
+                        }
                         sugBox.innerHTML = '';
                         clienteSeleccionadoActual = c;
                         mostrarMemoriaCliente(c);
@@ -643,7 +757,7 @@
 
         function abrirModalBeneficioDirectoDesdeBoton() {
             if (!clienteSeleccionadoActual) return;
-            document.getElementById('modal-beneficio-texto').innerHTML = 'Selecciona la cortesía que deseas canjear para <strong>' + clienteSeleccionadoActual.nombre + '</strong>:';
+            document.getElementById('modal-beneficio-texto').innerHTML = 'Selecciona la cortesía para <strong>' + clienteSeleccionadoActual.nombre + '</strong>:';
             document.getElementById('select-beneficio-opcion').value = 'Aceite';
             actualizarOpcionesBeneficioModal();
             document.getElementById('modal-beneficio').classList.add('active');
@@ -654,28 +768,25 @@
             var subBox = document.getElementById('sub-beneficio-opciones');
             
             if (opt === 'Aceite') {
-                subBox.innerHTML = '<label>Tipo de Aceite Gratis:</label>' +
+                subBox.innerHTML = '<label>Tipo / Marca de Aceite Gratis:</label>' +
                     '<select id="sub-ben-val">' +
-                        '<option value="Sintético 5W-30">Aceite Sintético Premium 5W-30 (Cortesía)</option>' +
-                        '<option value="Semi-Sintético 10W-30">Aceite Semi-Sintético 10W-30 (Cortesía)</option>' +
+                        '<option value="Mobil 1 Sintético 5W-30">Mobil 1 Advanced Full Synthetic 5W-30 (Cortesía)</option>' +
+                        '<option value="Castrol EDGE Sintético 5W-30">Castrol EDGE Full Synthetic 5W-30 (Cortesía)</option>' +
                     '</select>';
             } else if (opt === 'Balatas') {
                 subBox.innerHTML = '<label>Tipo de Balatas Gratis:</label>' +
                     '<select id="sub-ben-val">' +
                         '<option value="Cerámica Premium">Balatas Cerámica Premium (Cortesía)</option>' +
-                        '<option value="Semimetálica">Balatas Semimetálicas (Cortesía)</option>' +
                     '</select>';
             } else if (opt === 'Llantas') {
                 subBox.innerHTML = '<label>Tipo de Llanta (Máx. 2 unidades):</label>' +
                     '<select id="sub-ben-val" style="margin-bottom:8px;">' +
                         '<option value="Llantas Nuevas">Llantas Nuevas (Hasta 2 - Cortesía)</option>' +
-                        '<option value="Llantas Seminuevas">Llantas Seminuevas (Hasta 2 - Cortesía)</option>' +
-                        '<option value="Llantas Usadas">Llantas Usadas (Hasta 2 - Cortesía)</option>' +
                     '</select>' +
                     '<label>Cantidad:</label>' +
                     '<input type="number" id="sub-ben-cant" value="2" min="1" max="2">';
             } else if (opt === 'Pieza') {
-                subBox.innerHTML = '<label>Selecciona Pieza de Inventario:</label>' +
+                subBox.innerHTML = '<label>Selecciona Pieza:</label>' +
                     '<select id="sub-ben-val">' +
                         inventario.map(function(r) { return '<option value="' + r.nombre + '">' + r.nombre + ' (Cortesía)</option>'; }).join('') +
                     '</select>';
@@ -686,7 +797,6 @@
             var opcion = document.getElementById('select-beneficio-opcion').value;
             var subValEl = document.getElementById('sub-ben-val');
             var subVal = subValEl ? subValEl.value : '';
-            
             var descCortesía = opcion + ': ' + subVal;
             if (opcion === 'Llantas') {
                 var cant = document.getElementById('sub-ben-cant').value || '2';
@@ -703,8 +813,7 @@
             document.getElementById('chk-agregar-servicio-extra').checked = false;
             document.getElementById('sec-contenedor-servicio-real').style.display = 'none';
             document.getElementById('ord-mano').value = '0.00';
-
-            mostrarToast('Cortesía agregada. Puedes decidir si deseas agregar un servicio adicional.', 'success');
+            mostrarToast('Cortesía aplicada con éxito.', 'success');
         }
 
         function cerrarModalBeneficioOnly() {
@@ -717,7 +826,6 @@
             document.getElementById('sec-toggle-servicio-adicional').style.display = 'none';
             document.getElementById('sec-contenedor-servicio-real').style.display = 'block';
             document.getElementById('chk-agregar-servicio-extra').checked = false;
-            
             if (clienteSeleccionadoActual && clienteSeleccionadoActual.sellosValidos >= 5) {
                 document.getElementById('aviso-beneficio-orden').style.display = 'block';
             }
@@ -746,9 +854,7 @@
             render();
             if (!val) return;
             var encontrados = clientes.filter(function(c) {
-                var idMatch = (c.id || '').toLowerCase().includes(val);
-                var nomMatch = (c.nombre || '').toLowerCase().includes(val);
-                return idMatch || nomMatch;
+                return (c.id || '').toLowerCase().includes(val) || (c.nombre || '').toLowerCase().includes(val);
             });
             if (encontrados.length > 0) {
                 encontrados.forEach(function(c) {
@@ -775,11 +881,9 @@
             var secSel = document.getElementById('sec-selector-autos-cliente');
             var selAutos = document.getElementById('select-autos-cliente');
             if (ultimoAuto) {
-                txt.innerHTML = '✨ <strong>Cliente Frecuente Detectado (' + cli.id + '):</strong> Último auto: <strong>' + ultimoAuto + '</strong>';
+                txt.innerHTML = '✨ <strong>Cliente Frecuente (' + cli.id + '):</strong> Último auto: <strong>' + ultimoAuto + '</strong>';
                 var unicos = Array.from(new Set(vehiculosList));
-                selAutos.innerHTML = unicos.map(function(v) {
-                    return '<option value="' + v + '">' + v + '</option>';
-                }).join('');
+                selAutos.innerHTML = unicos.map(function(v) { return '<option value="' + v + '">' + v + '</option>'; }).join('');
                 secSel.style.display = 'none';
                 card.style.display = 'block';
             } else {
@@ -790,16 +894,12 @@
         function usarUltimoVehiculoCliente() {
             if (!clienteEncontradoMemoria || !clienteEncontradoMemoria.vehiculos) return;
             var ultimoAuto = clienteEncontradoMemoria.vehiculos[clienteEncontradoMemoria.vehiculos.length - 1];
-            if (ultimoAuto) {
-                cargarCamposVehiculoStr(ultimoAuto);
-            }
+            if (ultimoAuto) cargarCamposVehiculoStr(ultimoAuto);
             document.getElementById('card-memoria-cliente').style.display = 'none';
         }
         function mostrarSelectorAutosCliente() {
             var secSel = document.getElementById('sec-selector-autos-cliente');
-            if (secSel) {
-                secSel.style.display = (secSel.style.display === 'none') ? 'block' : 'none';
-            }
+            if (secSel) secSel.style.display = (secSel.style.display === 'none') ? 'block' : 'none';
         }
         function confirmarSeleccionAutoLista() {
             var selAutos = document.getElementById('select-autos-cliente');
@@ -816,15 +916,10 @@
                 document.getElementById('ord-marca').value = marca;
                 document.getElementById('ord-modelo').value = modelo;
                 document.getElementById('ord-anio').value = anio;
-            } else if (partes.length === 2) {
-                document.getElementById('ord-marca').value = partes[0];
-                document.getElementById('ord-modelo').value = partes[1];
-                document.getElementById('ord-anio').value = '';
             } else {
                 document.getElementById('ord-marca').value = autoStr;
-                document.getElementById('ord-modelo').value = '';
-                document.getElementById('ord-anio').value = '';
             }
+            actualizarSelectRefacciones();
         }
         function agregarNuevoVehiculoCliente() {
             document.getElementById('ord-marca').value = '';
@@ -832,6 +927,7 @@
             document.getElementById('ord-anio').value = '';
             document.getElementById('card-memoria-cliente').style.display = 'none';
             document.getElementById('ord-marca').focus();
+            actualizarSelectRefacciones();
         }
 
         function cambiarOpcionesServicio() {
@@ -844,75 +940,47 @@
             if (tipo === 'General') {
                 manoSugerida = 400;
                 box.innerHTML = '<h3>🔧 Servicio Mecánico Personalizado</h3>' +
-                    '<div class="field"><label>Descripción del Trabajo Requerido:</label>' +
-                    '<textarea id="opt-general-desc" rows="2" placeholder="Detalla el servicio a realizar..."></textarea></div>' +
+                    '<div class="field"><label>Descripción del Trabajo:</label>' +
+                    '<textarea id="opt-general-desc" rows="2" placeholder="Detalla el servicio..."></textarea></div>' +
                     '<div class="field" style="margin-top:12px;">' +
                         '<label style="display:flex; align-items:center; gap:8px; cursor:pointer; color:var(--text); font-weight:bold;">' +
                             '<input type="checkbox" id="chk-necesita-pieza" onchange="togglePiezasGeneral()" style="width:auto;">' +
-                            '<span>¿Se necesita alguna pieza / refacción?</span>' +
+                            '<span>¿Se necesita refacción del inventario?</span>' +
                         '</label>' +
                     '</div>' +
                     '<div id="sec-piezas-general" style="display:none; background:#111115; border:1px solid var(--border); padding:12px; border-radius:6px; margin-top:10px;">' +
-                        '<p style="font-size:0.8rem; color:var(--muted); margin-bottom:10px;">Añade refacciones del catálogo para el servicio:</p>' +
-                        '<div class="field"><label>Refacción del Catálogo:</label><select id="ord-ref-select"></select></div>' +
+                        '<p style="font-size:0.8rem; color:var(--gold); margin-bottom:10px;">🎯 Refacciones Filtradas:</p>' +
+                        '<div class="field"><label>Refacción Compatible:</label><select id="ord-ref-select"></select></div>' +
                         '<div class="field"><label>Cantidad:</label><input type="number" id="ord-cant" value="1" min="1"></div>' +
-                        '<button type="button" class="btn btn-secondary" onclick="agregarPiezaTemp()">+ Agregar Refacción al Servicio</button>' +
-                        '<div class="item-list" id="lista-piezas-temp" style="margin-top:10px;"><p style="font-size:0.8rem; color:var(--muted);">Sin refacciones adicionales.</p></div>' +
+                        '<button type="button" class="btn btn-secondary" onclick="agregarPiezaTemp()">+ Agregar Refacción</button>' +
+                        '<div class="item-list" id="lista-piezas-temp" style="margin-top:10px;"><p style="font-size:0.8rem; color:var(--muted);">Sin refacciones.</p></div>' +
                     '</div>';
                 setTimeout(actualizarSelectRefacciones, 50);
             } else if (tipo === 'Aceite') {
                 manoSugerida = 250;
-                box.innerHTML = '<h3>🛢️ Especificaciones de Cambio de Aceite</h3>' +
-                    '<div class="field"><label>Selecciona el tipo de Aceite:</label>' +
+                box.innerHTML = '<h3>🛢️ Cambio de Aceite</h3>' +
+                    '<div class="field"><label>Aceite:</label>' +
                     '<select id="opt-aceite-tipo">' +
-                        '<option value="Sintético 5W-30 ($480)">Sintético Premium 5W-30 ($480 MXN)</option>' +
-                        '<option value="Semi-Sintético 10W-30 ($380)">Semi-Sintético 10W-30 ($380 MXN)</option>' +
-                        '<option value="Multigrado 20W-50 ($290)">Multigrado Alto Kilometraje 20W-50 ($290 MXN)</option>' +
-                    '</select></div>' +
-                    '<div class="field"><label>Filtro de Aceite:</label>' +
-                    '<select id="opt-filtro-aceite">' +
-                        '<option value="Filtro Estándar ($120)">Filtro de Aceite Estándar ($120 MXN)</option>' +
-                        '<option value="Filtro Alto Rendimiento ($180)">Filtro Alto Rendimiento ($180 MXN)</option>' +
+                        '<option value="Castrol EDGE Sintético 5W-30 ($550)">Castrol EDGE Full Synthetic 5W-30 ($550 MXN)</option>' +
+                        '<option value="Mobil 1 Advanced 5W-30 ($580)">Mobil 1 Advanced Synthetic 5W-30 ($580 MXN)</option>' +
+                        '<option value="Valvoline Advanced 5W-30 ($490)">Valvoline Advanced Synthetic 5W-30 ($490 MXN)</option>' +
                     '</select></div>';
             } else if (tipo === 'Balatas') {
                 manoSugerida = 350;
-                box.innerHTML = '<h3>🛑 Especificaciones de Frenos / Balatas</h3>' +
-                    '<div class="field"><label>Calidad / Tipo de Balata:</label>' +
+                box.innerHTML = '<h3>🛑 Frenos / Balatas</h3>' +
+                    '<div class="field"><label>Calidad:</label>' +
                     '<select id="opt-balata-calidad">' +
-                        '<option value="Cerámica Premium ($850)">Cerámica Premium - Cero Ruido ($850 MXN)</option>' +
-                        '<option value="Semimetálica Standard ($520)">Semimetálica Heavy Duty ($520 MXN)</option>' +
-                        '<option value="Económica Orgánica ($350)">Económica Orgánica ($350 MXN)</option>' +
-                    '</select></div>' +
-                    '<div class="field"><label>Eje a Trabajar:</label>' +
-                    '<select id="opt-balata-eje" onchange="calcularManoObraSugerida()">' +
-                        '<option value="Eje Delantero">Delantero Únicamente</option>' +
-                        '<option value="Eje Trasero">Trasero Únicamente</option>' +
-                        '<option value="Ambos Ejes (4 ruedas)">Ambos Ejes (Delantero y Trasero + $200 Mano Obra)</option>' +
+                        '<option value="Cerámica Premium ($850)">Cerámica Premium ($850 MXN)</option>' +
+                        '<option value="Semimetálica ($520)">Semimetálica ($520 MXN)</option>' +
                     '</select></div>';
             } else if (tipo === 'Diagnostico') {
                 manoSugerida = 250;
-                box.innerHTML = '<h3>🔍 Diagnóstico Técnico y Síntomas</h3>' +
-                    '<div class="field"><label>Síntomas reportados por el cliente o código scanner OBD-II:</label>' +
-                    '<textarea id="opt-diag-sintomas" rows="3" placeholder="Ej. Ruido al frenar, luz Check Engine..."></textarea></div>';
+                box.innerHTML = '<h3>🔍 Diagnóstico</h3>' +
+                    '<div class="field"><label>Síntomas:</label><textarea id="opt-diag-sintomas" rows="2"></textarea></div>';
             } else if (tipo === 'Llantas') {
                 manoSugerida = 200;
-                box.innerHTML = '<h3>🛞 Servicio de Llantas y Suspensión</h3>' +
-                    '<div class="field"><label>Tipo / Condición de Llanta:</label>' +
-                    '<select id="opt-llanta-tipo" onchange="calcularManoObraSugerida()">' +
-                        '<option value="Nueva ($1200 c/u)">Nueva - Premium ($1,200 MXN c/u)</option>' +
-                        '<option value="Seminueva ($750 c/u)">Seminueva - 80% Vida ($750 MXN c/u)</option>' +
-                        '<option value="Usada ($400 c/u)">Usada - Económica ($400 MXN c/u)</option>' +
-                    '</select></div>' +
-                    '<div class="field"><label>Cantidad de Llantas:</label>' +
-                    '<input type="number" id="opt-llanta-cant" value="1" min="1" max="4" onchange="calcularManoObraSugerida()"></div>' +
-                    '<div class="field"><label>Posición:</label>' +
-                    '<select id="opt-llanta-pos">' +
-                        '<option value="Delantera Izquierda">Delantera Izquierda</option>' +
-                        '<option value="Delantera Derecha">Delantera Derecha</option>' +
-                        '<option value="Trasera Izquierda">Trasera Izquierda</option>' +
-                        '<option value="Trasera Derecha">Trasera Derecha</option>' +
-                        '<option value="Par (2 Llantas)">Par de Llantas</option>' +
-                    '</select></div>';
+                box.innerHTML = '<h3>🛞 Llantas</h3>' +
+                    '<div class="field"><label>Tipo:</label><select id="opt-llanta-tipo"><option value="Nueva ($1200 c/u)">Nueva ($1,200 MXN)</option></select></div>';
             }
             document.getElementById('ord-mano').value = manoSugerida.toFixed(2);
         }
@@ -920,106 +988,88 @@
         function togglePiezasGeneral() {
             var chk = document.getElementById('chk-necesita-pieza');
             var sec = document.getElementById('sec-piezas-general');
-            if (!sec) return;
             if (chk && chk.checked) {
                 sec.style.display = 'block';
                 actualizarSelectRefacciones();
             } else {
                 sec.style.display = 'none';
                 piezasOrdenTemp = [];
-                var cont = document.getElementById('lista-piezas-temp');
-                if (cont) cont.innerHTML = '<p style="font-size:0.8rem; color:var(--muted);">Sin refacciones adicionales.</p>';
             }
-        }
-
-        function calcularManoObraSugerida() {
-            var tipo = document.getElementById('ord-tipo-servicio').value;
-            var mano = 400;
-            if (tipo === 'Aceite') mano = 250;
-            else if (tipo === 'Balatas') {
-                var eje = document.getElementById('opt-balata-eje') ? document.getElementById('opt-balata-eje').value : '';
-                mano = (eje.includes('Ambos')) ? 550 : 350;
-            } else if (tipo === 'Diagnostico') mano = 250;
-            else if (tipo === 'Llantas') {
-                var tipoLlanta = document.getElementById('opt-llanta-tipo') ? document.getElementById('opt-llanta-tipo').value : '';
-                var cant = parseInt(document.getElementById('opt-llanta-cant') ? document.getElementById('opt-llanta-cant').value : '1') || 1;
-                var precioUnitario = 400;
-                if (tipoLlanta.includes('Nueva')) precioUnitario = 1200;
-                else if (tipoLlanta.includes('Seminueva')) precioUnitario = 750;
-                mano = precioUnitario * cant;
-            }
-            document.getElementById('ord-mano').value = mano.toFixed(2);
         }
 
         function actualizarSelectRefacciones() {
             var sel = document.getElementById('ord-ref-select');
-            if (sel) {
-                sel.innerHTML = inventario.map(function(i) {
+            if (!sel) return;
+            
+            var marcaActual = (document.getElementById('ord-marca') ? document.getElementById('ord-marca').value : '').trim().toLowerCase();
+            var modeloActual = (document.getElementById('ord-modelo') ? document.getElementById('ord-modelo').value : '').trim().toLowerCase();
+
+            var piezasCompatibles = inventario.filter(function(item) {
+                if (!item.compTipo || item.compTipo === 'Universal') return true;
+                
+                var compM = (item.compMarca || '').toLowerCase();
+                var compMod = (item.compModelo || '').toLowerCase();
+                
+                if (compM && !marcaActual.includes(compM)) return false;
+                if (compMod && !modeloActual.includes(compMod)) return false;
+                
+                return true;
+            });
+
+            if (piezasCompatibles.length === 0) {
+                sel.innerHTML = '<option value="">❌ Sin refacciones compatibles para este vehículo</option>';
+            } else {
+                sel.innerHTML = piezasCompatibles.map(function(i) {
                     return '<option value="' + i.id + '">' + i.nombre + ' ($' + i.precio.toFixed(2) + ' - Stock: ' + i.stock + ')</option>';
                 }).join('');
             }
         }
+
+        function toggleCompatibilidadCampos() {
+            var tipo = document.getElementById('inv-compatibilidad-tipo').value;
+            document.getElementById('sec-compatibilidad-especifica').style.display = (tipo === 'Especifico') ? 'block' : 'none';
+        }
+
         function manejarInputAutocomplete(tipo) {
             var input = document.getElementById(tipo === 'marca' ? 'ord-marca' : 'ord-modelo');
             var sugBox = document.getElementById(tipo === 'marca' ? 'sugerencias-marca' : 'sugerencias-modelo');
             var val = input.value.trim().toLowerCase();
             sugBox.innerHTML = '';
             if (!val) return;
-            var lista = [];
-            if (tipo === 'marca') {
-                lista = Object.keys(marcasCat);
-            } else {
-                var marcaVal = document.getElementById('ord-marca').value.trim();
-                lista = marcasCat[marcaVal] || Object.values(marcasCat).flat();
-            }
-            var filtradas = lista.filter(function(item) { return item.toLowerCase().includes(val); });
-            filtradas.forEach(function(item) {
+            var lista = tipo === 'marca' ? Object.keys(marcasCat) : (marcasCat[document.getElementById('ord-marca').value] || []);
+            lista.filter(function(i) { return i.toLowerCase().includes(val); }).forEach(function(item) {
                 var div = document.createElement('div');
                 div.className = 'autocomplete-suggestion';
                 div.innerText = item;
                 div.onclick = function() {
                     input.value = item;
                     sugBox.innerHTML = '';
-                    if (tipo === 'marca') document.getElementById('ord-modelo').focus();
+                    actualizarSelectRefacciones();
                 };
                 sugBox.appendChild(div);
             });
         }
         function manejarKeydownAutocomplete(e, tipo) {
-            var sugBox = document.getElementById(tipo === 'marca' ? 'sugerencias-marca' : 'sugerencias-modelo');
-            var input = e.target;
             if (e.key === 'Enter') {
                 e.preventDefault();
-                var firstChild = sugBox.querySelector('.autocomplete-suggestion');
-                if (firstChild) {
-                    input.value = firstChild.innerText;
-                }
-                sugBox.innerHTML = '';
-                if (tipo === 'marca') document.getElementById('ord-modelo').focus();
+                document.getElementById(tipo === 'marca' ? 'sugerencias-marca' : 'sugerencias-modelo').innerHTML = '';
+                actualizarSelectRefacciones();
             }
         }
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.field')) {
-                var sm = document.getElementById('sugerencias-marca');
-                var smo = document.getElementById('sugerencias-modelo');
-                var sc = document.getElementById('sugerencias-cliente');
-                var sdc = document.getElementById('sugerencias-directorio-cliente');
-                if(sm) sm.innerHTML = '';
-                if(smo) smo.innerHTML = '';
-                if(sc) sc.innerHTML = '';
-                if(sdc) sdc.innerHTML = '';
-            }
-        });
+
         function guardarDatos() {
             localStorage.setItem('mz_inv', JSON.stringify(inventario));
             localStorage.setItem('mz_ord', JSON.stringify(ordenes));
             localStorage.setItem('mz_tickets', JSON.stringify(tickets));
             localStorage.setItem('mz_cli', JSON.stringify(clientes));
+            localStorage.setItem('mz_citas', JSON.stringify(citas));
             localStorage.setItem('mz_logo', logoBase64Global);
         }
+
         function generarNuevoIdOrden() { return 'ORD-' + (ordenes.length + tickets.length + 101); }
         function generarNuevoIdRefaccion() { return 'REF-' + (inventario.length + 1).toString().padStart(3, '0'); }
         function generarNuevoIdCliente() { return 'CLI-' + Math.floor(1000 + Math.random() * 9000); }
+
         function switchTab(btn, tabId) {
             document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
             document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
@@ -1027,72 +1077,68 @@
             document.getElementById('tab-' + tabId).classList.add('active');
             render();
         }
+
         function procesarFotos(e) {
-            var files = Array.from(e.target.files);
-            files.forEach(function(file) {
+            Array.from(e.target.files).forEach(function(file) {
                 var reader = new FileReader();
                 reader.onload = function(evt) {
                     fotosOrdenTemp.push(evt.target.result);
-                    var cont = document.getElementById('preview-fotos');
-                    cont.innerHTML += '<div style="position:relative; margin-top:5px;"><img src="' + evt.target.result + '" class="foto-thumb" /></div>';
+                    document.getElementById('preview-fotos').innerHTML += '<img src="' + evt.target.result + '" class="foto-thumb" />';
                 };
                 reader.readAsDataURL(file);
             });
         }
+
         function agregarPiezaTemp() {
             var refSelect = document.getElementById('ord-ref-select');
-            if (!refSelect) return;
-            var refId = refSelect.value;
+            if (!refSelect || !refSelect.value) return;
+            var ref = inventario.find(function(r) { return r.id === refSelect.value; });
             var cant = parseInt(document.getElementById('ord-cant').value);
-            if (cant < 0) { mostrarToast('Error: No valores negativos.', 'error'); return; }
-            var ref = inventario.find(function(r) { return r.id === refId; });
-            if (!refId || cant <= 0 || !ref) return;
-            if (ref.stock < cant) { mostrarToast('Error: Stock insuficiente en almacén.', 'error'); return; }
-            piezasOrdenTemp.push({ refId: refId, cant: cant, nombre: ref.nombre, precio: ref.precio });
+            if (!ref || cant <= 0 || ref.stock < cant) { mostrarToast('Stock insuficiente o valor inválido', 'error'); return; }
+            piezasOrdenTemp.push({ refId: ref.id, cant: cant, nombre: ref.nombre, precio: ref.precio, costo: ref.costo });
             var cont = document.getElementById('lista-piezas-temp');
             if (piezasOrdenTemp.length === 1) cont.innerHTML = '';
-            cont.innerHTML += '<div style="font-size:0.85rem; border-bottom:1px solid #333; padding:4px 0;">' + ref.nombre + ' (x' + cant + ')</div>';
+            cont.innerHTML += '<div style="font-size:0.85rem; border-bottom:1px solid #333; padding:4px 0; color:var(--text);">' + ref.nombre + ' (x' + cant + ') - $' + (ref.precio * cant).toFixed(2) + '</div>';
         }
+
         function guardarRefaccion(e) {
             e.preventDefault();
             var nombre = document.getElementById('inv-nombre').value.trim();
+            var costo = parseFloat(document.getElementById('inv-costo').value);
             var precio = parseFloat(document.getElementById('inv-precio').value);
             var stock = parseInt(document.getElementById('inv-stock').value);
-            if (precio < 0 || stock < 0) { mostrarToast('Error: No valores negativos.', 'error'); return; }
-            var piezaExistente = inventario.find(function(r) { return r.nombre.toLowerCase() === nombre.toLowerCase(); });
-            if (piezaExistente) {
-                piezaExistente.stock += stock;
-                piezaExistente.precio = precio;
-                mostrarToast('Stock actualizado exitosamente', 'success');
-            } else {
-                inventario.push({ id: document.getElementById('inv-id').value, nombre: nombre, precio: precio, stock: stock });
-                mostrarToast('Nueva refacción agregada', 'success');
-            }
-            guardarDatos(); 
-            e.target.reset(); 
+            
+            inventario.push({
+                id: document.getElementById('inv-id').value,
+                nombre: nombre,
+                costo: costo,
+                precio: precio,
+                stock: stock,
+                compTipo: document.getElementById('inv-compatibilidad-tipo').value,
+                compMarca: document.getElementById('inv-marca-comp').value.trim(),
+                compModelo: document.getElementById('inv-modelo-comp').value.trim()
+            });
+            guardarDatos();
+            e.target.reset();
+            toggleCompatibilidadCampos();
             render();
+            mostrarToast('Refacción guardada exitosamente.', 'success');
         }
+
         function abrirResurtirModal(idRef) {
             var ref = inventario.find(function(r) { return r.id === idRef; });
             if (!ref) return;
             document.getElementById('modal-stock-titulo').innerText = '📦 Resurtir: ' + ref.nombre;
             document.getElementById('modal-stock-id').value = ref.id;
-            document.getElementById('modal-stock-info').innerText = 'Stock actual en almacén: ' + ref.stock + ' unidades.';
-            document.getElementById('input-resurtir-cant').value = '5';
+            document.getElementById('modal-stock-info').innerText = 'Stock actual: ' + ref.stock;
             document.getElementById('sec-resurtir').style.display = 'block';
             document.getElementById('sec-editar').style.display = 'none';
             document.getElementById('modal-stock').classList.add('active');
         }
         function confirmarResurtir() {
-            var idRef = document.getElementById('modal-stock-id').value;
-            var ref = inventario.find(function(r) { return r.id === idRef; });
+            var ref = inventario.find(function(r) { return r.id === document.getElementById('modal-stock-id').value; });
             var cant = parseInt(document.getElementById('input-resurtir-cant').value);
-            if (!ref || isNaN(cant) || cant <= 0) { mostrarToast('Ingresa cantidad válida.', 'error'); return; }
-            ref.stock += cant;
-            guardarDatos();
-            cerrarModalStock();
-            mostrarToast('Almacén resurtido con éxito.', 'success');
-            render();
+            if (ref && cant > 0) { ref.stock += cant; guardarDatos(); cerrarModalStock(); render(); mostrarToast('Stock actualizado.', 'success'); }
         }
         function abrirEditarModal(idRef) {
             var ref = inventario.find(function(r) { return r.id === idRef; });
@@ -1100,6 +1146,7 @@
             document.getElementById('modal-stock-titulo').innerText = '✏️ Editar: ' + ref.nombre;
             document.getElementById('modal-stock-id').value = ref.id;
             document.getElementById('input-edit-nombre').value = ref.nombre;
+            document.getElementById('input-edit-costo').value = ref.costo;
             document.getElementById('input-edit-precio').value = ref.precio;
             document.getElementById('input-edit-stock').value = ref.stock;
             document.getElementById('sec-resurtir').style.display = 'none';
@@ -1107,193 +1154,241 @@
             document.getElementById('modal-stock').classList.add('active');
         }
         function confirmarEditarRefaccion() {
-            var idRef = document.getElementById('modal-stock-id').value;
-            var ref = inventario.find(function(r) { return r.id === idRef; });
-            if (!ref) return;
-            var nom = document.getElementById('input-edit-nombre').value.trim();
-            var pre = parseFloat(document.getElementById('input-edit-precio').value);
-            var stk = parseInt(document.getElementById('input-edit-stock').value);
-            if (!nom || isNaN(pre) || pre < 0 || isNaN(stk) || stk < 0) { mostrarToast('Ingresa valores válidos.', 'error'); return; }
-            ref.nombre = nom; ref.precio = pre; ref.stock = stk;
-            guardarDatos(); cerrarModalStock(); 
-            mostrarToast('Cambios guardados correctamente.', 'success');
-            render();
+            var ref = inventario.find(function(r) { return r.id === document.getElementById('modal-stock-id').value; });
+            if (ref) {
+                ref.nombre = document.getElementById('input-edit-nombre').value;
+                ref.costo = parseFloat(document.getElementById('input-edit-costo').value);
+                ref.precio = parseFloat(document.getElementById('input-edit-precio').value);
+                ref.stock = parseInt(document.getElementById('input-edit-stock').value);
+                guardarDatos(); cerrarModalStock(); render(); mostrarToast('Refacción actualizada.', 'success');
+            }
         }
         function cerrarModalStock() { document.getElementById('modal-stock').classList.remove('active'); }
-        
+
         function guardarOrden(e) {
             e.preventDefault();
             var cliente = document.getElementById('ord-cliente').value.trim();
+            var tel = document.getElementById('ord-telefono').value.trim();
             var marca = document.getElementById('ord-marca').value.trim();
             var modelo = document.getElementById('ord-modelo').value.trim();
             var anio = document.getElementById('ord-anio').value;
+            var placas = document.getElementById('ord-placas').value.trim();
             var mano = parseFloat(document.getElementById('ord-mano').value) || 0;
+            var mecanico = document.getElementById('ord-mecanico').value;
 
-            if (!cliente || !marca || !modelo || !anio) {
-                mostrarToast('Error: Todos los campos del vehículo son requeridos.', 'error');
-                return;
-            }
-            if (mano < 0 || isNaN(mano)) { 
-                mostrarToast('Error: No valores negativos en Mano de Obra.', 'error'); 
-                return; 
-            }
-
-            finalizarGuardadoOrden();
-        }
-
-        function finalizarGuardadoOrden() {
-            var cliente = document.getElementById('ord-cliente').value.trim();
-            var marca = document.getElementById('ord-marca').value.trim();
-            var modelo = document.getElementById('ord-modelo').value.trim();
-            var anio = document.getElementById('ord-anio').value;
-            var mano = parseFloat(document.getElementById('ord-mano').value) || 0;
-            var gas = document.getElementById('ord-gas') ? document.getElementById('ord-gas').value : '1/2';
-            
-            var quiereExtra = document.getElementById('chk-agregar-servicio-extra') ? document.getElementById('chk-agregar-servicio-extra').checked : false;
             var textoFinalServicio = '';
             var infoDescuentoPrevia = { aplicado: false, monto: 0, tipo: '' };
 
             if (beneficioSeleccionadoOrden) {
-                textoFinalServicio = '🎁 CORTESÍA 5 ESTRELLAS: ' + beneficioSeleccionadoOrden;
-                var montoDesc = 350;
-                if (beneficioSeleccionadoOrden.includes('Llantas Nuevas')) montoDesc = 2400;
-                else if (beneficioSeleccionadoOrden.includes('Llantas')) montoDesc = 1500;
-                else if (beneficioSeleccionadoOrden.includes('Balatas')) montoDesc = 850;
-                else if (beneficioSeleccionadoOrden.includes('Aceite')) montoDesc = 480;
-
-                infoDescuentoPrevia = { aplicado: true, monto: montoDesc, tipo: beneficioSeleccionadoOrden };
-
-                if (quiereExtra) {
-                    var tipoServicio = document.getElementById('ord-tipo-servicio').value;
-                    var descServicioNormal = '';
-                    if (tipoServicio === 'General') {
-                        var desc = document.getElementById('opt-general-desc') ? document.getElementById('opt-general-desc').value.trim() : '';
-                        descServicioNormal = 'Mecánica General: ' + (desc || 'Mantenimiento');
-                    } else if (tipoServicio === 'Aceite') {
-                        var ac = document.getElementById('opt-aceite-tipo') ? document.getElementById('opt-aceite-tipo').value : '';
-                        descServicioNormal = 'Cambio Aceite (' + ac + ')';
-                    } else if (tipoServicio === 'Balatas') {
-                        var bal = document.getElementById('opt-balata-calidad') ? document.getElementById('opt-balata-calidad').value : '';
-                        var eje = document.getElementById('opt-balata-eje') ? document.getElementById('opt-balata-eje').value : '';
-                        descServicioNormal = 'Frenos: ' + bal + ' [' + eje + ']';
-                    } else if (tipoServicio === 'Diagnostico') {
-                        var diag = document.getElementById('opt-diag-sintomas') ? document.getElementById('opt-diag-sintomas').value : '';
-                        descServicioNormal = 'Diagnóstico: ' + (diag || 'Revisión General');
-                    } else if (tipoServicio === 'Llantas') {
-                        var tipoLlanta = document.getElementById('opt-llanta-tipo') ? document.getElementById('opt-llanta-tipo').value : '';
-                        var cantLlantas = document.getElementById('opt-llanta-cant') ? document.getElementById('opt-llanta-cant').value : '1';
-                        var pos = document.getElementById('opt-llanta-pos') ? document.getElementById('opt-llanta-pos').value : '';
-                        descServicioNormal = 'Llantas: ' + tipoLlanta + ' (Cant: ' + cantLlantas + ') - ' + pos;
-                    }
-                    textoFinalServicio += ' | 🔧 ADICIONAL: ' + descServicioNormal;
-                }
-
+                textoFinalServicio = '🎁 CORTESÍA: ' + beneficioSeleccionadoOrden;
+                infoDescuentoPrevia = { aplicado: true, monto: 350, tipo: beneficioSeleccionadoOrden };
                 var cliObj = clientes.find(function(c) { return c.nombre.toLowerCase() === cliente.toLowerCase(); });
-                if (cliObj) {
-                    cliObj.sellosValidos -= 5;
-                }
+                if (cliObj) cliObj.sellosValidos -= 5;
             } else {
                 var tipoServicio = document.getElementById('ord-tipo-servicio').value;
                 if (tipoServicio === 'General') {
                     var desc = document.getElementById('opt-general-desc') ? document.getElementById('opt-general-desc').value.trim() : '';
                     textoFinalServicio = 'Mecánica General: ' + (desc || 'Mantenimiento');
                 } else if (tipoServicio === 'Aceite') {
-                    var ac = document.getElementById('opt-aceite-tipo') ? document.getElementById('opt-aceite-tipo').value : '';
-                    textoFinalServicio = 'Cambio Aceite (' + ac + ')';
+                    textoFinalServicio = 'Cambio Aceite (' + document.getElementById('opt-aceite-tipo').value + ')';
                 } else if (tipoServicio === 'Balatas') {
-                    var bal = document.getElementById('opt-balata-calidad') ? document.getElementById('opt-balata-calidad').value : '';
-                    var eje = document.getElementById('opt-balata-eje') ? document.getElementById('opt-balata-eje').value : '';
-                    textoFinalServicio = 'Frenos: ' + bal + ' [' + eje + ']';
+                    textoFinalServicio = 'Frenos: ' + document.getElementById('opt-balata-calidad').value;
                 } else if (tipoServicio === 'Diagnostico') {
-                    var diag = document.getElementById('opt-diag-sintomas') ? document.getElementById('opt-diag-sintomas').value : '';
-                    textoFinalServicio = 'Diagnóstico: ' + (diag || 'Revisión General');
+                    textoFinalServicio = 'Diagnóstico General';
                 } else if (tipoServicio === 'Llantas') {
-                    var tipoLlanta = document.getElementById('opt-llanta-tipo') ? document.getElementById('opt-llanta-tipo').value : '';
-                    var cantLlantas = document.getElementById('opt-llanta-cant') ? document.getElementById('opt-llanta-cant').value : '1';
-                    var pos = document.getElementById('opt-llanta-pos') ? document.getElementById('opt-llanta-pos').value : '';
-                    textoFinalServicio = 'Llantas: ' + tipoLlanta + ' (Cant: ' + cantLlantas + ') - ' + pos;
+                    textoFinalServicio = 'Servicio de Llantas';
                 }
             }
 
-            var chk = { 
-                llaves: document.getElementById('chk-llaves').checked, 
-                gato: document.getElementById('chk-gato').checked, 
-                refaccion: document.getElementById('chk-refaccion').checked, 
-                estereo: document.getElementById('chk-estereo').checked,
-                espejos: document.getElementById('chk-espejos') ? document.getElementById('chk-espejos').checked : false,
-                vidrios: document.getElementById('chk-vidrios') ? document.getElementById('chk-vidrios').checked : false,
-                tapetes: document.getElementById('chk-tapetes') ? document.getElementById('chk-tapetes').checked : false,
-                extintor: document.getElementById('chk-extintor') ? document.getElementById('chk-extintor').checked : false,
-                tapa: document.getElementById('chk-tapa') ? document.getElementById('chk-tapa').checked : false
-            };
-            
             var nuevaOrdenObj = {
                 id: document.getElementById('ord-id').value,
                 cliente: cliente,
+                telefono: tel,
                 auto: marca + ' ' + modelo + ' ' + anio,
+                placas: placas || 'S/P',
+                mecanico: mecanico,
                 servicioDetalle: textoFinalServicio,
                 mano: mano,
-                gasolina: gas,
-                checklist: chk,
+                gasolina: document.getElementById('ord-gas').value,
+                fecha: new Date().toLocaleString(),
+                checklist: {
+                    llaves: document.getElementById('chk-llaves').checked,
+                    gato: document.getElementById('chk-gato').checked,
+                    refaccion: document.getElementById('chk-refaccion').checked,
+                    estereo: document.getElementById('chk-estereo').checked,
+                    espejos: document.getElementById('chk-espejos').checked,
+                    vidrios: document.getElementById('chk-vidrios').checked,
+                    tapetes: document.getElementById('chk-tapetes').checked,
+                    extintor: document.getElementById('chk-extintor').checked,
+                    tapa: document.getElementById('chk-tapa').checked,
+                    bateria: document.getElementById('chk-bateria').checked,
+                    aceite: document.getElementById('chk-aceite').checked,
+                    antena: document.getElementById('chk-antena').checked
+                },
                 fotos: fotosOrdenTemp.slice(),
                 piezas: piezasOrdenTemp.slice(),
                 descuentoPredeterminado: infoDescuentoPrevia
             };
 
             ordenes.push(nuevaOrdenObj);
-            guardarDatos(); 
-            piezasOrdenTemp = []; 
+            guardarDatos();
+            piezasOrdenTemp = [];
             fotosOrdenTemp = [];
             beneficioSeleccionadoOrden = null;
+            document.getElementById('form-orden').reset();
             document.getElementById('card-memoria-cliente').style.display = 'none';
-            document.getElementById('aviso-beneficio-orden').style.display = 'none';
             document.getElementById('panel-beneficio-activo').style.display = 'none';
-            document.getElementById('sec-toggle-servicio-adicional').style.display = 'none';
-            document.getElementById('sec-contenedor-servicio-real').style.display = 'block';
-            document.getElementById('preview-fotos').innerHTML = '';
-            document.getElementById('form-orden').reset(); 
-            mostrarToast('Orden Registrada Exitosamente', 'success');
+            mostrarToast('Orden de trabajo registrada con éxito.', 'success');
             render();
             cambiarOpcionesServicio();
         }
 
-        function generarUrlQrDigital(ord, folio, fechaStr, tipo) {
-            var f = encodeURIComponent(folio || ord.id);
-            var c = encodeURIComponent(ord.cliente);
-            var v = encodeURIComponent(ord.auto);
-            var m = (ord.mano || 0).toString();
-            var d = encodeURIComponent(fechaStr || new Date().toLocaleString());
-            var chk = ord.checklist || {};
-            var k = (chk.llaves?'1':'0') + (chk.gato?'1':'0') + (chk.refaccion?'1':'0') + (chk.estereo?'1':'0');
-            
-            var pArr = [];
-            (ord.piezas || []).forEach(function(p) {
-                var ref = inventario.find(function(r) { return r.id === p.refId; }) || p;
-                var nombre = (p.nombre || ref.nombre).replace(/[*|]/g, ''); 
-                pArr.push(encodeURIComponent(nombre) + '*' + p.cant + '*' + (p.precio || ref.precio));
+        function guardarCita(e) {
+            e.preventDefault();
+            citas.push({
+                id: 'CIT-' + Math.floor(100 + Math.random() * 900),
+                cliente: document.getElementById('cita-cliente').value,
+                tel: document.getElementById('cita-tel').value,
+                auto: document.getElementById('cita-auto').value,
+                fecha: document.getElementById('cita-fecha').value,
+                motivo: document.getElementById('cita-motivo').value
             });
-            
-            var desc = ord.descuentoPredeterminado || { aplicado: false, monto: 0, tipo: '' };
-            var discParams = desc.aplicado ? '&da=1&dm=' + desc.monto + '&dt=' + encodeURIComponent(desc.tipo) : '';
+            guardarDatos();
+            e.target.reset();
+            render();
+            mostrarToast('Cita agendada correctamente.', 'success');
+        }
 
-            return 'https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?t=' + tipo + '&f=' + f + '&c=' + c + '&v=' + v + '&m=' + m + '&k=' + k + '&d=' + d + (pArr.length ? '&p=' + pArr.join('|') : '') + discParams;
+        function procesarCitaEnOrden(idCita) {
+            var cita = citas.find(function(c) { return c.id === idCita; });
+            if (!cita) return;
+
+            document.getElementById('ord-cliente').value = cita.cliente;
+            document.getElementById('ord-telefono').value = cita.tel;
+            cargarCamposVehiculoStr(cita.auto);
+
+            document.getElementById('ord-tipo-servicio').value = 'General';
+            cambiarOpcionesServicio();
+            setTimeout(function() {
+                var descArea = document.getElementById('opt-general-desc');
+                if (descArea) descArea.value = cita.motivo || 'Servicio programado por cita';
+            }, 100);
+
+            switchTab(document.getElementById('btn-tab-recepcion'), 'recepcion');
+            mostrarToast('Datos de la cita cargados en Toma de Orden.', 'success');
+        }
+
+        function eliminarCita(id) {
+            citas = citas.filter(function(c) { return c.id !== id; });
+            guardarDatos();
+            render();
+            mostrarToast('Cita eliminada.', 'info');
+        }
+
+        function seleccionarMetodoPago(metodo) {
+            metodoPagoSeleccionadoGlobal = metodo;
+            document.querySelectorAll('.pay-method-btn').forEach(function(btn) { btn.classList.remove('selected'); });
+            if (metodo === 'Efectivo') document.getElementById('pay-btn-efectivo').classList.add('selected');
+            else if (metodo === 'Tarjeta') document.getElementById('pay-btn-tarjeta').classList.add('selected');
+            else if (metodo === 'Transferencia SPEI') document.getElementById('pay-btn-transferencia').classList.add('selected');
+            else if (metodo === 'PayPal / Digital') document.getElementById('pay-btn-paypal').classList.add('selected');
+            
+            document.getElementById('sec-pago-efectivo').style.display = (metodo === 'Efectivo') ? 'block' : 'none';
+            actualizarTicket();
+        }
+
+        function calcularCambioEfectivo() {
+            var ordId = document.getElementById('pos-select').value;
+            if (!ordId) return;
+            var ord = ordenes.find(function(o) { return o.id === ordId; });
+            if (!ord) return;
+            var subtotalNeto = ord.mano + ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); }, 0);
+            var desc = ord.descuentoPredeterminado || { aplicado: false, monto: 0 };
+            var total = Math.max(0, subtotalNeto - desc.monto) * 1.16;
+            var rec = parseFloat(document.getElementById('pos-monto-recibido').value) || 0;
+            document.getElementById('pos-cambio-texto').innerText = '$' + Math.max(0, rec - total).toFixed(2) + ' MXN';
         }
 
         function actualizarTicket() {
             var ordId = document.getElementById('pos-select').value;
             var view = document.getElementById('ticket-view');
-            if (!ordId) { view.innerHTML = '<p style="text-align: center;">Seleccione una orden.</p>'; return; }
+            var secDetalles = document.getElementById('sec-detalles-cobro');
+            if (!ordId) {
+                view.innerHTML = '<p style="text-align: center; color:var(--muted);">Seleccione una orden para previsualizar.</p>';
+                if (secDetalles) secDetalles.style.display = 'none';
+                return;
+            }
             var ord = ordenes.find(function(o) { return o.id === ordId; });
+            if (!ord) return;
             var descInfo = ord.descuentoPredeterminado || { aplicado: false, monto: 0, tipo: '' };
-            view.innerHTML = generarHTMLTicket(ord, null, null, descInfo, logoBase64Global);
-            generarCodigoQR('qr-preview-box', generarUrlQrDigital(ord, null, null, 'ticket'));
+            var subtotalNeto = ord.mano + ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); }, 0);
+            var totalCalc = Math.max(0, subtotalNeto - descInfo.monto) * 1.16;
+
+            if (secDetalles) {
+                secDetalles.style.display = 'block';
+                document.getElementById('pos-cli-nom').innerText = ord.cliente;
+                document.getElementById('pos-cli-auto').innerText = ord.auto;
+                document.getElementById('pos-cli-total').innerText = '$' + totalCalc.toFixed(2) + ' MXN';
+            }
+            
+            var dataQr = 'https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?ord=' + ord.id + '&cli=' + encodeURIComponent(ord.cliente);
+            var qrUrl = generarUrlQrImage(dataQr);
+            view.innerHTML = generarHTMLFichaTecnicaPro(ord, 'PREV-100', qrUrl);
+            calcularCambioEfectivo();
         }
 
-        function generarHTMLTicket(ord, folio, fechaStr, descuentoInfo, logoSrc) {
+        function generarHTMLFichaTecnicaPro(ord, folio, qrUrl) {
+            var chk = ord.checklist || {};
+            return '<div class="ficha-pro-container">' +
+                '<div class="ficha-header">' +
+                    '<div>' + (logoBase64Global ? '<img src="' + logoBase64Global + '" style="width:65px; height:65px; object-fit:cover; border-radius:50%; border:2px solid #ff4500;">' : '') + '</div>' +
+                    '<div class="ficha-header-title" style="text-align:right;">' +
+                        '<h2>MOTOR ZERO (KZ)</h2>' +
+                        '<p>FICHA TÉCNICA Y RECEPCIÓN DE VEHÍCULO</p>' +
+                        '<span style="font-size:0.75rem; color:#555;">FOLIO INTERNO: <strong>' + (folio || ord.id) + '</strong></span>' +
+                    '</div>' +
+                '</div>' +
+
+                '<div class="ficha-grid-info">' +
+                    '<div><strong>ORDEN DE TRABAJO:</strong> ' + ord.id + '</div>' +
+                    '<div><strong>FECHA DE RECEPCIÓN:</strong> ' + (ord.fecha || new Date().toLocaleString()) + '</div>' +
+                    '<div><strong>CLIENTE:</strong> ' + ord.cliente + '</div>' +
+                    '<div><strong>TELÉFONO CONTACTO:</strong> ' + (ord.telefono || 'N/A') + '</div>' +
+                    '<div><strong>VEHÍCULO / MODELO:</strong> ' + ord.auto + '</div>' +
+                    '<div><strong>PLACAS / VIN:</strong> ' + (ord.placas || 'S/P') + '</div>' +
+                    '<div><strong>MECÁNICO RESPONSABLE:</strong> ' + (ord.mecanico || 'Martín Flores') + '</div>' +
+                    '<div><strong>NIVEL DE GASOLINA:</strong> ' + (ord.gasolina || '1/2') + '</div>' +
+                '</div>' +
+
+                '<div class="ficha-sec-title"><span>🛠️ Diagnóstico de Ingreso & Trabajo Solicitado</span></div>' +
+                '<div style="background:#fff; border:1px solid #ccc; padding:8px 12px; border-radius:4px; font-size:0.85rem; font-style:italic;">' + (ord.servicioDetalle || 'Revisión técnica de taller') + '</div>' +
+
+                '<div class="ficha-sec-title"><span>🚗 Diagrama de Estado de Carrocería e Inspección Visual</span></div>' +
+                '<div class="ficha-diagrama-box">' + obtenerSVGDiagrama(ord.auto) + '</div>' +
+
+                '<div class="ficha-sec-title"><span>📋 Inventario Pro y Checklist de Elementos</span></div>' +
+                '<table class="ficha-checklist-table">' +
+                    '<tr><td>🔑 Llaves: <strong>' + (chk.llaves?'SÍ':'NO') + '</strong></td><td>🐱 Gato / Llave: <strong>' + (chk.gato?'SÍ':'NO') + '</strong></td><td>🛞 Refacción: <strong>' + (chk.refaccion?'SÍ':'NO') + '</strong></td></tr>' +
+                    '<tr><td>📻 Estéreo: <strong>' + (chk.estereo?'SÍ':'NO') + '</strong></td><td>🔍 Espejos: <strong>' + (chk.espejos?'SÍ':'NO') + '</strong></td><td>🪟 Vidrios: <strong>' + (chk.vidrios?'SÍ':'NO') + '</strong></td></tr>' +
+                    '<tr><td>🧹 Tapetes: <strong>' + (chk.tapetes?'SÍ':'NO') + '</strong></td><td>🧯 Extintor: <strong>' + (chk.extintor?'SÍ':'NO') + '</strong></td><td>⛽ Tapa Gasolina: <strong>' + (chk.tapa?'SÍ':'NO') + '</strong></td></tr>' +
+                    '<tr><td>🔋 Batería: <strong>' + (chk.bateria?'SÍ':'NO') + '</strong></td><td>🛢️ Tapón Aceite: <strong>' + (chk.aceite?'SÍ':'NO') + '</strong></td><td>📡 Antena: <strong>' + (chk.antena?'SÍ':'NO') + '</strong></td></tr>' +
+                '</table>' +
+
+                '<div style="text-align:center; margin-top:15px;">' +
+                    '<img src="' + qrUrl + '" class="qr-box-img" alt="QR Digital">' +
+                    '<p style="font-size:0.7rem; color:#555;">Escanear QR para verificación digital de expediente en portal</p>' +
+                '</div>' +
+
+                '<div class="ficha-firmas-grid">' +
+                    '<div><div class="ficha-firma-linea">FIRMA TÉCNICO RESPONSABLE</div></div>' +
+                    '<div><div class="ficha-firma-linea">FIRMA DE CONFORMIDAD CLIENTE</div></div>' +
+                '</div>' +
+            '</div>';
+        }
+
+        function generarHTMLTicket(ord, folio, qrUrl) {
             var subtotalRef = 0;
-            var qrId = folio ? 'qr-modal-box-' + Math.random().toString(36).substr(2, 5) : 'qr-preview-box';
-            var piezasArr = ord.piezas || [];
-            var desglosePiezas = piezasArr.map(function(p) {
+            var desglosePiezas = (ord.piezas || []).map(function(p) {
                 var sub = p.precio * p.cant;
                 subtotalRef += sub;
                 return '<div class="ticket-row"><span>' + p.nombre + ' (x' + p.cant + '):</span><span>$' + sub.toFixed(2) + '</span></div>';
@@ -1301,370 +1396,168 @@
             
             var manoVal = ord.mano || 0;
             var subtotalNeto = manoVal + subtotalRef;
-            
-            var descHtml = '';
-            var valorDescuento = 0;
-            if (descuentoInfo && descuentoInfo.aplicado) {
-                valorDescuento = descuentoInfo.monto;
-                descHtml = '<div class="ticket-row" style="color: var(--success); font-weight:bold;"><span>🎁 Cortesía ('+ descuentoInfo.tipo +'):</span><span>-$' + valorDescuento.toFixed(2) + '</span></div>';
-            }
+            var descInfo = ord.descuentoPredeterminado || { aplicado: false, monto: 0 };
+            var valorDescuento = descInfo.aplicado ? descInfo.monto : 0;
+            var totalVal = Math.max(0, subtotalNeto - valorDescuento) * 1.16;
 
-            var subtotalNetoConDescuento = Math.max(0, subtotalNeto - valorDescuento);
-            var iva = subtotalNetoConDescuento * 0.16;
-            var totalVal = subtotalNetoConDescuento + iva;
-            
-            var logoHtml = logoSrc ? '<img src="' + logoSrc + '" class="ticket-logo">' : '';
-            
             return '<div class="ticket">' +
-                logoHtml +
+                (logoBase64Global ? '<img src="' + logoBase64Global + '" class="ticket-logo">' : '') +
                 '<h3>MOTOR ZERO (KZ)</h3>' +
-                '<p style="text-align:center; font-size:0.75rem; color:#555; margin-bottom:10px;">COMPROBANTE DE PAGO / TICKET</p>' +
-                (folio ? '<div class="ticket-row"><span>Folio:</span><span>' + folio + '</span></div>' : '') +
-                (fechaStr ? '<div class="ticket-row"><span>Fecha:</span><span>' + fechaStr + '</span></div>' : '') +
-                '<div class="ticket-row"><span>Orden ID:</span><span>' + ord.id + '</span></div>' +
+                '<p style="text-align:center; font-size:0.75rem; color:#555; margin-bottom:10px;">COMPROBANTE DE PAGO</p>' +
+                '<div class="ticket-row"><span>Folio:</span><span>' + (folio || 'PENDIENTE') + '</span></div>' +
                 '<div class="ticket-row"><span>Cliente:</span><span>' + ord.cliente + '</span></div>' +
                 '<div class="ticket-row"><span>Vehículo:</span><span>' + ord.auto + '</span></div>' +
-                '<div class="ticket-row"><span>Servicio:</span><span>' + (ord.servicioDetalle || 'Mantenimiento General') + '</span></div>' +
+                '<div class="ticket-row"><span>Técnico:</span><span>' + (ord.mecanico || 'Martín Flores') + '</span></div>' +
+                '<div class="ticket-row"><span>Pago:</span><span>' + metodoPagoSeleccionadoGlobal + '</span></div>' +
                 '<hr style="margin:8px 0; border:none; border-top:1px dashed #121212;">' +
-                '<div class="ticket-row"><span>Cargos del Servicio:</span><span>$' + manoVal.toFixed(2) + '</span></div>' +
+                '<div class="ticket-row"><span>Mano de Obra:</span><span>$' + manoVal.toFixed(2) + '</span></div>' +
                 desglosePiezas +
                 '<hr style="margin:8px 0; border:none; border-top:1px solid #121212;">' +
-                '<div class="ticket-row" style="font-size: 0.9rem; color: #444;"><span>Subtotal:</span><span>$' + subtotalNeto.toFixed(2) + '</span></div>' +
-                descHtml +
-                '<div class="ticket-row" style="font-size: 0.9rem; color: #444;"><span>I.V.A (16%):</span><span>$' + iva.toFixed(2) + '</span></div>' +
-                '<div class="ticket-row ticket-total"><span>TOTAL MXN:</span><span>$' + totalVal.toFixed(2) + '</span></div>' +
-                '<div class="qr-box" id="' + qrId + '" data-url="' + generarUrlQrDigital(ord, folio, fechaStr, 'ticket') + '"></div>' +
+                '<div class="ticket-row ticket-total"><span>TOTAL:</span><span>$' + totalVal.toFixed(2) + ' MXN</span></div>' +
+                '<div style="text-align:center;">' +
+                    '<img src="' + qrUrl + '" class="qr-box-img" alt="QR Code">' +
+                    '<p style="font-size:0.75rem;">Comprobante Digital Oficial</p>' +
+                '</div>' +
             '</div>';
         }
 
-        function generarHTMLFichaTecnica(ord, folio, fechaStr, logoSrc) {
-            var chk = ord.checklist || {};
-            var qrId = folio ? 'qr-modal-box-' + Math.random().toString(36).substr(2, 5) : 'qr-preview-box';
-            var fotosHTML = '';
-            var gasNivel = ord.gasolina || '1/2';
-            var diagramaSvg = obtenerSVGDiagrama(ord.auto);
-            
-            var fotosList = ord.fotos || [];
-            if (fotosList.length === 0 && folio) {
-                var tFound = tickets.find(function(t) { return t.folio === folio; });
-                if (tFound && tFound.ordOriginal && tFound.ordOriginal.fotos) {
-                    fotosList = tFound.ordOriginal.fotos;
-                }
-            }
-            if (fotosList && fotosList.length > 0) {
-                fotosHTML = '<div style="margin-top:12px; border-top:1px dashed #ccc; padding-top:8px;">' +
-                            '<strong>📸 Evidencia Fotográfica:</strong>' +
-                            '<div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">';
-                fotosList.forEach(function(f) {
-                    fotosHTML += '<img src="' + f + '" style="width:75px; height:75px; object-fit:cover; border-radius:4px; border:1px solid #ccc;">';
-                });
-                fotosHTML += '</div></div>';
-            } else {
-                fotosHTML = '<div style="margin-top:12px; border-top:1px dashed #ccc; padding-top:8px; font-size:0.75rem; color:#666;"><strong>📸 Evidencia Fotográfica:</strong> Sin fotografías adjuntas.</div>';
-            }
-            
-            var logoHtml = logoSrc ? '<img src="' + logoSrc + '" class="sheet-logo">' : '';
-
-            return '<div class="sheet-agencia">' +
-                logoHtml +
-                '<h3>FICHA TÉCNICA Y HOJA DE RECEPCIÓN</h3>' +
-                '<div style="text-align:center; font-size:0.7rem; color:#666; margin-bottom:10px;">CONCESIONARIA MOTOR ZERO (KZ)</div>' +
-                
-                '<div class="sheet-sec-header">1. Datos del Expediente y Vehículo</div>' +
-                '<div class="ticket-row"><span><strong>Orden:</strong> ' + ord.id + '</span><span><strong>Folio:</strong> ' + (folio || 'PENDIENTE') + '</span></div>' +
-                '<div class="ticket-row"><span><strong>Cliente:</strong> ' + ord.cliente + '</span><span><strong>Fecha:</strong> ' + (fechaStr || new Date().toLocaleDateString()) + '</span></div>' +
-                '<div class="ticket-row"><span><strong>Vehículo:</strong> ' + ord.auto + '</span><span><strong>Gasolina:</strong> ⛽ ' + gasNivel + '</span></div>' +
-                '<div class="ticket-row"><span><strong>Trabajo Solicitado:</strong> ' + (ord.servicioDetalle || 'Mantenimiento General') + '</span></div>' +
-                '<div class="sheet-sec-header">2. Inspección Visual de Carrocería</div>' +
-                '<div style="text-align:center; padding:8px; background:#f9f9f9; border:1px solid #e0e0e0; border-radius:4px;">' +
-                    diagramaSvg +
-                '</div>' +
-                '<div class="sheet-sec-header">3. Inventario de Recepción</div>' +
-                '<table class="sheet-check-table">' +
-                    '<tr><td>🔑 Llaves: <strong>' + (chk.llaves?'Sí':'No') + '</strong></td><td>🛞 Refacción: <strong>' + (chk.refaccion?'Sí':'No') + '</strong></td><td>🪞 Espejos: <strong>' + (chk.espejos?'Sí':'No') + '</strong></td></tr>' +
-                    '<tr><td>📻 Estéreo: <strong>' + (chk.estereo?'Sí':'No') + '</strong></td><td>🏗 Gato / Herram.: <strong>' + (chk.gato?'Sí':'No') + '</strong></td><td>🪟 Vidrios: <strong>' + (chk.vidrios?'Sí':'No') + '</strong></td></tr>' +
-                    '<tr><td>🧼 Tapetes: <strong>' + (chk.tapetes?'Sí':'No') + '</strong></td><td>🧯 Extintor: <strong>' + (chk.extintor?'Sí':'No') + '</strong></td><td>⛽ Tapa Gas: <strong>' + (chk.tapa?'Sí':'No') + '</strong></td></tr>' +
-                '</table>' +
-                fotosHTML + 
-                '<div style="margin-top:15px; border-top:1px solid #ddd; padding-top:10px; text-align:center; font-size:0.7rem; color:#555;">' +
-                    '<em>El cliente autoriza las pruebas necesarias en vehículo para el diagnóstico técnico.</em>' +
-                '</div>' +
-                '<div class="qr-box" id="' + qrId + '" data-url="' + generarUrlQrDigital(ord, folio, fechaStr, 'ficha') + '"></div>' +
-            '</div>';
+        function descargarImagen(containerId, filename) {
+            html2canvas(document.getElementById(containerId), { scale: 2, backgroundColor: '#ffffff' }).then(function(canvas) {
+                var a = document.createElement('a');
+                a.download = filename; a.href = canvas.toDataURL('image/png'); a.click();
+                mostrarToast('Imagen guardada con éxito.', 'success');
+            });
         }
 
-        function generarCodigoQR(elementId, textoFallback) {
-            setTimeout(function() {
-                var el = document.getElementById(elementId);
-                if (el) {
-                    var url = el.getAttribute('data-url') || textoFallback;
-                    el.innerHTML = '';
-                    try {
-                        new QRCode(el, { text: url, width: 150, height: 150, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.L });
-                    } catch(e) { console.log(e); }
-                }
-            }, 150);
+        function completarPago() {
+            var ordId = document.getElementById('pos-select').value;
+            if (!ordId) return;
+            var idx = ordenes.findIndex(function(o) { return o.id === ordId; });
+            var ord = ordenes[idx];
+            
+            ord.piezas.forEach(function(p) {
+                var ref = inventario.find(function(r) { return r.id === p.refId; });
+                if (ref) ref.stock -= p.cant;
+            });
+            
+            var folio = 'TKT-' + Math.floor(1000 + Math.random() * 9000);
+            var fechaStr = new Date().toLocaleString();
+            var subtotalNeto = ord.mano + ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); }, 0);
+            var desc = ord.descuentoPredeterminado || { aplicado: false, monto: 0 };
+            var totalMonto = Math.max(0, subtotalNeto - desc.monto) * 1.16;
+
+            var dataQr = 'https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?folio=' + folio + '&cliente=' + encodeURIComponent(ord.cliente) + '&auto=' + encodeURIComponent(ord.auto);
+            var qrUrl = generarUrlQrImage(dataQr);
+
+            var ticketGuardado = {
+                folio: folio, fecha: fechaStr, cliente: ord.cliente, auto: ord.auto,
+                subtotalRef: ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); },0),
+                costoRef: ord.piezas.reduce(function(a,p){ return a+((p.costo || 0)*p.cant); },0),
+                mano: ord.mano, total: totalMonto, descuento: desc, metodoPago: metodoPagoSeleccionadoGlobal, ordOriginal: ord, qrUrl: qrUrl
+            };
+
+            var cli = clientes.find(function(c) { return c.nombre.toLowerCase() === ord.cliente.toLowerCase(); });
+            if (!cli) {
+                cli = { id: generarNuevoIdCliente(), nombre: ord.cliente, telefono: ord.telefono || '', vehiculos: [ord.auto], totalServicios: 0, sellosValidos: 0, historialTickets: [] };
+                clientes.push(cli);
+            }
+            if (!cli.vehiculos.includes(ord.auto)) cli.vehiculos.push(ord.auto);
+            cli.totalServicios += 1;
+            cli.ultimaVisita = fechaStr;
+            cli.historialTickets.push(ticketGuardado);
+            if (subtotalNeto * 1.16 >= 5000 && !desc.aplicado) cli.sellosValidos += 1;
+
+            tickets.push(ticketGuardado);
+            ordenes.splice(idx, 1);
+            guardarDatos();
+
+            ticketActualModal = { ord: ord, folio: folio, fecha: fechaStr, descuento: desc, metodoPago: metodoPagoSeleccionadoGlobal, qrUrl: qrUrl };
+            document.getElementById('modal-titulo').innerText = 'Expediente Generado: ' + folio;
+            cambiarVistaModal('ficha');
+            document.getElementById('modal-pago').classList.add('active');
+            render();
+            mostrarToast('Pago procesado correctamente.', 'success');
+        }
+
+        function verDetalleTicket(folio) {
+            var t = tickets.find(function(item) { return item.folio === folio; });
+            if (!t) return;
+            ticketActualModal = { ord: t.ordOriginal, folio: t.folio, fecha: t.fecha, descuento: t.descuento, metodoPago: t.metodoPago, qrUrl: t.qrUrl };
+            document.getElementById('modal-titulo').innerText = 'Expediente: ' + folio;
+            cambiarVistaModal('ficha');
+            document.getElementById('modal-pago').classList.add('active');
         }
 
         function cambiarVistaModal(tipo) {
             if (!ticketActualModal) return;
             var contenedor = document.getElementById('modal-ticket-body');
-            var ord = ticketActualModal.ord;
-            contenedor.innerHTML = (tipo === 'ticket' ? generarHTMLTicket(ord, ticketActualModal.folio, ticketActualModal.fecha, ticketActualModal.descuento, logoBase64Global) : generarHTMLFichaTecnica(ord, ticketActualModal.folio, ticketActualModal.fecha, logoBase64Global));
-            var qrBox = contenedor.querySelector('.qr-box');
-            if (qrBox) generarCodigoQR(qrBox.id);
-        }
-
-        function descargarImagen(containerId, filename) {
-            var contenedor = document.getElementById(containerId);
-            if (!contenedor) return;
-            html2canvas(contenedor, { scale: 2, backgroundColor: '#ffffff' }).then(function(canvas) {
-                var enlace = document.createElement('a');
-                enlace.download = filename;
-                enlace.href = canvas.toDataURL('image/png');
-                enlace.click();
-                mostrarToast('Imagen descargada.', 'success');
-            });
-        }
-        
-        function completarPago() {
-            var ordId = document.getElementById('pos-select').value;
-            if (!ordId) {
-                mostrarToast('Error: Seleccione una orden primero.', 'error');
-                return;
-            }
-            var idx = ordenes.findIndex(function(o) { return o.id === ordId; });
-            var ord = ordenes[idx];
-            var nombreClean = ord.cliente.trim();
-            var cli = clientes.find(function(c) { return c.nombre.toLowerCase() === nombreClean.toLowerCase(); });
-
-            var descInfo = ord.descuentoPredeterminado || { aplicado: false, monto: 0, tipo: '' };
-            procesarPagoFinal(ord, idx, cli, descInfo);
-        }
-
-        function procesarPagoFinal(ord, idx, cliContext, descuentoInfo) {
-            ord.piezas.forEach(function(p) {
-                var ref = inventario.find(function(r) { return r.id === p.refId; });
-                if (ref) ref.stock -= p.cant;
-            });
-            var folio = 'TKT-' + Math.floor(1000 + Math.random() * 9000);
-            var fechaStr = new Date().toLocaleString();
-            
-            var subtotalNeto = ord.mano + ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); }, 0);
-            var subtotalNetoConDescuento = Math.max(0, subtotalNeto - descuentoInfo.monto);
-            var totalMonto = subtotalNetoConDescuento * 1.16;
-
-            var ticketGuardado = {
-                folio: folio, fecha: fechaStr, cliente: ord.cliente, auto: ord.auto,
-                refaccionesTexto: ord.piezas.map(function(p) { return p.nombre + ' (x' + p.cant + ')'; }).join(', ') || '-',
-                subtotalRef: ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); },0), 
-                mano: ord.mano, 
-                total: totalMonto, 
-                descuento: descuentoInfo,
-                ordOriginal: ord
-            };
-            
-            var cli = cliContext;
-            var nombreClean = ord.cliente.trim();
-
-            if (!cli) {
-                cli = {
-                    id: generarNuevoIdCliente(),
-                    nombre: nombreClean,
-                    vehiculos: [ord.auto],
-                    ultimaVisita: fechaStr,
-                    totalServicios: 0,
-                    sellosValidos: 0,
-                    historialTickets: []
-                };
-                clientes.push(cli);
-            }
-            if (!cli.vehiculos.includes(ord.auto)) {
-                cli.vehiculos.push(ord.auto);
-            }
-            cli.ultimaVisita = fechaStr;
-            cli.totalServicios += 1;
-            cli.historialTickets.push(ticketGuardado);
-            
-            if (subtotalNeto * 1.16 >= 5000 && (!descuentoInfo || !descuentoInfo.aplicado)) {
-                cli.sellosValidos += 1;
-            }
-
-            tickets.push(ticketGuardado);
-            ordenes.splice(idx, 1);
-            guardarDatos();
-            clienteOrigenExpedienteId = null;
-
-            var btnCerrar = document.getElementById('btn-modal-pago-cerrar');
-            if (btnCerrar) {
-                btnCerrar.innerText = 'Cerrar / Regresar';
-                btnCerrar.onclick = cerrarModal;
-            }
-            
-            ticketActualModal = { ord: ord, folio: folio, fecha: fechaStr, descuento: descuentoInfo };
-            document.getElementById('modal-titulo').innerText = 'Consulta de Expediente: ' + folio;
-            cambiarVistaModal('ticket');
-            document.getElementById('modal-pago').classList.add('active');
-            mostrarToast('Pago procesado correctamente.', 'success');
-            render();
-        }
-
-        function verDetalleTicket(folio, idClienteOrigen) {
-            var t = tickets.find(function(item) { return item.folio === folio; });
-            if (!t) return;
-            if (idClienteOrigen) {
-                clienteOrigenExpedienteId = idClienteOrigen;
-                cerrarExpedienteModal();
+            if (tipo === 'ficha') {
+                contenedor.innerHTML = generarHTMLFichaTecnicaPro(ticketActualModal.ord, ticketActualModal.folio, ticketActualModal.qrUrl);
             } else {
-                clienteOrigenExpedienteId = null;
-            }
-            ticketActualModal = { ord: t.ordOriginal, folio: t.folio, fecha: t.fecha, descuento: t.descuento };
-            document.getElementById('modal-titulo').innerText = 'Consulta de Expediente: ' + folio;
-            cambiarVistaModal('ticket');
-            var btnCerrar = document.getElementById('btn-modal-pago-cerrar');
-            if (btnCerrar) {
-                if (clienteOrigenExpedienteId) {
-                    btnCerrar.innerText = '🔙 Regresar al Expediente';
-                    btnCerrar.onclick = regresarAExpedienteDesdeTicket;
-                } else {
-                    btnCerrar.innerText = 'Cerrar / Regresar';
-                    btnCerrar.onclick = cerrarModal;
-                }
-            }
-            document.getElementById('modal-pago').classList.add('active');
-        }
-
-        function regresarAExpedienteDesdeTicket() {
-            var idTemp = clienteOrigenExpedienteId;
-            cerrarModal();
-            if (idTemp) {
-                verExpedienteCliente(idTemp);
+                contenedor.innerHTML = generarHTMLTicket(ticketActualModal.ord, ticketActualModal.folio, ticketActualModal.qrUrl);
             }
         }
 
-        function cerrarModal() { 
-            document.getElementById('modal-pago').classList.remove('active'); 
-            clienteOrigenExpedienteId = null;
-        }
+        function cerrarModal() { document.getElementById('modal-pago').classList.remove('active'); }
 
         function verExpedienteCliente(idCli) {
             var cli = clientes.find(function(c) { return c.id === idCli; });
             if (!cli) return;
             document.getElementById('exp-cli-nombre').innerText = '👤 Expediente: ' + cli.nombre;
             document.getElementById('exp-cli-id').innerText = cli.id;
-            document.getElementById('exp-cli-visitas').innerText = cli.totalServicios + ' visitas registradas';
-            document.getElementById('exp-cli-autos').innerText = cli.vehiculos.join(', ') || 'Sin vehículos';
-            var numSellosActuales = cli.sellosValidos % 5;
-            var sellosVisual = '';
-            for (var i = 0; i < 5; i++) {
-                sellosVisual += (i < numSellosActuales) ? '⭐ ' : '☆ ';
-            }
-            var badgeSellosHTML = '<span class="badge-sello">' + sellosVisual + ' (' + numSellosActuales + '/5)</span>';
-            if (cli.sellosValidos >= 5) {
-                badgeSellosHTML += ' <span class="reward-box">🎁 ¡Beneficio Listos!</span>';
-            }
-            document.getElementById('exp-cli-sellos-badge').innerHTML = badgeSellosHTML;
-            var contenedorVisitas = document.getElementById('exp-cli-lista-visitas');
-            if (!cli.historialTickets || cli.historialTickets.length === 0) {
-                contenedorVisitas.innerHTML = '<p style="color:var(--muted); font-size:0.85rem;">No hay visitas registradas aún.</p>';
-            } else {
-                contenedorVisitas.innerHTML = cli.historialTickets.map(function(t) {
-                    var esSello = (t.total >= 5000 && (!t.descuento || !t.descuento.aplicado)) ? ' <span style="color:var(--gold); font-size:0.75rem;">⭐ Compra ≥ $5,000</span>' : '';
-                    return '<div class="visit-item-card">' +
-                        '<div class="visit-item-info">' +
-                            '<strong>Folio: ' + t.folio + '</strong>' + esSello + '<br>' +
-                            '<small style="color:var(--muted);">' + t.fecha + ' | Auto: ' + t.auto + '</small><br>' +
-                            '<strong style="color:var(--success);">Monto Total: $' + t.total.toFixed(2) + ' MXN</strong>' +
-                        '</div>' +
-                        '<div class="visit-item-btns">' +
-                            '<button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="verDetalleTicket(\'' + t.folio + '\', \'' + cli.id + '\')">🎫 Ver Ticket / Ficha</button>' +
-                        '</div>' +
-                    '</div>';
-                }).join('');
-            }
+            document.getElementById('exp-cli-visitas').innerText = cli.totalServicios + ' visitas';
+            document.getElementById('exp-cli-autos').innerText = cli.vehiculos.join(', ');
+            var numSellos = cli.sellosValidos % 5;
+            var sellosStr = '';
+            for(var i=0; i<5; i++) sellosStr += (i < numSellos ? '⭐ ' : '☆ ');
+            document.getElementById('exp-cli-sellos-badge').innerHTML = '<span class="badge-sello">' + sellosStr + '</span>';
+            
+            document.getElementById('exp-cli-lista-visitas').innerHTML = (cli.historialTickets || []).map(function(t) {
+                return '<div class="visit-item-card"><div class="visit-item-info"><strong>' + t.folio + '</strong> — ' + t.fecha + '<br><strong style="color:var(--success);">$' + t.total.toFixed(2) + ' MXN</strong></div>' +
+                       '<button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="verDetalleTicket(\'' + t.folio + '\')">Ver Ficha/Ticket</button></div>';
+            }).join('') || '<p style="color:var(--muted)">Sin historial.</p>';
             document.getElementById('modal-expediente-cliente').classList.add('active');
         }
-
-        function cerrarExpedienteModal() {
-            document.getElementById('modal-expediente-cliente').classList.remove('active');
-        }
-
-        function manejarKeydownBuscadorCliente(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                var filtroVal = e.target.value.trim().toLowerCase();
-                if (!filtroVal) return;
-                var clientesFiltrados = clientes.filter(function(c) {
-                    var idMatch = (c.id || '').toLowerCase().includes(filtroVal);
-                    var nomMatch = (c.nombre || '').toLowerCase().includes(filtroVal);
-                    return idMatch || nomMatch;
-                });
-                if (clientesFiltrados.length > 0) {
-                    verExpedienteCliente(clientesFiltrados[0].id);
-                } else {
-                    mostrarToast('Cliente no encontrado.', 'error');
-                }
-            }
-        }
+        function cerrarExpedienteModal() { document.getElementById('modal-expediente-cliente').classList.remove('active'); }
 
         function abrirPortalCliente() {
-            var adminUI = document.getElementById('admin-ui');
-            if(adminUI) adminUI.style.display = 'none';
+            document.getElementById('admin-ui').style.display = 'none';
             document.getElementById('portal-cliente').classList.add('active');
-            document.getElementById('kiosko-resultado').style.display = 'none';
-            document.getElementById('kiosko-busqueda').value = '';
-            var params = new URLSearchParams(window.location.search);
-            if (params.get('t')) { document.getElementById('btn-regresar-taller').style.display = 'none'; }
         }
-
-        function irAPortalDesdeQR() {
-            document.getElementById('vista-cliente-qr').classList.remove('active');
-            abrirPortalCliente();
-        }
-
         function cerrarPortalCliente() {
             document.getElementById('portal-cliente').classList.remove('active');
-            var adminUI = document.getElementById('admin-ui');
-            if(adminUI) adminUI.style.display = 'block';
+            document.getElementById('admin-ui').style.display = 'block';
         }
-
         function buscarTicketKiosko() {
-            var query = document.getElementById('kiosko-busqueda').value.trim().toUpperCase();
-            if (!query) { mostrarToast('Ingresa un folio válido.', 'error'); return; }
-            var t = tickets.find(function(item) { return item.folio.toUpperCase() === query || item.ordOriginal.id.toUpperCase() === query; });
-            var resultDiv = document.getElementById('kiosko-resultado');
-            if (!t) {
-                resultDiv.style.display = 'block';
-                document.getElementById('kiosko-ticket-body').innerHTML = '<p style="color:var(--danger); font-weight:bold; text-align:center;">No se encontró el folio solicitado.</p>';
-                return;
-            }
-            ticketActualKiosko = { ord: t.ordOriginal, folio: t.folio, fecha: t.fecha };
-            resultDiv.style.display = 'block';
-            cambiarVistaKiosko('ticket');
+            var q = document.getElementById('kiosko-busqueda').value.trim().toUpperCase();
+            var t = tickets.find(function(item) { return item.folio.toUpperCase() === q || item.ordOriginal.id.toUpperCase() === q; });
+            var res = document.getElementById('kiosko-resultado');
+            res.style.display = 'block';
+            if (!t) { document.getElementById('kiosko-ticket-body').innerHTML = '<p style="color:var(--danger)">No encontrado.</p>'; return; }
+            ticketActualKiosko = { ord: t.ordOriginal, folio: t.folio, fecha: t.fecha, metodoPago: t.metodoPago, qrUrl: t.qrUrl };
+            cambiarVistaKiosko('ficha');
         }
-
         function cambiarVistaKiosko(tipo) {
             if (!ticketActualKiosko) return;
-            var contenedor = document.getElementById('kiosko-ticket-body');
-            var ord = ticketActualKiosko.ord;
-            contenedor.innerHTML = (tipo === 'ticket' ? generarHTMLTicket(ord, ticketActualKiosko.folio, ticketActualKiosko.fecha, null, logoBase64Global) : generarHTMLFichaTecnica(ord, ticketActualKiosko.folio, ticketActualKiosko.fecha, logoBase64Global));
-            var qrBox = contenedor.querySelector('.qr-box');
-            if (qrBox) generarCodigoQR(qrBox.id);
+            if (tipo === 'ficha') {
+                document.getElementById('kiosko-ticket-body').innerHTML = generarHTMLFichaTecnicaPro(ticketActualKiosko.ord, ticketActualKiosko.folio, ticketActualKiosko.qrUrl);
+            } else {
+                document.getElementById('kiosko-ticket-body').innerHTML = generarHTMLTicket(ticketActualKiosko.ord, ticketActualKiosko.folio, ticketActualKiosko.qrUrl);
+            }
         }
 
         function render() {
             actualizarVisualesLogo();
-            var inputOrdId = document.getElementById('ord-id');
-            if (inputOrdId) inputOrdId.value = generarNuevoIdOrden();
-            
-            var inputInvId = document.getElementById('inv-id');
-            if (inputInvId) inputInvId.value = generarNuevoIdRefaccion();
+            document.getElementById('ord-id').value = generarNuevoIdOrden();
+            document.getElementById('inv-id').value = generarNuevoIdRefaccion();
             
             document.getElementById('tabla-inventario').innerHTML = inventario.map(function(i) {
+                var margen = i.costo > 0 ? (((i.precio - i.costo) / i.costo) * 100).toFixed(0) : '0';
                 return '<tr>' +
                     '<td><strong>' + i.id + '</strong></td>' +
                     '<td>' + i.nombre + '</td>' +
-                    '<td>$' + i.precio.toFixed(2) + '</td>' +
+                    '<td><span style="font-size:0.8rem; color:var(--muted);">' + (i.compTipo === 'Universal' ? '🌐 Universal' : '🚘 ' + i.compMarca + (i.compModelo ? ' ' + i.compModelo : '')) + '</span></td>' +
+                    '<td>Costo: $' + i.costo.toFixed(2) + '<br>Venta: <strong>$' + i.precio.toFixed(2) + '</strong> <span style="color:var(--success); font-size:0.75rem;">(+' + margen + '%)</span></td>' +
                     '<td style="color:' + (i.stock < 3 ? '#ff4500' : '#04d361') + '; font-weight:bold;">' + i.stock + '</td>' +
                     '<td>' +
                         '<button class="btn-action btn-action-success" onclick="abrirResurtirModal(\'' + i.id + '\')">➕ Resurtir</button>' +
@@ -1673,117 +1566,64 @@
                 '</tr>';
             }).join('');
             
-            if (ordenes.length === 0) {
-                document.getElementById('tabla-ordenes').innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--muted);">No hay vehículos en el taller.</td></tr>';
-            } else {
-                document.getElementById('tabla-ordenes').innerHTML = ordenes.map(function(o) {
-                    return '<tr>' +
-                        '<td><strong>' + o.id + '</strong></td>' +
-                        '<td>' + o.cliente + '</td>' +
-                        '<td>' + o.auto + '</td>' +
-                        '<td><strong style="color:var(--accent);">' + (o.servicioDetalle || 'Mantenimiento') + '</strong></td>' +
-                        '<td>$' + o.mano.toFixed(2) + '</td>' +
-                    '</tr>';
-                }).join('');
-            }
-            
+            document.getElementById('tabla-ordenes').innerHTML = ordenes.length === 0 ? '<tr><td colspan="5" style="text-align:center; color:var(--muted);">Sin vehículos en taller.</td></tr>' : ordenes.map(function(o) {
+                return '<tr><td><strong>' + o.id + '</strong></td><td>' + o.cliente + '</td><td>' + o.auto + '</td><td>' + (o.mecanico || 'Martín') + '</td><td>' + o.servicioDetalle + '</td></tr>';
+            }).join('');
+
             document.getElementById('pos-select').innerHTML = '<option value="">-- Seleccionar Orden --</option>' + ordenes.map(function(o) {
                 return '<option value="' + o.id + '">' + o.id + ' - ' + o.cliente + ' (' + o.auto + ')</option>';
             }).join('');
 
-            var tablaCli = document.getElementById('tabla-clientes');
-            if (tablaCli) {
-                var filtroVal = document.getElementById('buscar-cliente-input') ? document.getElementById('buscar-cliente-input').value.trim().toLowerCase() : '';
-                var clientesFiltrados = clientes.filter(function(c) {
-                    var idMatch = (c.id || '').toLowerCase().includes(filtroVal);
-                    var nomMatch = (c.nombre || '').toLowerCase().includes(filtroVal);
-                    return idMatch || nomMatch;
-                });
-                if (clientesFiltrados.length === 0) {
-                    tablaCli.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--muted);">Sin coincidencias de clientes registrados.</td></tr>';
-                } else {
-                    tablaCli.innerHTML = clientesFiltrados.map(function(c) {
-                        var numSellosActuales = c.sellosValidos % 5;
-                        var sellosVisual = '';
-                        for (var i = 0; i < 5; i++) {
-                            sellosVisual += (i < numSellosActuales) ? '⭐ ' : '☆ ';
-                        }
-                        var estadoRecompensa = (c.sellosValidos >= 5) 
-                            ? '<span style="color:var(--success); font-weight:bold;">🎁 ¡Beneficio Listo!</span>'
-                            : '<span style="color:var(--muted); font-size:0.8rem;">' + (5 - numSellosActuales) + ' sello(s) rest.</span>';
-                        return '<tr>' +
-                            '<td><span class="client-id-badge">' + (c.id || 'CLI-0000') + '</span></td>' +
-                            '<td><strong>' + c.nombre + '</strong></td>' +
-                            '<td>' + (c.vehiculos.join(', ') || 'Sin auto') + '</td>' +
-                            '<td style="text-align:center; font-weight:bold; color:var(--accent);">' + c.totalServicios + ' visita(s)</td>' +
-                            '<td style="font-size:0.8rem;">' + c.ultimaVisita + '</td>' +
-                            '<td><div class="badge-sello">' + sellosVisual + '</div></td>' +
-                            '<td>' + estadoRecompensa + '</td>' +
-                            '<td><button class="btn btn-secondary" style="padding:4px 10px; font-size:0.8rem;" onclick="verExpedienteCliente(\'' + c.id + '\')">🔍 Ver Expediente</button></td>' +
-                        '</tr>';
-                    }).join('');
-                }
-            }
-            
+            document.getElementById('tabla-clientes').innerHTML = clientes.map(function(c) {
+                var numSellos = c.sellosValidos % 5;
+                var sellosStr = ''; for(var i=0; i<5; i++) sellosStr += (i < numSellos ? '⭐ ' : '☆ ');
+                return '<tr>' +
+                    '<td><span class="client-id-badge">' + c.id + '</span></td>' +
+                    '<td><strong>' + c.nombre + '</strong></td>' +
+                    '<td>' + c.vehiculos.join(', ') + '</td>' +
+                    '<td>' + c.totalServicios + '</td>' +
+                    '<td style="font-size:0.8rem;">' + c.ultimaVisita + '</td>' +
+                    '<td><div class="badge-sello">' + sellosStr + '</div></td>' +
+                    '<td>' + (c.sellosValidos >= 5 ? '<span style="color:var(--success); font-weight:bold;">🎁 ¡Listo!</span>' : (5 - numSellos) + ' rest.') + '</td>' +
+                    '<td><button class="btn btn-secondary" style="padding:4px 8px; font-size:0.8rem;" onclick="verExpedienteCliente(\'' + c.id + '\')">🔍 Ver</button></td>' +
+                '</tr>';
+            }).join('');
+
+            document.getElementById('tabla-citas').innerHTML = citas.length === 0 ? '<tr><td colspan="5" style="text-align:center; color:var(--muted);">No hay citas agendadas.</td></tr>' : citas.map(function(c) {
+                return '<tr>' +
+                    '<td>' + c.fecha.replace('T', ' ') + '</td>' +
+                    '<td><strong>' + c.cliente + '</strong><br><small>' + c.tel + '</small></td>' +
+                    '<td>' + c.auto + '</td>' +
+                    '<td>' + c.motivo + '</td>' +
+                    '<td>' +
+                        '<button class="btn-action btn-action-success" onclick="procesarCitaEnOrden(\'' + c.id + '\')">🚗 Cargar en Toma de Orden</button>' +
+                        '<button class="btn-action btn-action-secondary" style="background:var(--danger); color:#fff;" onclick="eliminarCita(\'' + c.id + '\')">Eliminar</button>' +
+                    '</td>' +
+                '</tr>';
+            }).join('');
+
             document.getElementById('corte-cant-servicios').innerText = tickets.length;
-            var ingRef = tickets.reduce(function(acc, t) { return acc + (t.subtotalRef || 0); }, 0);
-            var ingMano = tickets.reduce(function(acc, t) { return acc + (t.mano || 0); }, 0);
-            var totalCaja = tickets.reduce(function(acc, t) { return acc + (t.total || 0); }, 0);
-            document.getElementById('corte-ingreso-refacciones').innerText = '$' + ingRef.toFixed(2);
-            document.getElementById('corte-ingreso-mano').innerText = '$' + ingMano.toFixed(2);
-            document.getElementById('corte-total-general').innerText = '$' + totalCaja.toFixed(2) + ' MXN';
+            var costoRefTotal = tickets.reduce(function(a, t) { return a + (t.costoRef || 0); }, 0);
+            var ingManoTotal = tickets.reduce(function(a, t) { return a + (t.mano || 0); }, 0);
+            var ingresoCajaTotal = tickets.reduce(function(a, t) { return a + (t.total || 0); }, 0);
+            var utilidadNeta = ingresoCajaTotal - costoRefTotal;
+
+            document.getElementById('corte-costo-refacciones').innerText = '$' + costoRefTotal.toFixed(2);
+            document.getElementById('corte-ingreso-mano').innerText = '$' + ingManoTotal.toFixed(2);
+            document.getElementById('corte-total-general').innerText = '$' + ingresoCajaTotal.toFixed(2) + ' MXN';
+            document.getElementById('corte-utilidad-neta').innerText = '$' + utilidadNeta.toFixed(2) + ' MXN';
         }
 
         window.addEventListener('DOMContentLoaded', function() {
             cambiarOpcionesServicio();
             render();
             var params = new URLSearchParams(window.location.search);
-            var tipoParam = params.get('t'); 
-            if (tipoParam) {
-                var adminUI = document.getElementById('admin-ui');
-                if (adminUI) adminUI.remove(); 
+            if (params.get('folio') || params.get('ord')) {
+                document.getElementById('admin-ui').remove();
                 document.body.style.background = '#121214';
-                var fParam = params.get('f') || '';
-                var k = params.get('k') || '0000';
-                var pStr = params.get('p') || '';
-                
-                var discApp = params.get('da') === '1';
-                var discAmt = parseFloat(params.get('dm')) || 0;
-                var discType = decodeURIComponent(params.get('dt') || '');
-                var descInfo = { aplicado: discApp, monto: discAmt, tipo: discType };
-
-                var piezasDec = [];
-                if (pStr) {
-                    pStr.split('|').forEach(function(item) {
-                        var parts = item.split('*');
-                        if (parts.length === 3) piezasDec.push({ nombre: decodeURIComponent(parts[0]), cant: parseInt(parts[1]), precio: parseFloat(parts[2]) });
-                    });
-                }
-                
-                var ordCliente = {
-                    id: fParam,
-                    cliente: decodeURIComponent(params.get('c') || ''),
-                    auto: decodeURIComponent(params.get('v') || ''),
-                    mano: parseFloat(params.get('m')) || 0,
-                    piezas: piezasDec,
-                    checklist: { llaves: k[0]==='1', gato: k[1]==='1', refaccion: k[2]==='1', estereo: k[3]==='1' },
-                    fotos: [],
-                    descuentoPredeterminado: descInfo
-                };
-                var contenedorMovil = document.getElementById('contenedor-comprobante-movil');
-                var fechaD = decodeURIComponent(params.get('d') || '');
-                
-                if (tipoParam === 'ficha') {
-                    contenedorMovil.innerHTML = generarHTMLFichaTecnica(ordCliente, fParam, fechaD, logoBase64Global);
-                } else {
-                    contenedorMovil.innerHTML = generarHTMLTicket(ordCliente, fParam, fechaD, descInfo, logoBase64Global);
-                }
-                
-                var qrEnMovil = contenedorMovil.querySelector('.qr-box');
-                if (qrEnMovil) {
-                    qrEnMovil.style.display = 'flex';
-                    generarCodigoQR(qrEnMovil.id);
-                }
+                var ordCli = { id: params.get('ord') || params.get('folio'), cliente: decodeURIComponent(params.get('cliente') || params.get('cli') || 'Cliente'), auto: decodeURIComponent(params.get('auto') || params.get('v') || 'Vehículo'), mano: 0, piezas: [], checklist: {} };
+                var qrUrl = generarUrlQrImage(window.location.href);
+                document.getElementById('contenedor-comprobante-movil').innerHTML = generarHTMLFichaTecnicaPro(ordCli, params.get('folio') || params.get('ord'), qrUrl);
                 document.getElementById('vista-cliente-qr').classList.add('active');
             }
         });

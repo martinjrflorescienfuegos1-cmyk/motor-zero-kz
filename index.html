@@ -783,7 +783,6 @@
             actualizarSelectRefacciones();
         }
 
-        // OPCIONES AMPLIADAS DE SERVICIOS
         function cambiarOpcionesServicio() {
             var tipo = document.getElementById('ord-tipo-servicio').value;
             var box = document.getElementById('sec-opciones-servicio');
@@ -1188,7 +1187,8 @@
                 document.getElementById('pos-cli-total').innerText = '$' + totalCalc.toFixed(2) + ' MXN';
             }
             
-            var qrFichaUrl = generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ficha&ord=' + ord.id);
+            var baseParamUrl = 'https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ficha&ord=' + ord.id;
+            var qrFichaUrl = generarUrlQrImage(baseParamUrl);
             view.innerHTML = generarHTMLFichaTecnicaPro(ord, 'PREV-100', qrFichaUrl);
             calcularCambioEfectivo();
         }
@@ -1250,7 +1250,7 @@
                 return '<div class="ticket-row"><span>' + p.nombre + ' (x' + p.cant + '):</span><span>$' + sub.toFixed(2) + '</span></div>';
             }).join('');
             
-            var manoVal = ord.mano || 0;
+            var manoVal = ord.mano !== undefined ? ord.mano : 0;
             var totalVal = totalTicketManual !== undefined ? totalTicketManual : ((manoVal + subtotalRef) * 1.16);
 
             return '<div class="ticket">' +
@@ -1298,8 +1298,12 @@
             var subtotalNeto = ord.mano + ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); }, 0);
             var totalMonto = subtotalNeto * 1.16;
 
-            var qrFichaUrl = generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ficha&folio=' + folio);
-            var qrTicketUrl = generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ticket&folio=' + folio);
+            // ENLACE QR CON DATOS COMPLETOS CODIFICADOS PARA GARANTIZAR LECTURA EN MÓVIL
+            var linkFicha = 'https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ficha&folio=' + folio + '&cli=' + encodeURIComponent(ord.cliente) + '&auto=' + encodeURIComponent(ord.auto) + '&m=' + ord.mano + '&t=' + totalMonto.toFixed(2) + '&pago=' + encodeURIComponent(metodoPagoSeleccionadoGlobal);
+            var linkTicket = 'https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ticket&folio=' + folio + '&cli=' + encodeURIComponent(ord.cliente) + '&auto=' + encodeURIComponent(ord.auto) + '&m=' + ord.mano + '&t=' + totalMonto.toFixed(2) + '&pago=' + encodeURIComponent(metodoPagoSeleccionadoGlobal);
+
+            var qrFichaUrl = generarUrlQrImage(linkFicha);
+            var qrTicketUrl = generarUrlQrImage(linkTicket);
 
             var ticketGuardado = {
                 folio: folio, fecha: fechaStr, cliente: ord.cliente, auto: ord.auto,
@@ -1339,10 +1343,13 @@
             modalExp.classList.remove('active');
             modalExp.style.display = 'none';
 
+            var linkFicha = 'https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ficha&folio=' + t.folio + '&cli=' + encodeURIComponent(t.cliente) + '&auto=' + encodeURIComponent(t.auto) + '&m=' + t.mano + '&t=' + t.total.toFixed(2) + '&pago=' + encodeURIComponent(t.metodoPago || 'Efectivo');
+            var linkTicket = 'https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ticket&folio=' + t.folio + '&cli=' + encodeURIComponent(t.cliente) + '&auto=' + encodeURIComponent(t.auto) + '&m=' + t.mano + '&t=' + t.total.toFixed(2) + '&pago=' + encodeURIComponent(t.metodoPago || 'Efectivo');
+
             ticketActualModal = {
                 ord: t.ordOriginal, folio: t.folio, fecha: t.fecha, metodoPago: t.metodoPago, total: t.total,
-                qrFichaUrl: t.qrFichaUrl || generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ficha&folio=' + t.folio),
-                qrTicketUrl: t.qrTicketUrl || generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ticket&folio=' + t.folio)
+                qrFichaUrl: generarUrlQrImage(linkFicha),
+                qrTicketUrl: generarUrlQrImage(linkTicket)
             };
             document.getElementById('modal-titulo').innerText = 'Expediente: ' + folio;
             cambiarVistaModal('ficha');
@@ -1506,20 +1513,26 @@
                 if (adminUi) adminUi.style.display = 'none';
                 document.body.style.background = '#121214';
 
-                // BÚSQUEDA PRECISA EN REGISTROS
+                // BÚSQUEDA EN BASE DE DATOS LOCAL O LECTURA DIRECTA DE PARÁMETROS EN EL QR
                 var targetTicket = tickets.find(function(t) { return t.folio === folioParam || (t.ordOriginal && t.ordOriginal.id === ordParam); });
                 var targetOrd = ordenes.find(function(o) { return o.id === ordParam; });
 
+                var clienteURL = params.get('cli') ? decodeURIComponent(params.get('cli')) : null;
+                var autoURL = params.get('auto') ? decodeURIComponent(params.get('auto')) : null;
+                var manoURL = params.get('m') ? parseFloat(params.get('m')) : null;
+                var totalURL = params.get('t') ? parseFloat(params.get('t')) : null;
+                var pagoURL = params.get('pago') ? decodeURIComponent(params.get('pago')) : null;
+
                 var ordData = targetTicket ? targetTicket.ordOriginal : (targetOrd || {
                     id: ordParam || folioParam || 'ORD-101',
-                    cliente: decodeURIComponent(params.get('cliente') || params.get('cli') || 'Cliente General'),
-                    auto: decodeURIComponent(params.get('auto') || params.get('v') || 'Vehículo Taller'),
-                    mano: targetTicket ? targetTicket.mano : 0,
+                    cliente: clienteURL || 'Cliente General',
+                    auto: autoURL || 'Vehículo Taller',
+                    mano: (manoURL !== null) ? manoURL : (targetTicket ? targetTicket.mano : 0),
                     piezas: [],
                     checklist: { llaves: true, estereo: true, espejos: true, vidrios: true, tapetes: true, tapa: true, bateria: true, aceite: true },
                     fecha: targetTicket ? targetTicket.fecha : new Date().toLocaleString(),
                     mecanico: 'Martín Flores',
-                    metodoPago: targetTicket ? targetTicket.metodoPago : 'Efectivo',
+                    metodoPago: pagoURL || (targetTicket ? targetTicket.metodoPago : 'Efectivo'),
                     servicioDetalle: 'Revisión Técnica General'
                 });
 
@@ -1527,7 +1540,7 @@
                 var htmlGenerado = '';
 
                 if (tipoParam === 'ticket') {
-                    var totalReal = targetTicket ? targetTicket.total : undefined;
+                    var totalReal = (totalURL !== null) ? totalURL : (targetTicket ? targetTicket.total : undefined);
                     htmlGenerado = generarHTMLTicket(ordData, folioParam || 'TKT-COMPROBANTE', qrUrlActual, totalReal);
                 } else {
                     htmlGenerado = generarHTMLFichaTecnicaPro(ordData, folioParam || ordData.id, qrUrlActual);

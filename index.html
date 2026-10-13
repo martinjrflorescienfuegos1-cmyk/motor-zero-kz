@@ -69,7 +69,7 @@
         .ticket-row { display: flex; justify-content: space-between; margin-bottom: 8px; text-align: left; font-size: 0.85rem; }
         .ticket-total { border-top: 2px solid #121212; padding-top: 10px; margin-top: 5px; font-weight: bold; font-size: 1.1rem; }
         
-        /* ESTILOS FICHA TÉCNICA DE NIVEL CONCESIONARIO */
+        /* ESTILOS FICHA TÉCNICA */
         .ficha-pro-container { background: #ffffff; color: #111111; padding: 30px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 0.82rem; text-align: left; box-shadow: 0 5px 25px rgba(0,0,0,0.25); border: 2px solid #000; width: 100%; max-width: 680px; margin: 0 auto; }
         .ficha-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #ff4500; padding-bottom: 12px; margin-bottom: 15px; }
         .ficha-header-title h2 { font-size: 1.4rem; color: #111; font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; }
@@ -89,7 +89,7 @@
         .foto-thumb { width: 65px; height: 65px; border-radius: 4px; object-fit: cover; border: 1px solid var(--accent); }
         
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; padding: 20px; }
-        .modal-overlay.active { display: flex; }
+        .modal-overlay.active { display: flex !important; }
         .modal-card { background: var(--bg-card); border: 1px solid var(--accent); padding: 25px; border-radius: 8px; max-width: 730px; width: 100%; max-height: 92vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         
         .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 20px; }
@@ -106,7 +106,7 @@
         .visit-item-info strong { color: var(--text); }
         
         #vista-cliente-qr, #portal-cliente { display: none; justify-content: center; align-items: center; padding: 20px; flex-direction: column; min-height: 80vh; }
-        #vista-cliente-qr.active, #portal-cliente.active { display: flex; }
+        #vista-cliente-qr.active, #portal-cliente.active { display: flex !important; }
         .client-box { max-width: 520px; width: 100%; background: #1e1e24; border: 1px solid var(--accent); padding: 25px; border-radius: 8px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 
         #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
@@ -127,11 +127,12 @@
 <body>
     <div id="toast-container"></div>
 
+    <!-- VISTA EXCLUSIVA AL ESCANEAR EL CÓDIGO QR -->
     <div id="vista-cliente-qr">
         <div class="client-box" style="max-width: 720px; background: transparent; border: none; box-shadow: none; padding: 0;">
             <div id="contenedor-comprobante-movil" style="margin-bottom: 20px; width: 100%;"></div>
-            <button class="btn btn-download" onclick="descargarImagen('contenedor-comprobante-movil', 'FichaTecnica_MotorZero.png')">📥 Descargar Ficha Técnica con QR</button>
-            <button class="btn btn-secondary" style="margin-top: 10px;" onclick="irAPortalDesdeQR()">🔍 Buscar en el Portal</button>
+            <button class="btn btn-download" onclick="descargarImagen('contenedor-comprobante-movil', 'Documento_MotorZero.png')">📥 Descargar Documento</button>
+            <button class="btn btn-secondary" style="margin-top: 10px;" onclick="irAPortalDesdeQR()">🔍 Buscar otro ticket (Portal)</button>
         </div>
     </div>
     
@@ -403,7 +404,7 @@
                         </div>
                     </div>
 
-                    <button class="btn btn-success" style="font-size:1.05rem; padding:14px;" onclick="completarPago()">✅ Procesar Pago y Generar Ficha Técnica con QR</button>
+                    <button class="btn btn-success" style="font-size:1.05rem; padding:14px;" onclick="completarPago()">✅ Procesar Pago y Generar Documentos con QR</button>
                 </div>
             </div>
             <div class="card">
@@ -562,6 +563,7 @@
 
         var logoBase64Global = localStorage.getItem('mz_logo') || '';
         var metodoPagoSeleccionadoGlobal = 'Efectivo';
+        var clienteActivoExpedienteId = null;
 
         function cambiarLogoTaller(e) {
             var file = e.target.files[0];
@@ -1167,9 +1169,9 @@
                 document.getElementById('pos-cli-total').innerText = '$' + totalCalc.toFixed(2) + ' MXN';
             }
             
-            var dataQr = 'https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?ord=' + ord.id + '&cli=' + encodeURIComponent(ord.cliente);
-            var qrUrl = generarUrlQrImage(dataQr);
-            view.innerHTML = generarHTMLFichaTecnicaPro(ord, 'PREV-100', qrUrl);
+            // Genera explícitamente el QR indicando que es para la Ficha Técnica
+            var qrFichaUrl = generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ficha&ord=' + ord.id);
+            view.innerHTML = generarHTMLFichaTecnicaPro(ord, 'PREV-100', qrFichaUrl);
             calcularCambioEfectivo();
         }
 
@@ -1211,8 +1213,8 @@
                 '</table>' +
 
                 '<div style="text-align:center; margin-top:15px;">' +
-                    '<img src="' + qrUrl + '" class="qr-box-img" alt="QR Digital">' +
-                    '<p style="font-size:0.7rem; color:#555;">Escanear QR para verificación digital de expediente en portal</p>' +
+                    '<img src="' + qrUrl + '" class="qr-box-img" alt="QR Ficha Técnica">' +
+                    '<p style="font-size:0.7rem; color:#555;">Escanear QR para consultar la Ficha Técnica Oficial en el portal</p>' +
                 '</div>' +
 
                 '<div class="ficha-firmas-grid">' +
@@ -1249,8 +1251,8 @@
                 '<hr style="margin:8px 0; border:none; border-top:1px solid #121212;">' +
                 '<div class="ticket-row ticket-total"><span>TOTAL:</span><span>$' + totalVal.toFixed(2) + ' MXN</span></div>' +
                 '<div style="text-align:center;">' +
-                    '<img src="' + qrUrl + '" class="qr-box-img" alt="QR Code">' +
-                    '<p style="font-size:0.75rem;">Comprobante Digital Oficial</p>' +
+                    '<img src="' + qrUrl + '" class="qr-box-img" alt="QR Ticket de Pago">' +
+                    '<p style="font-size:0.75rem;">Escanear QR para consultar el Ticket de Pago Oficial</p>' +
                 '</div>' +
             '</div>';
         }
@@ -1279,14 +1281,16 @@
             var subtotalNeto = ord.mano + ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); }, 0);
             var totalMonto = subtotalNeto * 1.16;
 
-            var dataQr = 'https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?folio=' + folio + '&cliente=' + encodeURIComponent(ord.cliente) + '&auto=' + encodeURIComponent(ord.auto);
-            var qrUrl = generarUrlQrImage(dataQr);
+            // ENLACES Y QR TOTALMENTE SEPARADOS
+            var qrFichaUrl = generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ficha&folio=' + folio);
+            var qrTicketUrl = generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ticket&folio=' + folio);
 
             var ticketGuardado = {
                 folio: folio, fecha: fechaStr, cliente: ord.cliente, auto: ord.auto,
                 subtotalRef: ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); },0),
                 costoRef: ord.piezas.reduce(function(a,p){ return a+((p.costo || 0)*p.cant); },0),
-                mano: ord.mano, total: totalMonto, metodoPago: metodoPagoSeleccionadoGlobal, ordOriginal: ord, qrUrl: qrUrl
+                mano: ord.mano, total: totalMonto, metodoPago: metodoPagoSeleccionadoGlobal, ordOriginal: ord,
+                qrFichaUrl: qrFichaUrl, qrTicketUrl: qrTicketUrl
             };
 
             var cli = clientes.find(function(c) { return c.nombre.toLowerCase() === ord.cliente.toLowerCase(); });
@@ -1303,7 +1307,7 @@
             ordenes.splice(idx, 1);
             guardarDatos();
 
-            ticketActualModal = { ord: ord, folio: folio, fecha: fechaStr, metodoPago: metodoPagoSeleccionadoGlobal, qrUrl: qrUrl };
+            ticketActualModal = { ord: ord, folio: folio, fecha: fechaStr, metodoPago: metodoPagoSeleccionadoGlobal, qrFichaUrl: qrFichaUrl, qrTicketUrl: qrTicketUrl };
             document.getElementById('modal-titulo').innerText = 'Expediente Generado: ' + folio;
             cambiarVistaModal('ficha');
             document.getElementById('modal-pago').classList.add('active');
@@ -1314,7 +1318,17 @@
         function verDetalleTicket(folio) {
             var t = tickets.find(function(item) { return item.folio === folio; });
             if (!t) return;
-            ticketActualModal = { ord: t.ordOriginal, folio: t.folio, fecha: t.fecha, metodoPago: t.metodoPago, qrUrl: t.qrUrl };
+            
+            // Cierra inmediatamente el modal de expedientes para evitar la superposición gráfica
+            var modalExp = document.getElementById('modal-expediente-cliente');
+            modalExp.classList.remove('active');
+            modalExp.style.display = 'none';
+
+            ticketActualModal = {
+                ord: t.ordOriginal, folio: t.folio, fecha: t.fecha, metodoPago: t.metodoPago,
+                qrFichaUrl: t.qrFichaUrl || generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ficha&folio=' + t.folio),
+                qrTicketUrl: t.qrTicketUrl || generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ticket&folio=' + t.folio)
+            };
             document.getElementById('modal-titulo').innerText = 'Expediente: ' + folio;
             cambiarVistaModal('ficha');
             document.getElementById('modal-pago').classList.add('active');
@@ -1324,17 +1338,28 @@
             if (!ticketActualModal) return;
             var contenedor = document.getElementById('modal-ticket-body');
             if (tipo === 'ficha') {
-                contenedor.innerHTML = generarHTMLFichaTecnicaPro(ticketActualModal.ord, ticketActualModal.folio, ticketActualModal.qrUrl);
+                contenedor.innerHTML = generarHTMLFichaTecnicaPro(ticketActualModal.ord, ticketActualModal.folio, ticketActualModal.qrFichaUrl);
             } else {
-                contenedor.innerHTML = generarHTMLTicket(ticketActualModal.ord, ticketActualModal.folio, ticketActualModal.qrUrl);
+                contenedor.innerHTML = generarHTMLTicket(ticketActualModal.ord, ticketActualModal.folio, ticketActualModal.qrTicketUrl);
             }
         }
 
-        function cerrarModal() { document.getElementById('modal-pago').classList.remove('active'); }
+        function cerrarModal() {
+            document.getElementById('modal-pago').classList.remove('active');
+            
+            // Si venía navegando desde un expediente de cliente, reabre de forma limpia el expediente
+            if (clienteActivoExpedienteId) {
+                var modalExp = document.getElementById('modal-expediente-cliente');
+                modalExp.style.display = '';
+                modalExp.classList.add('active');
+            }
+        }
 
         function verExpedienteCliente(idCli) {
             var cli = clientes.find(function(c) { return c.id === idCli; });
             if (!cli) return;
+            clienteActivoExpedienteId = idCli;
+            
             document.getElementById('exp-cli-nombre').innerText = '👤 Expediente: ' + cli.nombre;
             document.getElementById('exp-cli-id').innerText = cli.id;
             document.getElementById('exp-cli-visitas').innerText = cli.totalServicios + ' visitas';
@@ -1344,9 +1369,18 @@
                 return '<div class="visit-item-card"><div class="visit-item-info"><strong>' + t.folio + '</strong> — ' + t.fecha + '<br><strong style="color:var(--success);">$' + t.total.toFixed(2) + ' MXN</strong></div>' +
                        '<button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="verDetalleTicket(\'' + t.folio + '\')">Ver Ficha/Ticket</button></div>';
             }).join('') || '<p style="color:var(--muted)">Sin historial.</p>';
-            document.getElementById('modal-expediente-cliente').classList.add('active');
+            
+            var modalExp = document.getElementById('modal-expediente-cliente');
+            modalExp.style.display = '';
+            modalExp.classList.add('active');
         }
-        function cerrarExpedienteModal() { document.getElementById('modal-expediente-cliente').classList.remove('active'); }
+
+        function cerrarExpedienteModal() {
+            clienteActivoExpedienteId = null;
+            var modalExp = document.getElementById('modal-expediente-cliente');
+            modalExp.classList.remove('active');
+            modalExp.style.display = 'none';
+        }
 
         function abrirPortalCliente() {
             document.getElementById('admin-ui').style.display = 'none';
@@ -1366,15 +1400,20 @@
             var res = document.getElementById('kiosko-resultado');
             res.style.display = 'block';
             if (!t) { document.getElementById('kiosko-ticket-body').innerHTML = '<p style="color:var(--danger)">No encontrado.</p>'; return; }
-            ticketActualKiosko = { ord: t.ordOriginal, folio: t.folio, fecha: t.fecha, metodoPago: t.metodoPago, qrUrl: t.qrUrl };
+            
+            ticketActualKiosko = {
+                ord: t.ordOriginal, folio: t.folio, fecha: t.fecha, metodoPago: t.metodoPago,
+                qrFichaUrl: t.qrFichaUrl || generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ficha&folio=' + t.folio),
+                qrTicketUrl: t.qrTicketUrl || generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ticket&folio=' + t.folio)
+            };
             cambiarVistaKiosko('ficha');
         }
         function cambiarVistaKiosko(tipo) {
             if (!ticketActualKiosko) return;
             if (tipo === 'ficha') {
-                document.getElementById('kiosko-ticket-body').innerHTML = generarHTMLFichaTecnicaPro(ticketActualKiosko.ord, ticketActualKiosko.folio, ticketActualKiosko.qrUrl);
+                document.getElementById('kiosko-ticket-body').innerHTML = generarHTMLFichaTecnicaPro(ticketActualKiosko.ord, ticketActualKiosko.folio, ticketActualKiosko.qrFichaUrl);
             } else {
-                document.getElementById('kiosko-ticket-body').innerHTML = generarHTMLTicket(ticketActualKiosko.ord, ticketActualKiosko.folio, ticketActualKiosko.qrUrl);
+                document.getElementById('kiosko-ticket-body').innerHTML = generarHTMLTicket(ticketActualKiosko.ord, ticketActualKiosko.folio, ticketActualKiosko.qrTicketUrl);
             }
         }
 
@@ -1441,10 +1480,12 @@
             document.getElementById('corte-utilidad-neta').innerText = '$' + utilidadNeta.toFixed(2) + ' MXN';
         }
 
+        // LÓGICA DE DETECCIÓN AL ESCANEAR EL CÓDIGO QR
         window.addEventListener('DOMContentLoaded', function() {
             var params = new URLSearchParams(window.location.search);
             var folioParam = params.get('folio');
             var ordParam = params.get('ord');
+            var tipoParam = params.get('tipo'); // Recibe 'ficha' o 'ticket'
 
             if (folioParam || ordParam) {
                 var adminUi = document.getElementById('admin-ui');
@@ -1466,8 +1507,17 @@
                     servicioDetalle: 'Revisión Técnica General'
                 });
 
-                var qrUrl = generarUrlQrImage(window.location.href);
-                document.getElementById('contenedor-comprobante-movil').innerHTML = generarHTMLFichaTecnicaPro(ordData, folioParam || ordData.id, qrUrl);
+                var qrUrlActual = generarUrlQrImage(window.location.href);
+                var htmlGenerado = '';
+
+                // SI EL QR ES TICKET, MUESTRA TICKET. SI ES FICHA, MUESTRA FICHA.
+                if (tipoParam === 'ticket') {
+                    htmlGenerado = generarHTMLTicket(ordData, folioParam || 'TKT-COMPROBANTE', qrUrlActual);
+                } else {
+                    htmlGenerado = generarHTMLFichaTecnicaPro(ordData, folioParam || ordData.id, qrUrlActual);
+                }
+
+                document.getElementById('contenedor-comprobante-movil').innerHTML = htmlGenerado;
                 document.getElementById('vista-cliente-qr').classList.add('active');
             } else {
                 cambiarOpcionesServicio();

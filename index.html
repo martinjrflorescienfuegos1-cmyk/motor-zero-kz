@@ -127,7 +127,7 @@
 <body>
     <div id="toast-container"></div>
 
-    <!-- VISTA EXCLUSIVA AL ESCANEAR EL CÓDIGO QR -->
+    <!-- VISTA EXCLUSIVA AL ESCANEAR CÓDIGO QR -->
     <div id="vista-cliente-qr">
         <div class="client-box" style="max-width: 720px; background: transparent; border: none; box-shadow: none; padding: 0;">
             <div id="contenedor-comprobante-movil" style="margin-bottom: 20px; width: 100%;"></div>
@@ -783,6 +783,7 @@
             actualizarSelectRefacciones();
         }
 
+        // OPCIONES AMPLIADAS DE SERVICIOS
         function cambiarOpcionesServicio() {
             var tipo = document.getElementById('ord-tipo-servicio').value;
             var box = document.getElementById('sec-opciones-servicio');
@@ -811,29 +812,46 @@
                 setTimeout(actualizarSelectRefacciones, 50);
             } else if (tipo === 'Aceite') {
                 manoSugerida = 250;
-                box.innerHTML = '<h3>🛢️ Cambio de Aceite</h3>' +
-                    '<div class="field"><label>Aceite:</label>' +
+                box.innerHTML = '<h3>🛢️ Cambio de Aceite y Filtro</h3>' +
+                    '<div class="field"><label>Tipo y Marca de Aceite:</label>' +
                     '<select id="opt-aceite-tipo">' +
                         '<option value="Castrol EDGE Sintético 5W-30 ($550)">Castrol EDGE Full Synthetic 5W-30 ($550 MXN)</option>' +
-                        '<option value="Mobil 1 Advanced 5W-30 ($580)">Mobil 1 Advanced Synthetic 5W-30 ($580 MXN)</option>' +
-                        '<option value="Valvoline Advanced 5W-30 ($490)">Valvoline Advanced Synthetic 5W-30 ($490 MXN)</option>' +
+                        '<option value="Castrol GTX Multigrado 15W-40 ($380)">Castrol GTX Multigrado 15W-40 ($380 MXN)</option>' +
+                        '<option value="Mobil 1 Advanced Synthetic 5W-30 ($580)">Mobil 1 Advanced Synthetic 5W-30 ($580 MXN)</option>' +
+                        '<option value="Mobil Super 2000 Semi-Sintético 10W-30 ($440)">Mobil Super 2000 Semi-Sintético 10W-30 ($440 MXN)</option>' +
+                        '<option value="Valvoline Advanced Synthetic 5W-30 ($490)">Valvoline Advanced Synthetic 5W-30 ($490 MXN)</option>' +
+                        '<option value="Motul 8100 X-cess 5W-40 Premium ($650)">Motul 8100 X-cess 5W-40 Premium ($650 MXN)</option>' +
+                        '<option value="Shell Helix Ultra 5W-30 ($520)">Shell Helix Ultra 5W-30 ($520 MXN)</option>' +
+                    '</select></div>' +
+                    '<div class="field"><label>Calidad del Filtro de Aceite:</label>' +
+                    '<select id="opt-filtro-calidad">' +
+                        '<option value="Filtro Estándar Económico ($120)">Filtro Estándar Económico ($120 MXN)</option>' +
+                        '<option value="Filtro Convencional OEM OEM-Quality ($180)">Filtro Convencional OEM-Quality ($180 MXN)</option>' +
+                        '<option value="Filtro Sintético Alto Rendimiento ($280)">Filtro Sintético Alto Rendimiento ($280 MXN)</option>' +
                     '</select></div>';
             } else if (tipo === 'Balatas') {
                 manoSugerida = 350;
-                box.innerHTML = '<h3>🛑 Frenos / Balatas</h3>' +
-                    '<div class="field"><label>Calidad:</label>' +
+                box.innerHTML = '<h3>🛑 Frenos y Balatas</h3>' +
+                    '<div class="field"><label>Tipo / Calidad de Balatas:</label>' +
                     '<select id="opt-balata-calidad">' +
-                        '<option value="Cerámica Premium ($850)">Cerámica Premium ($850 MXN)</option>' +
-                        '<option value="Semimetálica ($520)">Semimetálica ($520 MXN)</option>' +
+                        '<option value="Cerámica Premium ($850)">Cerámica Premium - Alto Rendimiento / Sin Ruido ($850 MXN)</option>' +
+                        '<option value="Semimetálica Profesional ($520)">Semimetálica Profesional - Uso Rudo / Diario ($520 MXN)</option>' +
+                        '<option value="Orgánica Nao Económica ($380)">Orgánica NAO Económica ($380 MXN)</option>' +
+                        '<option value="Juego Cerámica + Rectificado Discos ($1250)">Juego Cerámica + Rectificado de Discos ($1,250 MXN)</option>' +
                     '</select></div>';
             } else if (tipo === 'Diagnostico') {
                 manoSugerida = 250;
-                box.innerHTML = '<h3>🔍 Diagnóstico</h3>' +
-                    '<div class="field"><label>Síntomas:</label><textarea id="opt-diag-sintomas" rows="2"></textarea></div>';
+                box.innerHTML = '<h3>🔍 Diagnóstico Taller</h3>' +
+                    '<div class="field"><label>Síntomas / Fallas Reportadas:</label><textarea id="opt-diag-sintomas" rows="2" placeholder="Ej. Código de falla en scanner, ruido en motor..."></textarea></div>';
             } else if (tipo === 'Llantas') {
                 manoSugerida = 200;
-                box.innerHTML = '<h3>🛞 Llantas</h3>' +
-                    '<div class="field"><label>Tipo:</label><select id="opt-llanta-tipo"><option value="Nueva ($1200 c/u)">Nueva ($1,200 MXN)</option></select></div>';
+                box.innerHTML = '<h3>🛞 Cambio y Servicio de Llantas</h3>' +
+                    '<div class="field"><label>Estado / Opción de Llanta:</label>' +
+                    '<select id="opt-llanta-tipo">' +
+                        '<option value="Llanta Nueva ($1200 c/u)">Llanta Nueva Garanzada ($1,200 MXN c/u)</option>' +
+                        '<option value="Llanta Seminueva 85% Vida ($650 c/u)">Llanta Seminueva (85% Vida útil) ($650 MXN c/u)</option>' +
+                        '<option value="Llanta Usada / Gallito ($350 c/u)">Llanta Usada / Gallito de Emergencia ($350 MXN c/u)</option>' +
+                    '</select></div>';
             }
             document.getElementById('ord-mano').value = manoSugerida.toFixed(2);
         }
@@ -1035,13 +1053,14 @@
                 var desc = document.getElementById('opt-general-desc') ? document.getElementById('opt-general-desc').value.trim() : '';
                 textoFinalServicio = 'Mecánica General: ' + (desc || 'Mantenimiento');
             } else if (tipoServicio === 'Aceite') {
-                textoFinalServicio = 'Cambio Aceite (' + document.getElementById('opt-aceite-tipo').value + ')';
+                var filVal = document.getElementById('opt-filtro-calidad') ? document.getElementById('opt-filtro-calidad').value : '';
+                textoFinalServicio = 'Cambio Aceite (' + document.getElementById('opt-aceite-tipo').value + ') + ' + filVal;
             } else if (tipoServicio === 'Balatas') {
                 textoFinalServicio = 'Frenos: ' + document.getElementById('opt-balata-calidad').value;
             } else if (tipoServicio === 'Diagnostico') {
                 textoFinalServicio = 'Diagnóstico General';
             } else if (tipoServicio === 'Llantas') {
-                textoFinalServicio = 'Servicio de Llantas';
+                textoFinalServicio = 'Servicio Llantas: ' + document.getElementById('opt-llanta-tipo').value;
             }
 
             var nuevaOrdenObj = {
@@ -1169,7 +1188,6 @@
                 document.getElementById('pos-cli-total').innerText = '$' + totalCalc.toFixed(2) + ' MXN';
             }
             
-            // Genera explícitamente el QR indicando que es para la Ficha Técnica
             var qrFichaUrl = generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ficha&ord=' + ord.id);
             view.innerHTML = generarHTMLFichaTecnicaPro(ord, 'PREV-100', qrFichaUrl);
             calcularCambioEfectivo();
@@ -1224,7 +1242,7 @@
             '</div>';
         }
 
-        function generarHTMLTicket(ord, folio, qrUrl) {
+        function generarHTMLTicket(ord, folio, qrUrl, totalTicketManual) {
             var subtotalRef = 0;
             var desglosePiezas = (ord.piezas || []).map(function(p) {
                 var sub = p.precio * p.cant;
@@ -1233,8 +1251,7 @@
             }).join('');
             
             var manoVal = ord.mano || 0;
-            var subtotalNeto = manoVal + subtotalRef;
-            var totalVal = subtotalNeto * 1.16;
+            var totalVal = totalTicketManual !== undefined ? totalTicketManual : ((manoVal + subtotalRef) * 1.16);
 
             return '<div class="ticket">' +
                 (logoBase64Global ? '<img src="' + logoBase64Global + '" class="ticket-logo">' : '') +
@@ -1244,7 +1261,7 @@
                 '<div class="ticket-row"><span>Cliente:</span><span>' + ord.cliente + '</span></div>' +
                 '<div class="ticket-row"><span>Vehículo:</span><span>' + ord.auto + '</span></div>' +
                 '<div class="ticket-row"><span>Técnico:</span><span>' + (ord.mecanico || 'Martín Flores') + '</span></div>' +
-                '<div class="ticket-row"><span>Pago:</span><span>' + metodoPagoSeleccionadoGlobal + '</span></div>' +
+                '<div class="ticket-row"><span>Pago:</span><span>' + (ord.metodoPago || metodoPagoSeleccionadoGlobal) + '</span></div>' +
                 '<hr style="margin:8px 0; border:none; border-top:1px dashed #121212;">' +
                 '<div class="ticket-row"><span>Mano de Obra:</span><span>$' + manoVal.toFixed(2) + '</span></div>' +
                 desglosePiezas +
@@ -1281,7 +1298,6 @@
             var subtotalNeto = ord.mano + ord.piezas.reduce(function(a,p){ return a+(p.precio*p.cant); }, 0);
             var totalMonto = subtotalNeto * 1.16;
 
-            // ENLACES Y QR TOTALMENTE SEPARADOS
             var qrFichaUrl = generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ficha&folio=' + folio);
             var qrTicketUrl = generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ticket&folio=' + folio);
 
@@ -1307,7 +1323,7 @@
             ordenes.splice(idx, 1);
             guardarDatos();
 
-            ticketActualModal = { ord: ord, folio: folio, fecha: fechaStr, metodoPago: metodoPagoSeleccionadoGlobal, qrFichaUrl: qrFichaUrl, qrTicketUrl: qrTicketUrl };
+            ticketActualModal = { ord: ord, folio: folio, fecha: fechaStr, metodoPago: metodoPagoSeleccionadoGlobal, total: totalMonto, qrFichaUrl: qrFichaUrl, qrTicketUrl: qrTicketUrl };
             document.getElementById('modal-titulo').innerText = 'Expediente Generado: ' + folio;
             cambiarVistaModal('ficha');
             document.getElementById('modal-pago').classList.add('active');
@@ -1319,13 +1335,12 @@
             var t = tickets.find(function(item) { return item.folio === folio; });
             if (!t) return;
             
-            // Cierra inmediatamente el modal de expedientes para evitar la superposición gráfica
             var modalExp = document.getElementById('modal-expediente-cliente');
             modalExp.classList.remove('active');
             modalExp.style.display = 'none';
 
             ticketActualModal = {
-                ord: t.ordOriginal, folio: t.folio, fecha: t.fecha, metodoPago: t.metodoPago,
+                ord: t.ordOriginal, folio: t.folio, fecha: t.fecha, metodoPago: t.metodoPago, total: t.total,
                 qrFichaUrl: t.qrFichaUrl || generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ficha&folio=' + t.folio),
                 qrTicketUrl: t.qrTicketUrl || generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ticket&folio=' + t.folio)
             };
@@ -1340,14 +1355,13 @@
             if (tipo === 'ficha') {
                 contenedor.innerHTML = generarHTMLFichaTecnicaPro(ticketActualModal.ord, ticketActualModal.folio, ticketActualModal.qrFichaUrl);
             } else {
-                contenedor.innerHTML = generarHTMLTicket(ticketActualModal.ord, ticketActualModal.folio, ticketActualModal.qrTicketUrl);
+                contenedor.innerHTML = generarHTMLTicket(ticketActualModal.ord, ticketActualModal.folio, ticketActualModal.qrTicketUrl, ticketActualModal.total);
             }
         }
 
         function cerrarModal() {
             document.getElementById('modal-pago').classList.remove('active');
             
-            // Si venía navegando desde un expediente de cliente, reabre de forma limpia el expediente
             if (clienteActivoExpedienteId) {
                 var modalExp = document.getElementById('modal-expediente-cliente');
                 modalExp.style.display = '';
@@ -1402,7 +1416,7 @@
             if (!t) { document.getElementById('kiosko-ticket-body').innerHTML = '<p style="color:var(--danger)">No encontrado.</p>'; return; }
             
             ticketActualKiosko = {
-                ord: t.ordOriginal, folio: t.folio, fecha: t.fecha, metodoPago: t.metodoPago,
+                ord: t.ordOriginal, folio: t.folio, fecha: t.fecha, metodoPago: t.metodoPago, total: t.total,
                 qrFichaUrl: t.qrFichaUrl || generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ficha&folio=' + t.folio),
                 qrTicketUrl: t.qrTicketUrl || generarUrlQrImage('https://martinjrflorescienfuegos1-cmyk.github.io/motor-zero-kz/?tipo=ticket&folio=' + t.folio)
             };
@@ -1413,7 +1427,7 @@
             if (tipo === 'ficha') {
                 document.getElementById('kiosko-ticket-body').innerHTML = generarHTMLFichaTecnicaPro(ticketActualKiosko.ord, ticketActualKiosko.folio, ticketActualKiosko.qrFichaUrl);
             } else {
-                document.getElementById('kiosko-ticket-body').innerHTML = generarHTMLTicket(ticketActualKiosko.ord, ticketActualKiosko.folio, ticketActualKiosko.qrTicketUrl);
+                document.getElementById('kiosko-ticket-body').innerHTML = generarHTMLTicket(ticketActualKiosko.ord, ticketActualKiosko.folio, ticketActualKiosko.qrTicketUrl, ticketActualKiosko.total);
             }
         }
 
@@ -1480,18 +1494,19 @@
             document.getElementById('corte-utilidad-neta').innerText = '$' + utilidadNeta.toFixed(2) + ' MXN';
         }
 
-        // LÓGICA DE DETECCIÓN AL ESCANEAR EL CÓDIGO QR
+        // CÓDIGO AL ESCANEAR EL QR
         window.addEventListener('DOMContentLoaded', function() {
             var params = new URLSearchParams(window.location.search);
             var folioParam = params.get('folio');
             var ordParam = params.get('ord');
-            var tipoParam = params.get('tipo'); // Recibe 'ficha' o 'ticket'
+            var tipoParam = params.get('tipo');
 
             if (folioParam || ordParam) {
                 var adminUi = document.getElementById('admin-ui');
                 if (adminUi) adminUi.style.display = 'none';
                 document.body.style.background = '#121214';
 
+                // BÚSQUEDA PRECISA EN REGISTROS
                 var targetTicket = tickets.find(function(t) { return t.folio === folioParam || (t.ordOriginal && t.ordOriginal.id === ordParam); });
                 var targetOrd = ordenes.find(function(o) { return o.id === ordParam; });
 
@@ -1499,20 +1514,21 @@
                     id: ordParam || folioParam || 'ORD-101',
                     cliente: decodeURIComponent(params.get('cliente') || params.get('cli') || 'Cliente General'),
                     auto: decodeURIComponent(params.get('auto') || params.get('v') || 'Vehículo Taller'),
-                    mano: 0,
+                    mano: targetTicket ? targetTicket.mano : 0,
                     piezas: [],
                     checklist: { llaves: true, estereo: true, espejos: true, vidrios: true, tapetes: true, tapa: true, bateria: true, aceite: true },
-                    fecha: new Date().toLocaleString(),
+                    fecha: targetTicket ? targetTicket.fecha : new Date().toLocaleString(),
                     mecanico: 'Martín Flores',
+                    metodoPago: targetTicket ? targetTicket.metodoPago : 'Efectivo',
                     servicioDetalle: 'Revisión Técnica General'
                 });
 
                 var qrUrlActual = generarUrlQrImage(window.location.href);
                 var htmlGenerado = '';
 
-                // SI EL QR ES TICKET, MUESTRA TICKET. SI ES FICHA, MUESTRA FICHA.
                 if (tipoParam === 'ticket') {
-                    htmlGenerado = generarHTMLTicket(ordData, folioParam || 'TKT-COMPROBANTE', qrUrlActual);
+                    var totalReal = targetTicket ? targetTicket.total : undefined;
+                    htmlGenerado = generarHTMLTicket(ordData, folioParam || 'TKT-COMPROBANTE', qrUrlActual, totalReal);
                 } else {
                     htmlGenerado = generarHTMLFichaTecnicaPro(ordData, folioParam || ordData.id, qrUrlActual);
                 }
